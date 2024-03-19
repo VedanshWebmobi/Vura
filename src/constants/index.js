@@ -1,0 +1,61 @@
+export const icon = {
+  BACKGROUND: require("../../assets/background.png"),
+  LOGO: require("../../assets/logo.png"),
+  PROFILE: require("../../assets/person.png"),
+  SIGNOUT: require("../../assets/signout.png"),
+  BANNER_ICON: require("../../assets/BannerIcon.png"),
+  SIDE_BAR: require("../../assets/sidebar.png"),
+  BACK_ICON: require("../../assets/back.png"),
+  PROFILE_ICON: require("../../assets/profileIcon.png"),
+  CHECK_ICON: require("../../assets/check_circle.png"),
+  EDIT: require("../../assets/edit.png"),
+  CAMERA: require("../../assets/camera.png"),
+  PROFILE_PIC: require("../../assets/profile.png"),
+  GALLERY: require("../../assets/gallery.png"),
+  SUNFLOWER: require("../../assets/sunFlower.png"),
+  CASHBACK: require("../../assets/cashBack.png"),
+  CASHBACK_CHART: require("../../assets/CashBack_Chart.png"),
+  PRODUCT: require("../../assets/products.png"),
+  OFFER_CHART: require("../../assets/Offer_Chart.png"),
+  OFFERS: require("../../assets/offers.png"),
+  SCAN: require("../../assets/scan.png"),
+  WALLET: require("../../assets/wallet.png"),
+  BLACK_ICON: require("../../assets/BlackIcon.png"),
+  PERSONAL_DETAILS: require("../../assets/personalDetails.png"),
+  BANK_DETAILS: require("../../assets/bankDetails.png"),
+  ARROW: require("../../assets/arrow.png"),
+  MENU: require("../../assets/menu.png"),
+  TROPHY: require("../../assets/trophy.png"),
+  GIFT: require("../../assets/gift.png"),
+  IMAGE1: require("../../assets/image1.png"),
+  IMAGE2: require("../../assets/image2.png"),
+  IMAGE3: require("../../assets/image3.png"),
+  IMAGE4: require("../../assets/image4.png"),
+  IMAGE5: require("../../assets/image5.png"),
+  IMAGE6: require("../../assets/image6.png"),
+  CEMENT: require("../../assets/cement.png"),
+  DOWNLOAD_ICON: require("../../assets/downloadIcon.png"),
+};
+
+export const font = {
+  GoldPlay_Regular: "Gp_Regular",
+  GoldPlay_SemiBold: "Gp_SemiBold",
+  GoldPlay_Medium: "Gp_Medium",
+};
+
+export const colors = {
+  YELLOW: "#ffdd00",
+  GREY: "#909DAD",
+  GREY_400: "#4F5965",
+  BLACK: "#1B1B19",
+  GREY_TXT: "#BBBFC3",
+  PRIMARY: "#FFDE1B",
+  LINE_GREY: "#E9EAEC",
+  LIGHT_GREY: "#C4C2C2",
+};
+
+export const ExpoSecureKey = {
+  IS_LOGIN: "is_login",
+  TOKEN: "token",
+  IS_REGISTER: "is_register",
+};
