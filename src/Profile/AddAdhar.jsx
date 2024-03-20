@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
 import { TextInput } from "react-native-paper";
@@ -61,6 +67,7 @@ export default function AddAdhar({ navigation }) {
 
   return (
     <View style={stylesCommon.yellowbg}>
+      <StatusBar backgroundColor={colors.YELLOW} />
       <CommonHeader navigation={navigation} showBack />
       <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
         <Text

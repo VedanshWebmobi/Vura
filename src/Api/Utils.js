@@ -6,3 +6,5 @@ export const COUPON = `${BASE_URL}Coupon/couponApply`;
 export const GET_PROFILE = `${BASE_URL}Client/profile`;
 export const ADD_PROFILE = `${BASE_URL}Client/add`;
 export const WALLET_LIST = `${BASE_URL}Client/wallet_list`;
+export const PRODUCT_CATEGORY = `${BASE_URL}Product/categoryList`;
+export const PRODUCTS = `${BASE_URL}Product/productCatList`;

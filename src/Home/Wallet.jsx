@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  StatusBar,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CommonHeader from "../common/CommonHeader";
@@ -58,7 +65,7 @@ export default function Wallet({ navigation }) {
       );
       console.log(response.result);
       const newData = response.result;
-      console.log("yeh raha be", newData[0].createdAt);
+
       setWalletData([...walletData, ...newData]);
       setwalletAmount(response.wallet_amount);
       setTotalPages(response.pages);
@@ -169,6 +176,7 @@ export default function Wallet({ navigation }) {
 
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
+      <StatusBar backgroundColor={colors.YELLOW} />
       <CommonHeader navigation={navigation} showBack />
       {isLoading ? (
         <View style={stylesCommon.loaderViewStyle}>

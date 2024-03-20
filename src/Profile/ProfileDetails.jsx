@@ -99,16 +99,16 @@ export default function ProfileDetails({ navigation }) {
         navigation
       );
 
-      console.log(response.message);
+      console.log("LE Bhai", response);
 
       if (response && response.status) {
-        getProfile();
+        await getProfile();
         // navigation.navigate("Home");
       }
     } catch (error) {
       console.error("Error submitting profile:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoading(true);
     }
   };
 
@@ -187,8 +187,8 @@ export default function ProfileDetails({ navigation }) {
       // Hide loader after fetching data
     }
   };
-  const handleSubmit = () => {
-    submitProfile();
+  const handleSubmit = async () => {
+    await submitProfile();
 
     //
   };

@@ -1,4 +1,11 @@
-import { ImageBackground, StyleSheet, Text, View, Image } from "react-native";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  StatusBar,
+} from "react-native";
 import React from "react";
 import { colors, font, icon } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,6 +20,7 @@ export default function StartScreen({ navigation }) {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "#000000", alignItems: "center" }}
     >
+      <StatusBar backgroundColor={"black"} />
       <View
         style={{
           alignItems: "center",

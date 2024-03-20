@@ -18,7 +18,7 @@ export default function Offers({ navigation }) {
         source={icon.OFFER_CHART}
         style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}
         minScale={0.5}
-        maxScale={3}
+        maxScale={2}
         onInteractionStart={() => console.log("Interaction started")}
         onInteractionEnd={() => console.log("Interaction ended")}
         onPinchStart={() => console.log("Pinch gesture started")}

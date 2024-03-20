@@ -8,6 +8,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera/next";
 import CommonHeader from "../common/CommonHeader";
@@ -112,6 +113,7 @@ export default function Scanner({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
+      <StatusBar backgroundColor={colors.YELLOW} />
       <KeyboardAvoidingView
         style={{ backgroundColor: "black" }}
         behavior={Platform.OS === "ios" ? "padding" : "position"}

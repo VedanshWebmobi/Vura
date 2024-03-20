@@ -31,8 +31,7 @@ export const axiosCallAPI = (
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
-        console.log("Bhai yeh hai dekhle ab", response.data);
-
+        console.log("Bhai yeh hai dekhle ab", response.data.status);
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
@@ -51,6 +50,9 @@ export const axiosCallAPI = (
         }
       })
       .catch((error) => {
+        console.log("====================================");
+        console.log("error inside axios");
+        console.log("====================================");
         ERROR_HANDLER(error, errors);
       });
   } else if (method === "get") {

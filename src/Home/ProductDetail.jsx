@@ -5,26 +5,170 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Share,
+  Platform,
+  StatusBar,
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
+import stylesCommon, {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+} from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
 import { colors, font, icon } from "../constants";
 import Icons from "@expo/vector-icons/FontAwesome5";
 import { Icon } from "react-native-paper";
+import { SimpleGrid } from "react-native-super-grid";
+import * as FileSystem from "expo-file-system";
 
 export default function ProductDetail({ navigation, route }) {
-  const { name, image, price, size, category, ProductCode } = route.params;
+  const { StorageAccessFramework } = FileSystem;
+  const {
+    product_name,
+    regularPrice,
+    salesPrice,
+    size,
+    productCategoryName,
+    productImages,
+    productCode,
+    productDocuments,
+  } = route.params;
 
+  const downloadCallback = (downloadProgress) => {
+    const progress =
+      downloadProgress.totalBytesWritten /
+      downloadProgress.totalBytesExpectedToWrite;
+    console.log(`Download progress: ${progress * 100}%`);
+    // Update UI with download progress if needed
+  };
+
+  const saveAndroidFile = async (fileUri, fileName = "File") => {
+    try {
+      const fileString = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const permissions =
+        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (!permissions.granted) {
+        console.log("Permission denied");
+        return;
+      }
+
+      try {
+        await FileSystem.StorageAccessFramework.createFileAsync(
+          permissions.directoryUri,
+          fileName,
+          "application/pdf"
+        )
+          .then(async (uri) => {
+            await FileSystem.writeAsStringAsync(uri, fileString, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+            console.log("File saved successfully:", uri);
+          })
+          .catch((e) => {
+            console.error("Error saving file:", e);
+          });
+      } catch (e) {
+        console.error("Error saving file:", e);
+      }
+    } catch (err) {
+      console.error("Error saving file:", err);
+    }
+  };
+  const downloadFile = async (fileUrl) => {
+    const downloadPath = FileSystem.documentDirectory;
+    let fileName = fileUrl.split("/").pop();
+
+    const downloadResumable = FileSystem.createDownloadResumable(
+      fileUrl,
+      downloadPath + fileName,
+      {},
+      downloadCallback
+    );
+
+    try {
+      const { uri } = await downloadResumable.downloadAsync();
+      console.log("File downloaded to:", uri);
+      if (Platform.OS === "android") {
+        saveAndroidFile(uri, fileName);
+      }
+      // Optionally, you can use the uri to do something with the downloaded file
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+  const shareFile = async (fileUri) => {
+    try {
+      const result = await Share.share({
+        url: fileUri,
+        title: "Downloaded File",
+        mimeType: "application/pdf", // Adjust mimeType based on file type
+      });
+
+      if (result.action === Share.sharedAction) {
+        console.log("File shared successfully");
+      } else if (result.action === Share.dismissedAction) {
+        console.log("Sharing dismissed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // const data = [
+  //   {
+  //     productDocument:
+  //       "http://localhost/Vura_API_Server/src/uploads/product_documents/1710834917_65f944e577c46.doc",
+  //     productDocName: "1710834917_65f944e577c46",
+  //   },
+  //   {
+  //     productDocument:
+  //       "http://localhost/Vura_API_Server/src/uploads/product_documents/1710834917_65f944e5780cd.doc",
+  //     productDocName: "1710834917_65f944e5780cd",
+  //   },
+  //   {
+  //     productDocument:
+  //       "http://localhost/Vura_API_Server/src/uploads/product_documents/1710837756_65f94ffcc90ea.doc",
+  //     productDocName: "1710837756_65f94ffcc90ea",
+  //   },
+  // ];
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
+      <StatusBar backgroundColor={colors.YELLOW} />
+
       <CommonHeader navigation={navigation} showBack />
       <ScrollView>
         <View style={styles.container}>
           {/* Render your product details here using the route params */}
-          <View style={{ height: 350 }}>
-            <Image source={image} style={{ width: 350, height: 350 }} />
+          <View
+            style={{
+              height: SCREEN_WIDTH,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {productImages.map((image, index) => (
+                <Image
+                  source={{ uri: image }}
+                  style={{
+                    width: SCREEN_WIDTH,
+                    height: SCREEN_WIDTH,
+                    resizeMode: "contain",
+                  }}
+                />
+              ))}
+              {/* <Image
+                source={{ uri: productImages[0] }}
+                style={{
+                  width: SCREEN_WIDTH,
+                  height: SCREEN_WIDTH,
+                  resizeMode: "contain",
+                }}
+              /> */}
+            </ScrollView>
           </View>
           <View
             style={{
@@ -40,7 +184,7 @@ export default function ProductDetail({ navigation, route }) {
           >
             <View style={{ gap: 5 }}>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20 }}>
-                {name}
+                {product_name}
               </Text>
               <View
                 style={{
@@ -56,7 +200,7 @@ export default function ProductDetail({ navigation, route }) {
                     fontSize: 15,
                   }}
                 >
-                  ₹{price}
+                  ₹{salesPrice}
                 </Text>
                 <Text
                   style={{
@@ -66,7 +210,7 @@ export default function ProductDetail({ navigation, route }) {
                     color: colors.GREY_TXT,
                   }}
                 >
-                  ₹ 2000.00
+                  {regularPrice}
                 </Text>
               </View>
             </View>
@@ -99,7 +243,7 @@ export default function ProductDetail({ navigation, route }) {
               <Text
                 style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14 }}
               >
-                Ceramic
+                {productCategoryName}
               </Text>
             </View>
             <View style={{ height: 1, backgroundColor: colors.LINE_GREY }} />
@@ -112,7 +256,7 @@ export default function ProductDetail({ navigation, route }) {
               <Text
                 style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14 }}
               >
-                {ProductCode}
+                {productCode}
               </Text>
             </View>
           </View>
@@ -149,7 +293,103 @@ export default function ProductDetail({ navigation, route }) {
                 Documents & Downloads
               </Text>
             </View>
-            <View style={{ gap: 5 }}>
+
+            <SimpleGrid
+              data={productDocuments}
+              renderItem={(item, index) => {
+                console.log("yeh hai bhai ", item.item.productDocName);
+                return (
+                  <View style={{ gap: 5 }} key={index}>
+                    <View
+                      style={{
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() =>
+                          downloadFile(
+                            item.item.productDocument,
+                            item.item.productDocName
+                          )
+                        }
+                      >
+                        <View style={{ gap: 5, alignItems: "center" }}>
+                          <Image
+                            source={icon.DOWNLOAD_ICON}
+                            style={{ height: 50, width: 40 }}
+                          />
+                          <View
+                            style={{
+                              backgroundColor: colors.LINE_GREY,
+                              width: SCREEN_WIDTH / 2.4,
+                              padding: 5,
+                              borderRadius: 5,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontFamily: font.GoldPlay_Medium,
+                                color: "black",
+                                fontSize: 12,
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.item.productDocName}
+                            </Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+              }}
+            />
+
+            {/* {data.map((document, index) => {
+              return (
+                <View style={{ gap: 5 }} key={index}>
+                  <View
+                    style={{
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <TouchableOpacity>
+                      <View style={{ gap: 5, alignItems: "center" }}>
+                        <Image
+                          source={icon.DOWNLOAD_ICON}
+                          style={{ height: 50, width: 40 }}
+                        />
+                        <View
+                          style={{
+                            backgroundColor: colors.LINE_GREY,
+                            width: SCREEN_WIDTH / 2,
+                            padding: 5,
+                            borderRadius: 5,
+                          }}
+                        >
+                          <Text
+                            style={{
+                              fontFamily: font.GoldPlay_Medium,
+                              color: "black",
+                              fontSize: 12,
+                              textAlign: "center",
+                            }}
+                          >
+                            {document.productDocName}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              );
+            })} */}
+            {/* <View style={{ gap: 5 }}>
               <View
                 style={{
                   justifyContent: "space-around",
@@ -250,7 +490,7 @@ export default function ProductDetail({ navigation, route }) {
                   </View>
                 </View>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <View style={{ padding: 15 }}>

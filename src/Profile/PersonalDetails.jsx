@@ -143,7 +143,7 @@ export default function PersonalDetails({ navigation }) {
             mobileNo
           );
 
-          console.log("Yeh raha bc", name, mobileNo, address, panCardNo);
+          console.log("Yeh raha ", name, mobileNo, address, panCardNo);
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
@@ -306,7 +306,7 @@ export default function PersonalDetails({ navigation }) {
                   <TextInput
                     key={index}
                     ref={(ref) => (inputRefs.current[index] = ref)}
-                    value={aadharNumber.substr(index * 4, 4)}
+                    value={aadharNo.substr(index * 4, 4)}
                     mode="outlined"
                     outlineStyle={{
                       borderColor: "white",
@@ -321,13 +321,14 @@ export default function PersonalDetails({ navigation }) {
                       fontFamily: font.GoldPlay_Medium,
                       fontSize: 25,
                     }}
-                    onChangeText={(text) => {
-                      const newAadharNumber =
-                        aadharNumber.substr(0, index * 4) +
-                        text +
-                        aadharNumber.substr((index + 1) * 4);
-                      setAadharNumber(newAadharNumber);
-                    }}
+                    // onChangeText={(text) => {
+                    //   const newAadharNumber =
+                    //     aadharNumber.substr(0, index * 4) +
+                    //     text +
+                    //     aadharNumber.substr((index + 1) * 4);
+                    //   setAadharNumber(newAadharNumber);
+                    // }}
+                    editable={false}
                     maxLength={4}
                     cursorColor="white"
                   />

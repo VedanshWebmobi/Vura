@@ -6,15 +6,23 @@ import {
   FlatList,
   StatusBar,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import stylesCommon from "../Themes/stylesCommon";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
-import { colors, font, icon } from "../constants";
+import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import DropDownPicker from "react-native-dropdown-picker";
+import { Picker } from "@react-native-picker/picker";
+import { PRODUCTS, PRODUCT_CATEGORY } from "../Api/Utils";
+import * as Preference from "../StoreData/Preference";
+import * as Progress from "react-native-progress";
+import { axiosCallAPI } from "../Api/Axios";
+import { FlatGrid } from "react-native-super-grid";
 
 export default function Product({ navigation }) {
+  const pickerRef = useRef(null);
+
   const data = [
     {
       name: "Product 1",
@@ -66,16 +74,125 @@ export default function Product({ navigation }) {
     },
   ];
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "All", value: "All" },
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-    { label: "Pear", value: "pear" },
-  ]);
+  // function open() {
+  //   pickerRef.current.focus();
+  // }
 
-  console.log("Product ka navigation", navigation);
+  // function close() {
+  //   pickerRef.current.blur();
+  // }
+
+  const [value, setValue] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [productData, setProductData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedValue, setSelectedValue] = useState(0);
+
+  useEffect(() => {
+    const fetchProductCategory = async () => {
+      //  setIsLoading(true);
+      //  setError(null);
+
+      try {
+        const requestOptions = {
+          headers: {
+            Accept: "application/json",
+            Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+          },
+        };
+
+        const response = await axiosCallAPI(
+          "get",
+          PRODUCT_CATEGORY,
+          "",
+          requestOptions,
+          true,
+          navigation
+        );
+
+        if (response !== "") {
+          const categoryData = response.map((category) => ({
+            label: category.productCategoryName,
+            value: category.id,
+          }));
+
+          setCategories(categoryData); // Update categories state
+        } else {
+          console.error("Invalid response structure:", response);
+        }
+      } catch (error) {
+        console.error("Error fetching product category:", error);
+        // setError(error); // Set error state for handling
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    fetchProductCategory();
+  }, []);
+
+  useEffect(() => {
+    console.log("After selecting value", currentPage);
+
+    console.log("In use effect", currentPage, totalPages);
+    fetchProductData(selectedValue);
+  }, [selectedValue]);
+
+  const fetchProductData = async (selectedValue = 0) => {
+    console.log("====================================");
+    console.log("Api called in product with this value", selectedValue);
+
+    console.log(currentPage);
+    console.log("====================================");
+    if (currentPage > totalPages) {
+      console.log(currentPage, totalPages);
+      console.log("Yaha huin isislye error");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        headers: {
+          Accept: "application/json",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+        params: {
+          categoryId: selectedValue,
+          page: currentPage, // Pass the current page as a query parameter
+          per_page: 10, // You may need to adjust this based on your API's pagination settings
+        },
+      };
+
+      const response = await axiosCallAPI(
+        "get",
+        PRODUCTS,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+      console.log(response.result);
+      const newData = response.result;
+      setProductData(newData);
+      setTotalPages(response.pages);
+      setCurrentPage(currentPage + 1);
+    } catch (error) {
+      console.error("Error fetching wallet data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectedItem = (e) => {
+    setCurrentPage(1);
+    setTotalPages(1);
+    setProductData([]);
+    setSelectedValue(e.value);
+  };
+
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
       <StatusBar backgroundColor={colors.YELLOW} />
@@ -99,19 +216,27 @@ export default function Product({ navigation }) {
               Our Prdoucts
             </Text>
           </View>
-          <View style={{}}>
+          <View>
+            {/* <Picker
+              ref={pickerRef}
+              selectedValue={selected}
+              onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
+            >
+              <Picker.Item label="Java" value="java" />
+              <Picker.Item label="JavaScript" value="js" />
+            </Picker> */}
             <DropDownPicker
               open={open}
               value={value}
-              items={items}
+              items={categories}
+              // setItems={setCategories}
               setOpen={setOpen}
               setValue={setValue}
-              setItems={setItems}
-              containerStyle={{}}
+              onSelectItem={handleSelectedItem}
               placeholder={"Category"}
               textStyle={{ fontSize: 15, fontFamily: font.GoldPlay_Medium }}
               style={{
-                width: 120,
+                width: SCREEN_WIDTH / 2.3,
                 height: 50,
                 borderRadius: 10,
               }}
@@ -126,13 +251,15 @@ export default function Product({ navigation }) {
             marginVertical: 10,
           }}
         />
-        <FlatList
-          data={data}
+        <FlatGrid
+          data={productData}
+          spacing={0}
           renderItem={({ item, index }) => {
             return (
               <View
                 style={{
-                  flex: 1,
+                  //flex: 1,
+                  //width: SCREEN_WIDTH / 2 - 26,
                   elevation: 3,
                   padding: 15,
                   backgroundColor: "white",
@@ -147,7 +274,7 @@ export default function Product({ navigation }) {
                 >
                   <View style={{}}>
                     <Image
-                      source={item.image}
+                      source={{ uri: item.productImages[0] }}
                       style={{ height: 150, width: 100, resizeMode: "cover" }}
                     />
                   </View>
@@ -160,15 +287,17 @@ export default function Product({ navigation }) {
                     }}
                   />
                   <Text style={{ fontFamily: font.GoldPlay_Medium }}>
-                    {item.name}
+                    {item.product_name}
                   </Text>
                 </TouchableOpacity>
               </View>
             );
           }}
-          keyExtractor={(item, index) => item.ProductCode}
-          numColumns={2}
+          keyExtractor={(item, index) => item.id}
+          //numColumns={2}
+          maxItemsPerRow={2}
           showsVerticalScrollIndicator={false}
+          // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
         />
       </View>
     </SafeAreaView>

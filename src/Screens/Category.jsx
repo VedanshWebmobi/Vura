@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +23,7 @@ export default function Category({ navigation }) {
     "I Am An Architecht",
     "I Am An Artisan",
   ];
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(data[data.length - 1]);
   const Header = () => {
     return (
       <View
@@ -45,6 +46,7 @@ export default function Category({ navigation }) {
 
   const renderItem = ({ item, index }) => {
     const isLast = index === data.length - 1;
+
     const disabled = !isLast;
     return (
       <TouchableOpacity
@@ -77,7 +79,6 @@ export default function Category({ navigation }) {
                 borderColor: "#fff",
                 backgroundColor:
                   selectedItem === item ? "black" : "transparent",
-                // backgroundColor: selectedItem === item ? "black" : "transparent",
               }}
             ></View>
 
@@ -101,6 +102,7 @@ export default function Category({ navigation }) {
   };
   return (
     <SafeAreaView style={{ flex: 1, gap: 30, backgroundColor: colors.YELLOW }}>
+      <StatusBar backgroundColor={colors.YELLOW} />
       <View
         style={{
           flex: 1,

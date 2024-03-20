@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import stylesCommon, {
@@ -234,6 +241,7 @@ export default function AddPhoto({ navigation }) {
 
   return (
     <View style={stylesCommon.yellowbg}>
+      <StatusBar backgroundColor={colors.YELLOW} />
       <Portal>
         <Modal
           visible={visible}

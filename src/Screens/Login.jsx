@@ -37,6 +37,14 @@ export default function Login({ navigation }) {
   const [otp, setOtp] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleBackPress = () => {
+    if (navigation.canGoBack()) {
+      // Check if navigation can go back
+      navigation.dispatch(NavigationActions.back()); // Go back if possible
+      return true; // Prevent default back button behavior
+    }
+  };
+
   const handleGenerate = (clickType) => {
     if (validateNumber()) {
       sendOTP(clickType);
@@ -243,8 +251,8 @@ export default function Login({ navigation }) {
       <StatusBar backgroundColor={colors.YELLOW} />
       <KeyboardAvoidingView
         style={{ flex: 1, backgroundColor: colors.YELLOW }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -20}
+        behavior={Platform.OS === "ios" ? "padding" : "padding"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -80}
         enabled
       >
         <View style={stylesCommon.yellowbg}>
