@@ -179,6 +179,7 @@ export default function Product({ navigation }) {
       );
       console.log(response.result);
       const newData = response.result;
+     
       setProductData(newData);
       setTotalPages(response.pages);
       setCurrentPage(currentPage + 1);
@@ -292,13 +293,14 @@ export default function Product({ navigation }) {
                   margin: 10,
                 }}
               >
-                <TouchableOpacity
+               
+                 <TouchableOpacity
                   style={{ alignItems: "center" }}
                   onPress={() => navigation.navigate("ProductDetail", item)}
                 >
                   <View style={{}}>
                     <Image
-                      source={{ uri: item.productImages[0] }}
+                      source={{ uri: item.productImages[0].productImg }}
                       style={{ height: 150, width: 100, resizeMode: "cover" }}
                     />
                   </View>
@@ -313,7 +315,7 @@ export default function Product({ navigation }) {
                   <Text style={{ fontFamily: font.GoldPlay_Medium }}>
                     {item.product_name}
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> 
               </View>
             );
           }}
