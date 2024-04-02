@@ -152,7 +152,7 @@ export default function ProductDetail({ navigation, route }) {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {productImages.map((image, index) => (
                 <Image
-                  source={{ uri: image }}
+                  source={{ uri: image.productImg }}
                   style={{
                     width: SCREEN_WIDTH,
                     height: SCREEN_WIDTH,
