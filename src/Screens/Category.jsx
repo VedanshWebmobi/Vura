@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   FlatList,
   StatusBar,
+  BackHandler,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, font, icon } from "../constants";
 import stylesCommon from "../Themes/stylesCommon";
+import CommonAlert from "../common/CommonAlert";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Category({ navigation }) {
   const data = [
@@ -23,7 +26,9 @@ export default function Category({ navigation }) {
     "I Am An Architecht",
     "I Am An Artisan",
   ];
-  const [selectedItem, setSelectedItem] = useState(data[data.length - 1]);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [buttonPressed, setButtonPressed] = useState(false);
+  const [showAlert, setshowAlert] = useState(false);
   const Header = () => {
     return (
       <View
@@ -44,6 +49,16 @@ export default function Category({ navigation }) {
     );
   };
 
+  const handleBackPress = () => {
+    if (navigation.canGoBack()) {
+      // Check if navigation can go back
+      navigation.dispatch(NavigationActions.back()); // Go back if possible
+      return true; // Prevent default back button behavior
+    } else {
+      // Handle exit on PreLogin or other logic for other screens
+      // (This part will be addressed in a later step)
+    }
+  };
   const renderItem = ({ item, index }) => {
     const isLast = index === data.length - 1;
 
@@ -98,11 +113,26 @@ export default function Category({ navigation }) {
   };
 
   const handleConfirm = () => {
-    navigation.navigate("Login");
+    if (selectedItem !== "") {
+      navigation.navigate("Login");
+    } else {
+      setshowAlert(true);
+    }
   };
   return (
     <SafeAreaView style={{ flex: 1, gap: 30, backgroundColor: colors.YELLOW }}>
       <StatusBar backgroundColor={colors.YELLOW} />
+
+      <CommonAlert
+        visible={showAlert} // Pass visibility state to the CommonAlert component
+        hideModal={() => setshowAlert(false)} // Pass function to hide the modal
+        handleOkPress={() => setshowAlert(false)} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title="Error" // Pass title text
+        iconName="error"
+        bodyText={"Please Select Any Category"} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
+      />
       <View
         style={{
           flex: 1,
@@ -140,11 +170,20 @@ export default function Category({ navigation }) {
           justifyContent: "center",
         }}
       >
-        <TouchableOpacity onPress={handleConfirm}>
-          <View style={stylesCommon.preLoginButtonStyle}>
+        <TouchableHighlight
+          onPress={handleConfirm}
+          underlayColor={"black"}
+          style={{ borderRadius: 15 }}
+        >
+          <View
+            style={[
+              stylesCommon.preLoginButtonStyle,
+              { backgroundColor: "transparent" },
+            ]}
+          >
             <Text style={stylesCommon.preButtonLabelStyle}>CONFIRM</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
     </SafeAreaView>
   );

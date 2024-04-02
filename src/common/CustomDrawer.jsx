@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as Preference from "../StoreData/Preference";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import { useEffect, useState } from "react";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function CustomDrawer({ navigation }) {
   const [showUpdate, setShowUpdate] = useState(false);
@@ -111,7 +112,9 @@ export default function CustomDrawer({ navigation }) {
         <View style={{ height: 1, backgroundColor: "white" }} />
         <TouchableOpacity
           style={{ padding: 15 }}
-          onPress={isDisabled ? null : handleItemPress} // Disable onPress if item is disabled
+          activeOpacity={0.5}
+          onPress={isDisabled ? null : handleItemPress}
+          // Disable onPress if item is disabled
           // onPress={handleItemPress}
         >
           <View
@@ -136,6 +139,7 @@ export default function CustomDrawer({ navigation }) {
             <Text
               style={{
                 fontFamily: font.GoldPlay_SemiBold,
+
                 color: isDisabled ? colors.LIGHT_GREY : "white",
                 // color: "white",
                 fontSize: 18,
@@ -163,12 +167,16 @@ export default function CustomDrawer({ navigation }) {
           />
         </View>
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity onPress={() => navigation.navigate("AddPhoto")}>
+          <TouchableHighlight
+            onPress={() => navigation.navigate("AddPhoto")}
+            style={{ backgroundColor: "transparent", borderRadius: 10 }}
+            underlayColor={"black"}
+          >
             <View
               style={{
                 width: SCREEN_WIDTH / 2.1,
                 paddingVertical: 8,
-                backgroundColor: "black",
+                //backgroundColor: "black",
                 borderColor: "white",
                 alignItems: "center",
                 borderWidth: 1,
@@ -181,10 +189,10 @@ export default function CustomDrawer({ navigation }) {
                   { textAlign: "center" },
                 ]}
               >
-                {showUpdate ? "UPDATE YOUR PROFILE" : "CREATE YOUR PROFILE"}
+                {showUpdate ? name : "CREATE YOUR PROFILE"}
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
       </View>
 

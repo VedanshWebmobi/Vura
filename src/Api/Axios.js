@@ -1,16 +1,12 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import * as Utils from "../Api/Utils";
+import * as Utils from "./Utils";
 import * as Preference from "../StoreData/Preference";
 import { Alert } from "react-native";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
+
 import { ExpoSecureKey } from "../constants";
+import CommonAlert from "../common/CommonAlert";
 
 export const axiosCallAPI = (
   method,
@@ -28,6 +24,7 @@ export const axiosCallAPI = (
   });
 
   if (method === "post") {
+    console.log("yeh bhe raha huin axiox ander", params);
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
@@ -35,18 +32,20 @@ export const axiosCallAPI = (
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
-              showMessage(
-                `${response.data.message}`,
-                "Success ",
-                ALERT_TYPE.SUCCESS
-              );
+              // showMessage(
+              //   `${response.data.message}`,
+              //   "Success ",
+              //   ALERT_TYPE.SUCCESS
+              // );
+              console.log(response.data.message);
             return response.data;
           }
         } else {
           errors = response.data.errors;
-          Object.keys(errors).map(function (key, index) {
-            showMessage(`${errors[key]}`, "Error", ALERT_TYPE.DANGER);
-          });
+          // Object.keys(errors).map(function (key, index) {
+          //   showMessage(`${errors[key]}`, "Error");
+          // });
+          return errors;
         }
       })
       .catch((error) => {
@@ -63,20 +62,16 @@ export const axiosCallAPI = (
           if (response.data.status) {
             if (response.data.message !== "") {
               if (isShowMessage)
-                showMessage(
-                  `${response.data.message}`,
-                  "Success ",
-                  ALERT_TYPE.SUCCESS
-                );
+                //showMessage(`${response.data.message}`, "Success ");
+                console.log(response.data.message);
             }
             return response.data.data;
           } else {
             console.log(response.message);
             //showMessage(response.data.message, 'error');
             errors = response.data.errors;
-            Object.keys(errors).map(function (key, index) {
-              showMessage(`${errors[key]}`, "error");
-            });
+
+            return errors;
           }
         })
         .catch((error) => {
@@ -103,15 +98,16 @@ export const axiosCallAPI = (
             return response.data.data;
           } else {
             errors = response.data.errors;
-            Object.keys(errors).map(function (key, index) {
-              if (errors[key].length() > 0) {
-                showMessage(`${errors[key]}`, "error");
-              }
-            });
+            // Object.keys(errors).map(function (key, index) {
+            //   if (errors[key].length() > 0) {
+            //     showMessage(`${errors[key]}`, "error");
+            //   }
+            // });
+            return errors;
           }
         })
         .catch((error) => {
-          ERROR_HANDLER(error, errors);
+          //  ERROR_HANDLER(error, errors);
 
           return error.response.data;
         });
@@ -146,11 +142,22 @@ export const axiosCallAPI = (
   }
 };
 
-const showMessage = (message, title, type) => {
-  Dialog.show({
-    type: type,
-    title: title,
-    textBody: message,
-    button: "close",
-  });
-};
+// const showMessage = (message, title, type) => {
+//   Dialog.show({
+//     type: type,
+//     title: title,
+//     textBody: message,
+//     button: "close",
+//   });
+
+//   <CommonAlert
+//     visible={showAlert} // Pass visibility state to the CommonAlert component
+//     hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+//     handleOkPress={handleClose} // Pass function to handle Ok button press
+//     handleCancelPress={() => setShowAlert(false)} // Pass function to handle Cancel button press
+//     title="Close Registeration?" // Pass title text
+//     iconName="error"
+//     bodyText="Are you Sure You want to Exit" // Pass body text
+//     cancelButton={true} // Pass whether Cancel button should be displayed
+//   />;
+// };

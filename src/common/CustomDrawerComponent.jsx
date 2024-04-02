@@ -13,6 +13,7 @@ import { DrawerItem } from "@react-navigation/drawer";
 import CommonHeader from "./CommonHeader";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function CustomDrawerComponent({ navigation, ...props }) {
   console.log("Here ", props);
@@ -101,7 +102,11 @@ export default function CustomDrawerComponent({ navigation, ...props }) {
             />
           </View>
           <View style={{ alignItems: "center" }}>
-            <TouchableOpacity onPress={() => navigation.navigate("AddPhoto")}>
+            <TouchableHighlight
+              onPress={() => navigation.navigate("AddPhoto")}
+              style={{ backgroundColor: "red" }}
+              underlayColor={"black"}
+            >
               <View
                 style={{
                   width: SCREEN_WIDTH / 2.1,
@@ -122,7 +127,7 @@ export default function CustomDrawerComponent({ navigation, ...props }) {
                   CREATE YOUR PROFILE
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
           </View>
         </View>
         <View style={{ marginTop: 40 }}>

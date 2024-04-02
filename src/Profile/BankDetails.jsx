@@ -14,8 +14,9 @@ import stylesCommon, {
 import { colors, font } from "../constants";
 import { TextInput, Button, Checkbox } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+
 import * as Preference from "../StoreData/Preference";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function BankDetails({ navigation }) {
   const [accountHolderName, setAccountHolderName] = useState("");
@@ -69,15 +70,6 @@ export default function BankDetails({ navigation }) {
       ifscCode,
     });
     //  }
-  };
-
-  const showAlert = (message) => {
-    Dialog.show({
-      type: ALERT_TYPE.DANGER,
-      title: "ERROR",
-      textBody: message,
-      button: "Close",
-    });
   };
 
   useEffect(() => {
@@ -371,13 +363,18 @@ export default function BankDetails({ navigation }) {
             justifyContent: "center",
             alignItems: "center",
             marginTop: 0,
+            marginBottom: 30,
           }}
         >
-          <TouchableOpacity onPress={handleNext}>
+          <TouchableHighlight
+            onPress={handleNext}
+            style={{ backgroundColor: "transparent", borderRadius: 10 }}
+            underlayColor={"black"}
+          >
             <View
               style={{
                 paddingVertical: 8,
-                backgroundColor: "black",
+                // backgroundColor: "black",
                 borderColor: "white",
                 alignItems: "center",
                 borderWidth: 1,
@@ -394,7 +391,7 @@ export default function BankDetails({ navigation }) {
                 SUBMIT
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
       </ScrollView>
     </View>

@@ -18,13 +18,10 @@ import { axiosCallAPI } from "../Api/Axios";
 import { COUPON } from "../Api/Utils";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
+
 import { getValueFor, save } from "../StoreData/Preference";
+import { TouchableHighlight } from "react-native-gesture-handler";
+import CommonAlert from "../common/CommonAlert";
 
 export default function Scanner({ navigation }) {
   const height = useHeaderHeight();
@@ -32,14 +29,16 @@ export default function Scanner({ navigation }) {
   const [qrCode, setQrCode] = useState("");
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [title, setTitle] = useState("");
+  const [iconColor, setIconColor] = useState("red");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCodeScanned = (data) => {
-    if (!qrCode) {
-      console.log("Bhai le tera data", data.data);
-      //setScannedData(data.data);
-      setQrCode(data.data);
-      setIsScanning(false);
-    }
+    console.log("Bhai le tera data", data.data);
+    //setScannedData(data.data);
+    setQrCode(data.data);
+    setIsScanning(false);
   };
 
   useEffect(() => {
@@ -68,19 +67,27 @@ export default function Scanner({ navigation }) {
       navigation
     ).then((response) => {
       if (response && response.status) {
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: "Success",
-          textBody: response.message,
-          button: "close",
-        });
+        setIconColor("green");
+        setTitle("Success");
+        setShowAlert(true);
+        setErrorMessage(response.message);
+        // Dialog.show({
+        //   type: ALERT_TYPE.SUCCESS,
+        //   title: "Success",
+        //   textBody: response.message,
+        //   button: "close",
+        // });
       } else {
-        Dialog.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Error",
-          textBody: response.errors[0],
-          button: "close",
-        });
+        setIconColor("red");
+        setTitle("Error");
+        setShowAlert(true);
+        setErrorMessage(response[0]);
+        // Dialog.show({
+        //   type: ALERT_TYPE.DANGER,
+        //   title: "Error",
+        //   textBody: response.errors[0],
+        //   button: "close",
+        // });
       }
     });
   };
@@ -102,12 +109,17 @@ export default function Scanner({ navigation }) {
     if (verifyCoupon()) {
       sendCoupon();
     } else {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: "Error",
-        textBody: "Enter The Coupon Code",
-        button: "close",
-      });
+      console.log("Yeh yaha pe aarha hai ");
+      setIconColor("red");
+      setTitle("Error");
+      setShowAlert(true);
+      setErrorMessage("Enter The Coupon Code");
+      // Dialog.show({
+      //   type: ALERT_TYPE.DANGER,
+      //   title: "Error",
+      //   textBody: "Enter The Coupon Code",
+      //   button: "close",
+      // });
     }
   };
 
@@ -121,6 +133,18 @@ export default function Scanner({ navigation }) {
         enabled
       >
         <CommonHeader navigation={navigation} showBack />
+
+        <CommonAlert
+          visible={showAlert} // Pass visibility state to the CommonAlert component
+          hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+          handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+          //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+          title={title} // Pass title text
+          iconName="error"
+          iconColor={iconColor}
+          bodyText={errorMessage} // Pass body text
+          // cancelButton={true} // Pass whether Cancel button should be displayed
+        />
         <View
           style={{
             marginTop: 50,
@@ -149,7 +173,11 @@ export default function Scanner({ navigation }) {
               <View style={{ gap: 25, alignItems: "center" }}>
                 <Image source={icon.SCAN} style={{ height: 80, width: 80 }} />
 
-                <TouchableOpacity onPress={handleScan}>
+                <TouchableHighlight
+                  onPress={handleScan}
+                  style={{ backgroundColor: "transparent", borderRadius: 15 }}
+                  underlayColor={colors.YELLOW}
+                >
                   <View
                     style={[
                       stylesCommon.homeTextView,
@@ -170,7 +198,7 @@ export default function Scanner({ navigation }) {
                       SCAN QR CODE
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
               <View
                 style={{
@@ -243,7 +271,11 @@ export default function Scanner({ navigation }) {
               </View>
 
               <View>
-                <TouchableOpacity onPress={handleSubmit}>
+                <TouchableHighlight
+                  onPress={handleSubmit}
+                  style={{ backgroundColor: "transparent", borderRadius: 15 }}
+                  underlayColor={colors.YELLOW}
+                >
                   <View
                     style={[
                       stylesCommon.homeTextView,
@@ -264,7 +296,7 @@ export default function Scanner({ navigation }) {
                       SUBMIT
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
             </View>
           )}

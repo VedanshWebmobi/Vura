@@ -11,6 +11,7 @@ import { axiosCallAPI } from "../Api/Axios";
 import { ADD_PROFILE, GET_PROFILE } from "../Api/Utils";
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function ProfileDetails({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +50,7 @@ export default function ProfileDetails({ navigation }) {
     //   ifscCode,
     // });
 
-    navigation.navigate("PersonalDetails", { profilePhoto });
+    navigation.navigate("PersonalDetails", { profilePhoto, aadharNo });
   };
 
   const handleNavigateToBankDetails = () => {
@@ -57,19 +58,31 @@ export default function ProfileDetails({ navigation }) {
   };
 
   const submitProfile = async () => {
+    console.log("yeh ja raha hia ander.....", profilePhoto);
     setIsLoading(true);
     try {
       let profileFormData = new FormData();
       console.log("====================================");
-      console.log("Apiiiii callled");
+      console.log("Apiiiii callled...", profilePhoto);
       console.log("====================================");
       profileFormData.append("name", name);
-      profileFormData.append("image", {
-        uri: profilePhoto,
-        type: "image/jpeg", // Or appropriate mime type based on image format
-        name: "profile_image.jpg", // Optional filename for server-side reference
-      });
-      profileFormData.append("mobileNo", phoneNo);
+      // profileFormData.append(
+      //   "image",
+      //   profilePhoto
+      //     ? {
+      //         uri: profilePhoto,
+      //         type: "image/jpeg", // Or appropriate mime type based on image format
+      //         // name: "profile_image.jpg", // Optional filename for server-side reference
+      //       }
+      //     : ""
+      // );
+      if (profilePhoto) {
+        profileFormData.append("image", {
+          uri: profilePhoto,
+          type: "image/jpeg",
+          name: "profile_image.jpg",
+        });
+      }
       profileFormData.append("address", address);
       profileFormData.append("state", state);
       profileFormData.append("city", city);
@@ -81,7 +94,7 @@ export default function ProfileDetails({ navigation }) {
       profileFormData.append("ifscCode", ifscCode);
 
       console.log("====================================");
-      console.log(profilePhoto);
+      console.log("yeh hai bhai", profilePhoto);
       console.log("====================================");
       let requestOptions = {
         headers: {
@@ -102,6 +115,7 @@ export default function ProfileDetails({ navigation }) {
       console.log("LE Bhai", response);
 
       if (response && response.status) {
+        Preference.save(ExpoSecureKey.IS_REGISTER, "true");
         await getProfile();
         // navigation.navigate("Home");
       }
@@ -209,7 +223,7 @@ export default function ProfileDetails({ navigation }) {
       >
         <View style={{ alignItems: "center" }}>
           <Image
-            src={profilePhoto}
+            source={profilePhoto ? { uri: profilePhoto } : icon.PROFILE_PIC}
             style={{ width: 100, height: 100, borderRadius: 80 }}
           />
         </View>
@@ -238,7 +252,11 @@ export default function ProfileDetails({ navigation }) {
       </View>
 
       <View style={{ flex: 1, alignItems: "center", marginTop: 30, gap: 25 }}>
-        <TouchableOpacity onPress={handleNavigateToPersonalDetails}>
+        <TouchableHighlight
+          onPress={handleNavigateToPersonalDetails}
+          style={{ backgroundColor: "transparent", borderRadius: 10 }}
+          underlayColor={"black"}
+        >
           <View
             style={{
               width: SCREEN_WIDTH / 1.8,
@@ -260,9 +278,13 @@ export default function ProfileDetails({ navigation }) {
             </Text>
             <Image source={icon.ARROW} style={{ width: 18, height: 18 }} />
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
 
-        <TouchableOpacity onPress={handleNavigateToBankDetails}>
+        <TouchableHighlight
+          onPress={handleNavigateToBankDetails}
+          style={{ backgroundColor: "transparent", borderRadius: 10 }}
+          underlayColor={"black"}
+        >
           <View
             style={{
               width: SCREEN_WIDTH / 1.8,
@@ -289,7 +311,7 @@ export default function ProfileDetails({ navigation }) {
             </Text>
             <Image source={icon.ARROW} style={{ width: 18, height: 18 }} />
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
 
       {isLoading ? (
@@ -302,7 +324,11 @@ export default function ProfileDetails({ navigation }) {
         </View>
       ) : (
         <View style={{ flex: 1, alignItems: "center" }}>
-          <TouchableOpacity onPress={handleSubmit}>
+          <TouchableHighlight
+            onPress={handleSubmit}
+            style={{ backgroundColor: "transparent", borderRadius: 10 }}
+            underlayColor={"black"}
+          >
             <View
               style={{
                 width: SCREEN_WIDTH / 2.5,
@@ -313,7 +339,7 @@ export default function ProfileDetails({ navigation }) {
                 borderColor: "white",
                 borderWidth: 1,
                 borderRadius: 10,
-                backgroundColor: "black",
+                //backgroundColor: "black",
               }}
             >
               <Text
@@ -322,7 +348,7 @@ export default function ProfileDetails({ navigation }) {
                 Submit
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
       )}
     </View>

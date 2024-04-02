@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CommonHeader from "../common/CommonHeader";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
-import stylesCommon from "../Themes/stylesCommon";
+import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
@@ -85,7 +85,8 @@ export default function Wallet({ navigation }) {
           flexDirection: "row",
           marginVertical: 5,
           overflow: "hidden",
-          elevation: 1,
+          elevation: 2,
+          marginHorizontal: 1,
           backgroundColor: "white",
           borderRadius: 15,
         }}
@@ -108,18 +109,18 @@ export default function Wallet({ navigation }) {
         <View
           style={{
             flex: 0.8,
-            //backgroundColor: "red",
+            // backgroundColor: "red",
             padding: 10,
             gap: 15,
             borderTopEndRadius: 15,
             borderBottomEndRadius: 15,
           }}
         >
-          <View>
+          {/* <View>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}>
               {item.coupon_name}
             </Text>
-          </View>
+          </View> */}
           <View style={{ flexDirection: "row", gap: 15 }}>
             <View>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 12 }}>
@@ -159,7 +160,25 @@ export default function Wallet({ navigation }) {
       </View>
     </View>
   );
-
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        height: SCREEN_HEIGHT / 2,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: font.GoldPlay_Regular,
+          fontSize: 18,
+          color: "black",
+        }}
+      >
+        No Wallet History Found
+      </Text>
+    </View>
+  );
   const renderFooter = () => {
     if (isLoading) {
       return (
@@ -213,7 +232,7 @@ export default function Wallet({ navigation }) {
               Wallet Amount
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 45 }}>
-              ₹{walletAmount}
+              ₹{walletAmount ? walletAmount : 0}
             </Text>
 
             <View style={{ flexDirection: "row" }}>
@@ -247,6 +266,7 @@ export default function Wallet({ navigation }) {
               onEndReached={fetchWalletData}
               onEndReachedThreshold={0.1}
               ListFooterComponent={renderFooter}
+              ListEmptyComponent={renderEmptyComponent}
             />
           </View>
         </View>

@@ -173,20 +173,19 @@ export default function ProductDetail({ navigation, route }) {
           <View
             style={{
               marginTop: 10,
-              flexDirection: "row",
+              flexDirection: "column",
               width: SCREEN_WIDTH,
               padding: 10,
               justifyContent: "space-between",
-              // backgroundColor: "white",
-
+              //backgroundColor: "white",
               elevation: 1,
             }}
           >
-            <View style={{ gap: 5 }}>
+            <View style={{ marginBottom: 15 }}>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20 }}>
                 {product_name}
               </Text>
-              <View
+              {/* <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "center",
@@ -212,7 +211,7 @@ export default function ProductDetail({ navigation, route }) {
                 >
                   {regularPrice}
                 </Text>
-              </View>
+              </View> */}
             </View>
             <View style={{ gap: 5 }}>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}>
@@ -226,7 +225,7 @@ export default function ProductDetail({ navigation, route }) {
 
           {/* Render other product details as needed */}
 
-          <View style={{ marginTop: 15, padding: 15, gap: 10 }}>
+          <View style={{ marginTop: 0, padding: 15, gap: 10 }}>
             <View style={{ marginBottom: 5 }}>
               <Text
                 style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}

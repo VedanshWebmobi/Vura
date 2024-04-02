@@ -14,28 +14,33 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
-import stylesCommon from "../Themes/stylesCommon";
+import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, Button } from "react-native-paper";
 import { OtpInput } from "react-native-otp-entry";
 import * as Preference from "../StoreData/Preference";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
+
 import axios from "axios";
-import { axiosCallAPI } from "../Api/Axios";
+
 import { GET_PROFILE, LOGIN, VERIFY_OTP } from "../Api/Utils";
 import { StackActions } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { axiosCallAPI } from "../Api/Axios";
+import CommonAlert from "../common/CommonAlert";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function Login({ navigation }) {
+  const height = useHeaderHeight();
+
   const [number, setNumber] = useState("");
   const [showotp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [iconColor, setIconColor] = useState("red");
 
   const handleBackPress = () => {
     if (navigation.canGoBack()) {
@@ -45,9 +50,9 @@ export default function Login({ navigation }) {
     }
   };
 
-  const handleGenerate = (clickType) => {
+  const handleGenerate = (buttonName) => {
     if (validateNumber()) {
-      sendOTP(clickType);
+      sendOTP(buttonName);
     }
   };
 
@@ -60,12 +65,10 @@ export default function Login({ navigation }) {
 
   function ValidationOTP() {
     if (otp == "" || otp == undefined || otp.length < 6) {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: "ERROR",
-        textBody: "Enter the Valid OTP",
-        button: "close",
-      });
+      setIconColor("red");
+      setAlertTitle("Error");
+      setAlertMessage("Enter a Valid OTP");
+      setShowAlert(true);
       return false;
     } else {
       return true;
@@ -73,18 +76,16 @@ export default function Login({ navigation }) {
   }
   const validateNumber = () => {
     if (number.length != 10) {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: "Error",
-        textBody: "Enter a Valid Mobile Number!",
-        button: "close",
-      });
+      setIconColor("red");
+      setAlertTitle("Error");
+      setAlertMessage("Enter a Valid Number");
+      setShowAlert(true);
       return false;
     }
     return true;
   };
 
-  const sendOTP = (clickType) => {
+  const sendOTP = (button) => {
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", number);
@@ -98,9 +99,19 @@ export default function Login({ navigation }) {
       .then((response) => {
         console.log("Response from server:", response);
         if (response && response.status) {
+          setIconColor("green");
+          setShowAlert(true);
+          setAlertTitle("Success");
+          setAlertMessage(response.message);
           setShowOtp(true);
-          console.log("Response if success");
+
+          //console.log("Response if success");
         } else {
+          setIconColor("red");
+          setShowAlert(true);
+          setAlertTitle("Error");
+          setAlertMessage(response.error[0]);
+          setShowOtp(true);
           console.error("Invalid response data:", response);
         }
       })
@@ -148,21 +159,19 @@ export default function Login({ navigation }) {
           }
         } else {
           console.log("idhar bhi aaraha hai ");
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: "Error",
-            textBody: "Invalid OTP. Please enter the correct OTP.",
-            button: "close",
-          });
+          setIconColor("red");
+          setShowAlert(true);
+          setAlertTitle("Error");
+          setAlertMessage(response);
+          setShowOtp(true);
         }
       })
       .catch((error) => {
-        Dialog.show({
-          type: ALERT_TYPE.DANGER,
-          title: "Error",
-          textBody: "Invalid OTP. Please enter the correct OTP.",
-          button: "close",
-        });
+        setIconColor("red");
+        setShowAlert(true);
+        setAlertTitle("Error");
+        setAlertMessage(error);
+        setShowOtp(true);
       });
   };
 
@@ -247,79 +256,102 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={stylesCommon.MainContainer}>
-      <StatusBar backgroundColor={colors.YELLOW} />
-      <KeyboardAvoidingView
-        style={{ flex: 1, backgroundColor: colors.YELLOW }}
-        behavior={Platform.OS === "ios" ? "padding" : "padding"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -80}
-        enabled
-      >
-        <View style={stylesCommon.yellowbg}>
-          <View
-            style={[stylesCommon.logoViewStyle, { justifyContent: "center" }]}
-          >
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: colors.YELLOW }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      //keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -60}
+      //keyboardVerticalOffset={}
+    >
+      <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+        <StatusBar backgroundColor={colors.YELLOW} />
+
+        <CommonAlert
+          visible={showAlert} // Pass visibility state to the CommonAlert component
+          hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+          handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+          //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+          title={alertTitle} // Pass title text
+          iconColor={iconColor}
+          bodyText={alertMessage} // Pass body text
+          // cancelButton={true} // Pass whether Cancel button should be displayed
+        />
+
+        <View style={{}}>
+          <View style={[stylesCommon.logoViewStyle]}>
             <Image source={icon.BLACK_ICON} style={stylesCommon.logoStyle} />
-          </View>
-          <View>
-            <View style={{ alignItems: "center" }}>
+            <View style={{ alignItems: "center", marginTop: 30 }}>
               <Text style={stylesCommon.welcomeText}>
                 {"LOGIN WITH MOBILE NUMBER"}
               </Text>
             </View>
-            <View style={{ alignItems: "center" }}>
-              <TextInput
-                value={number}
-                mode="outlined"
-                outlineStyle={{
-                  borderColor: "white",
-                  backgroundColor: "transparent",
-                  borderRadius: 20,
-                }}
-                inputMode="numeric"
-                style={{
-                  margin: 20,
-                  width: "75%",
-                }}
-                placeholder="Enter your Number"
-                contentStyle={{
-                  fontFamily: font.GoldPlay_Medium,
-                  marginLeft: 10,
-                  fontSize: 20,
-                }}
-                onChangeText={(text) => setNumber(text)}
-                maxLength={10}
-                cursorColor="white"
-              />
-            </View>
+          </View>
 
-            <View style={{ gap: 20, alignItems: "center" }}>
-              <TouchableOpacity onPress={() => handleGenerate("Generate")}>
-                <View
-                  style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
-                >
-                  <Text style={stylesCommon.preButtonLabelStyle}>
-                    GENERATE OTP
-                  </Text>
-                </View>
-              </TouchableOpacity>
+          <View style={{ alignItems: "center" }}>
+            <TextInput
+              value={number}
+              mode="outlined"
+              outlineStyle={{
+                borderColor: "white",
+                backgroundColor: "transparent",
+                borderRadius: 20,
+              }}
+              inputMode="numeric"
+              style={{
+                width: "75%",
+              }}
+              placeholder="Enter your Number"
+              contentStyle={{
+                fontFamily: font.GoldPlay_Medium,
+                marginLeft: 10,
+                fontSize: 20,
+              }}
+              onChangeText={(text) => setNumber(text)}
+              maxLength={10}
+              cursorColor="white"
+            />
+          </View>
 
-              <TouchableOpacity onPress={() => handleGenerate("OTP")}>
-                <View
-                  style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
-                >
-                  <Text style={stylesCommon.preButtonLabelStyle}>RESEND</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+          <View style={{ marginTop: 20, alignItems: "center" }}>
+            <TouchableHighlight
+              onPress={() => handleGenerate("Generate")}
+              underlayColor={"black"}
+              style={{ borderRadius: 15 }}
+            >
+              <View
+                // style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
+                style={[
+                  stylesCommon.preLoginButtonStyle,
+                  { backgroundColor: "transparent", width: 150 },
+                ]}
+              >
+                <Text style={stylesCommon.preButtonLabelStyle}>
+                  GENERATE OTP
+                </Text>
+              </View>
+            </TouchableHighlight>
+
+            <TouchableHighlight
+              onPress={() => handleGenerate("OTP")}
+              underlayColor={"black"}
+              style={{ borderRadius: 15, marginTop: 20 }}
+            >
+              <View
+                style={[
+                  stylesCommon.preLoginButtonStyle,
+                  { width: 150, backgroundColor: "transparent" },
+                ]}
+              >
+                <Text style={stylesCommon.preButtonLabelStyle}>RESEND</Text>
+              </View>
+            </TouchableHighlight>
           </View>
 
           {showotp ? (
             <View
               style={{
-                flex: 1,
-                justifyContent: "flex-end",
-                marginBottom: 60,
+                //position: "relative",
+                //bottom: -80,
+                marginTop: 80,
               }}
             >
               <View style={{ alignItems: "center" }}>
@@ -353,21 +385,28 @@ export default function Login({ navigation }) {
               </View>
 
               <View style={{ alignItems: "center" }}>
-                <TouchableOpacity onPress={() => verifyOTP()}>
+                <TouchableHighlight
+                  onPress={() => verifyOTP()}
+                  underlayColor={"black"}
+                  style={{ borderRadius: 15, marginTop: 20 }}
+                >
                   <View
-                    style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
+                    style={[
+                      stylesCommon.preLoginButtonStyle,
+                      { backgroundColor: "transparent", width: 150 },
+                    ]}
                   >
                     <Text style={stylesCommon.preButtonLabelStyle}>
                       CONFIRM
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
             </View>
           ) : null}
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 

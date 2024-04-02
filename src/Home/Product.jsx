@@ -7,7 +7,10 @@ import {
   StatusBar,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
+import stylesCommon, {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+} from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -193,6 +196,26 @@ export default function Product({ navigation }) {
     setSelectedValue(e.value);
   };
 
+  const renderEmptyComponent = () => (
+    <View
+      style={{
+        height: SCREEN_HEIGHT / 2,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text
+        style={{
+          fontFamily: font.GoldPlay_Regular,
+          fontSize: 18,
+          color: "black",
+        }}
+      >
+        No Product Found
+      </Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
       <StatusBar backgroundColor={colors.YELLOW} />
@@ -236,7 +259,7 @@ export default function Product({ navigation }) {
               placeholder={"Category"}
               textStyle={{ fontSize: 15, fontFamily: font.GoldPlay_Medium }}
               style={{
-                width: SCREEN_WIDTH / 2.3,
+                width: SCREEN_WIDTH / 2.2,
                 height: 50,
                 borderRadius: 10,
               }}
@@ -254,6 +277,7 @@ export default function Product({ navigation }) {
         <FlatGrid
           data={productData}
           spacing={0}
+          ListEmptyComponent={renderEmptyComponent}
           renderItem={({ item, index }) => {
             return (
               <View

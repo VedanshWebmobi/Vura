@@ -12,7 +12,8 @@ import { TextInput } from "react-native-paper";
 import { colors, font } from "../constants";
 import { useRoute } from "@react-navigation/native";
 import * as Preference from "../StoreData/Preference";
-import { ALERT_TYPE, Dialog } from "react-native-alert-notification";
+
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function AddAdhar({ navigation }) {
   const [aadharNumber, setAadharNumber] = useState("");
@@ -111,11 +112,15 @@ export default function AddAdhar({ navigation }) {
         </View>
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <TouchableOpacity onPress={handleNext}>
+        <TouchableHighlight
+          onPress={handleNext}
+          style={{ backgroundColor: "transparent", borderRadius: 10 }}
+          underlayColor={"black"}
+        >
           <View
             style={{
               paddingVertical: 8,
-              backgroundColor: "black",
+              //backgroundColor: "black",
               borderColor: "white",
               alignItems: "center",
               borderWidth: 1,
@@ -132,7 +137,7 @@ export default function AddAdhar({ navigation }) {
               NEXT
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
     </View>
   );

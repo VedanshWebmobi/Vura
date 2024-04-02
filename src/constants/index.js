@@ -52,6 +52,8 @@ export const colors = {
   PRIMARY: "#FFDE1B",
   LINE_GREY: "#E9EAEC",
   LIGHT_GREY: "#C4C2C2",
+  SUCCESS_GREEN: "#5cb85c",
+  ERROR_RED: "#cc0000",
 };
 
 export const ExpoSecureKey = {

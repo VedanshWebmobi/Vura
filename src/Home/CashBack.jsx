@@ -13,21 +13,25 @@ export default function CashBack({ navigation }) {
     <SafeAreaView style={stylesCommon.blackbg}>
       <StatusBar backgroundColor={colors.YELLOW} />
       <CommonHeader screen={"Product"} navigation={navigation} showBack />
-
-      <ImageZoom
-        source={icon.CASHBACK_CHART}
-        style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}
-        minScale={0.5}
-        maxScale={3}
-        onInteractionStart={() => console.log("Interaction started")}
-        onInteractionEnd={() => console.log("Interaction ended")}
-        onPinchStart={() => console.log("Pinch gesture started")}
-        onPinchEnd={() => console.log("Pinch gesture ended")}
-        onPanStart={() => console.log("Pan gesture started")}
-        onPanEnd={() => console.log("Pan gesture ended")}
-        onResetAnimationEnd={() => console.log("Reset animation ended")}
-        resizeMode="contain"
-      />
+      <View style={{ flex: 1 }}>
+        <ImageZoom
+          source={icon.CASHBACK_CHART}
+          style={{
+            height: SCREEN_HEIGHT,
+            width: SCREEN_WIDTH,
+          }}
+          minScale={0.5}
+          maxScale={3}
+          onInteractionStart={() => console.log("Interaction started")}
+          onInteractionEnd={() => console.log("Interaction ended")}
+          onPinchStart={() => console.log("Pinch gesture started")}
+          onPinchEnd={() => console.log("Pinch gesture ended")}
+          onPanStart={() => console.log("Pan gesture started")}
+          onPanEnd={() => console.log("Pan gesture ended")}
+          onResetAnimationEnd={() => console.log("Reset animation ended")}
+          resizeMode="contain"
+        />
+      </View>
     </SafeAreaView>
   );
 }

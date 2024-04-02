@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import Header from "../common/Header";
@@ -7,9 +14,13 @@ import { SliderBox } from "react-native-image-slider-box";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { BackHandler } from "react-native";
 import * as Preference from "../StoreData/Preference";
+import CommonAlert from "../common/CommonAlert";
 
 export default function Home({ navigation }) {
   const [showMenutoggle, setshowMenutoggle] = useState(false);
+  const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const images = [
     icon.IMAGE1,
@@ -40,10 +51,52 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
+    const retrieveProfile = async () => {
+      try {
+        const storedDetails = await Preference.getPreference("profile");
+        if (storedDetails) {
+          const {
+            image,
+            address,
+            aadharCardNo,
+            panCardNo,
+            accountHolderName,
+            accountNumber,
+            bankName,
+            ifscCode,
+          } = storedDetails;
+          console.log("Profile details retrieved:", {
+            address,
+          });
+
+          if (
+            image &&
+            address &&
+            aadharCardNo &&
+            panCardNo &&
+            accountHolderName &&
+            accountNumber &&
+            bankName &&
+            ifscCode
+          ) {
+            console.log("Profile is Complete");
+            setProfileDetailsComplete(true);
+          } else {
+            setProfileDetailsComplete(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error retrieving details:", error);
+      }
+    };
+    retrieveProfile();
+  }, [navigation]);
+
+  useEffect(() => {
     const showMenu = async () => {
       const token = await Preference.getValueFor(ExpoSecureKey.TOKEN);
       if (token) {
-        console.log("Bhai token false gaya");
+        console.log("Bhai token aaya");
         setshowMenutoggle(true);
       } else {
         console.log("Idhar bhi");
@@ -54,6 +107,25 @@ export default function Home({ navigation }) {
     showMenu();
   }, []);
 
+  const handleWalletPress = () => {
+    console.log("Handle wallet pressed");
+    if (!profileDetailsComplete) {
+      setShowAlert(true);
+      setErrorMessage("Please Complete Your Profile!");
+    } else {
+      navigation.navigate("Wallet");
+    }
+  };
+
+  const handleScanQRCodePress = () => {
+    if (!profileDetailsComplete) {
+      setShowAlert(true);
+      setErrorMessage(`Please Complete Your Profile!`);
+    } else {
+      navigation.navigate("Scanner");
+    }
+  };
+
   return (
     <View
       style={{
@@ -61,10 +133,22 @@ export default function Home({ navigation }) {
         backgroundColor: "white",
       }}
     >
+      <StatusBar backgroundColor={colors.YELLOW} />
       <CommonHeader
         screen={"Home"}
         navigation={navigation}
         showMenu={showMenutoggle}
+      />
+
+      <CommonAlert
+        visible={showAlert} // Pass visibility state to the CommonAlert component
+        hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+        handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title="Error" // Pass title text
+        iconName="error"
+        bodyText={errorMessage} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
       />
 
       <SliderBox
@@ -123,7 +207,7 @@ export default function Home({ navigation }) {
         >
           <View style={stylesCommon.homeItemView}>
             <Image source={icon.SCAN} style={stylesCommon.homeImage} />
-            <TouchableOpacity onPress={() => navigation.navigate("Scanner")}>
+            <TouchableOpacity onPress={handleScanQRCodePress}>
               <View style={stylesCommon.homeTextView}>
                 <Text style={stylesCommon.homeText}>SCAN QR CODE</Text>
               </View>
@@ -132,7 +216,7 @@ export default function Home({ navigation }) {
 
           <View style={stylesCommon.homeItemView}>
             <Image source={icon.WALLET} style={stylesCommon.homeImage} />
-            <TouchableOpacity onPress={() => navigation.navigate("Wallet")}>
+            <TouchableOpacity onPress={handleWalletPress}>
               <View style={stylesCommon.homeTextView}>
                 <Text style={stylesCommon.homeText}>WALLET</Text>
               </View>

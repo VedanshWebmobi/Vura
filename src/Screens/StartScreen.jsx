@@ -10,10 +10,11 @@ import React from "react";
 import { colors, font, icon } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SCREEN_HEIGHT } from "../Themes/stylesCommon";
+import { StackActions } from "@react-navigation/native";
 
 export default function StartScreen({ navigation }) {
   setTimeout(() => {
-    navigation.navigate("PreLogin");
+    navigation.dispatch(StackActions.replace("PreLogin"));
   }, 2000);
 
   return (

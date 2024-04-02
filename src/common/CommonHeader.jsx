@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableHighlight,
+} from "react-native";
 import React from "react";
 import { colors, icon } from "../constants";
 import stylesCommon, {
@@ -43,11 +49,18 @@ export default function CommonHeader({
         </View>
         <View style={{ justifyContent: "center" }}>
           {showMenu ? (
-            <TouchableOpacity onPress={handleMenu}>
+            <TouchableHighlight
+              onPress={handleMenu}
+              underlayColor={"transparent"}
+            >
               <Image source={icon.MENU} style={{ height: 25, width: 25 }} />
-            </TouchableOpacity>
+            </TouchableHighlight>
           ) : showBack ? (
-            <TouchableOpacity onPress={handleGoBack}>
+            <TouchableHighlight
+              onPress={handleGoBack}
+              style={{ borderRadius: 10 }}
+              underlayColor={"black"}
+            >
               <View
                 style={{
                   width: 80,
@@ -67,7 +80,7 @@ export default function CommonHeader({
                   GO BACK
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
           ) : null}
         </View>
       </View>

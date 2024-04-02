@@ -12,11 +12,14 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { colors, font } from "../constants";
-import { TextInput, Button, Checkbox } from "react-native-paper";
+import { TextInput, Button, Checkbox, Modal, Portal } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
+import Icon from "@expo/vector-icons/MaterialIcons";
+import CommonAlert from "../common/CommonAlert";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function PersonalDetails({ navigation }) {
   const inputRefs = useRef([]);
@@ -29,6 +32,19 @@ export default function PersonalDetails({ navigation }) {
   const [sameAddress, setSameAddress] = useState(false);
   const [panNo, setPanNo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [visible, setVisible] = React.useState(false);
+  const [showModel, setShowModel] = useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const containerStyle = {
+    backgroundColor: colors.YELLOW,
+    padding: 20,
+    margin: 30,
+    height: SCREEN_HEIGHT / 3,
+    borderRadius: 20,
+  };
 
   const route = useRoute();
 
@@ -63,23 +79,16 @@ export default function PersonalDetails({ navigation }) {
 
   const validation = () => {
     if (name.trim() === "") {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: "ERROR",
-        textBody: "ENTER A VALID NAME",
-        button: "close",
-      });
+      setErrorMessage("ENTER A VALID NAME");
+      setVisible(true);
       return;
     }
 
     // Mobile number validation
     if (phoneNo.length !== 10) {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: "ERROR",
-        textBody: "ENTER A VALID MOBILE NUMBER",
-        button: "close",
-      });
+      //showModal();
+      setErrorMessage(`ENTER A VALID PHONE NUMBER`);
+      setVisible(true);
       return;
     }
 
@@ -128,6 +137,12 @@ export default function PersonalDetails({ navigation }) {
     return true;
   };
 
+  const handleOkPress = () => {
+    console.log("Ok Pressed");
+  };
+  const handleCancelPress = () => {
+    console.log("Cancel Pressed");
+  };
   useEffect(() => {
     const retrievePersonalDetails = async () => {
       setIsLoading(true);
@@ -165,6 +180,17 @@ export default function PersonalDetails({ navigation }) {
   return (
     <View style={stylesCommon.yellowbg}>
       <CommonHeader navigation={navigation} showBack />
+
+      <CommonAlert
+        visible={visible} // Pass visibility state to the CommonAlert component
+        hideModal={hideModal} // Pass function to hide the modal
+        handleOkPress={() => setVisible(false)} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title="Error" // Pass title text
+        iconName="error"
+        bodyText={errorMessage} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
+      />
 
       {isLoading ? (
         <View style={stylesCommon.loaderViewStyle}>
@@ -601,14 +627,18 @@ export default function PersonalDetails({ navigation }) {
               flex: 1,
               justifyContent: "center",
               alignItems: "center",
-              marginTop: 30,
+              marginVertical: 30,
             }}
           >
-            <TouchableOpacity onPress={handleNext}>
+            <TouchableHighlight
+              onPress={handleNext}
+              style={{ backgroundColor: "transparent", borderRadius: 10 }}
+              underlayColor={"black"}
+            >
               <View
                 style={{
                   paddingVertical: 8,
-                  backgroundColor: "black",
+                  //   backgroundColor: "black",
                   borderColor: "white",
                   alignItems: "center",
                   borderWidth: 1,
@@ -626,7 +656,7 @@ export default function PersonalDetails({ navigation }) {
                   NEXT
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
           </View>
         </ScrollView>
       )}

@@ -15,24 +15,27 @@ import stylesCommon, {
 import CommonHeader from "../common/CommonHeader";
 import { Modal, Portal, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
-import { ALERT_TYPE, Dialog, Toast } from "react-native-alert-notification";
+
 import { BackHandler } from "react-native";
 import * as Preference from "../StoreData/Preference";
 import { StackActions } from "@react-navigation/native";
 import { axiosCallAPI } from "../Api/Axios";
 import { GET_PROFILE } from "../Api/Utils";
 import * as Progress from "react-native-progress";
+import CommonAlert from "../common/CommonAlert";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export default function AddPhoto({ navigation }) {
   const [visible, setVisible] = React.useState(false);
   const [image, setImage] = useState("");
   const [isVisible, setisVisible] = useState("");
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
+
   const [showback, setshowback] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const [showAlert, setShowAlert] = useState(false);
   const containerStyle = { backgroundColor: "white", padding: 20 };
-
   const uploadImage = async (mode) => {
     let result = {};
     try {
@@ -111,14 +114,11 @@ export default function AddPhoto({ navigation }) {
   }, [navigation, showback]);
 
   const handleClose = () => {
-    Dialog.hide();
+    setShowAlert(false);
     navigation.dispatch(StackActions.replace("Category")); // Navigate to login screen
     // Close the alert box
   };
 
-  const handleProceed = () => {
-    Dialog.hide(); // Close the alert box
-  };
   function handleBackButtonClick() {
     // if (showback) {
     //   handleGoBack;
@@ -127,13 +127,15 @@ export default function AddPhoto({ navigation }) {
     // } else if (!showback) {
 
     if (!showback) {
-      Dialog.show({
-        type: ALERT_TYPE.WARNING,
-        title: "Close Registeration?",
-        textBody: "Are you Sure You want to Exit ",
-        button: "Close",
-        onPressButton: handleClose,
-      });
+      // Dialog.show({
+      //   type: ALERT_TYPE.WARNING,
+      //   title: "Close Registeration?",
+      //   textBody: "Are you Sure You want to Exit ",
+      //   button: "Close",
+      //   onPressButton: handleClose,
+      // });
+      setShowAlert(true);
+
       return true;
     }
     return false;
@@ -155,8 +157,8 @@ export default function AddPhoto({ navigation }) {
       } else {
         console.log("Register hai");
         setshowback(true);
-        getProfile();
       }
+      getProfile();
     };
 
     showMenu();
@@ -242,6 +244,18 @@ export default function AddPhoto({ navigation }) {
   return (
     <View style={stylesCommon.yellowbg}>
       <StatusBar backgroundColor={colors.YELLOW} />
+
+      <CommonAlert
+        visible={showAlert} // Pass visibility state to the CommonAlert component
+        hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+        handleOkPress={handleClose} // Pass function to handle Ok button press
+        handleCancelPress={() => setShowAlert(false)} // Pass function to handle Cancel button press
+        title="Close Registeration?" // Pass title text
+        iconName="error"
+        bodyText="Are you Sure You want to Exit" // Pass body text
+        cancelButton={true} // Pass whether Cancel button should be displayed
+      />
+
       <Portal>
         <Modal
           visible={visible}
@@ -349,11 +363,15 @@ export default function AddPhoto({ navigation }) {
         </View>
       )}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <TouchableOpacity onPress={handleNext}>
+        <TouchableHighlight
+          onPress={handleNext}
+          style={{ backgroundColor: "transparent", borderRadius: 10 }}
+          underlayColor={"black"}
+        >
           <View
             style={{
               paddingVertical: 8,
-              backgroundColor: "black",
+              //backgroundColor: "black",
               borderColor: "white",
               alignItems: "center",
               borderWidth: 1,
@@ -370,7 +388,7 @@ export default function AddPhoto({ navigation }) {
               NEXT
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
     </View>
   );

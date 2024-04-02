@@ -8,12 +8,7 @@ import {
   adaptNavigationTheme,
   DefaultTheme,
 } from "react-native-paper";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
+
 import merge from "deepmerge";
 import * as Font from "expo-font"; // Import Font from expo-font
 import GoldPlay_Regular from "./assets/fonts/Goldplay_Regular.ttf";
@@ -42,6 +37,9 @@ import CustomDrawer from "./src/common/CustomDrawer";
 import Wallet from "./src/Home/Wallet";
 import ProductDetail from "./src/Home/ProductDetail";
 
+import * as Preference from "./src/StoreData/Preference";
+import { ExpoSecureKey } from "./src/constants";
+
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
   reactNavigationDark: DefaultTheme,
@@ -54,6 +52,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [appIsReady, setAppIsReady] = useState(false);
+  const [token, setToken] = useState("");
 
   // Load custom fonts asynchronously
   const loadFonts = async () => {
@@ -89,6 +88,20 @@ export default function App() {
     prepare();
   }, []);
 
+  useEffect(() => {
+    const showMenu = async () => {
+      const token = await Preference.getValueFor(ExpoSecureKey.TOKEN);
+      if (token) {
+        setToken(token);
+      } else {
+        setToken("");
+        console.log("Idhar bhi");
+      }
+    };
+
+    showMenu();
+  }, []);
+
   // Hide splash screen once the app is ready and the root view has already performed layout
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -103,36 +116,30 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <PaperProvider theme={CombinedDefaultTheme}>
-        <AlertNotificationRoot theme="light">
-          <NavigationContainer onReady={onLayoutRootView}>
-            <Stack.Navigator
-              screenOptions={{ headerShown: false }}
-              //   initialRouteName="StartScreen"
-            >
-              <Stack.Screen name="StartScreen" component={StartScreen} />
-              <Stack.Screen name="PreLogin" component={PreLogin} />
-              <Stack.Screen name="Category" component={Category} />
-              <Stack.Screen name="Login" component={Login} />
-
-              <Stack.Screen name="Home" component={Home} />
-              <Stack.Screen name="CustomDrawer" component={CustomDrawer} />
-              <Stack.Screen name="Product" component={Product} />
-              <Stack.Screen name="CashBack" component={CashBack} />
-              <Stack.Screen name="Offers" component={Offers} />
-              <Stack.Screen name="Wallet" component={Wallet} />
-              <Stack.Screen name="AddPhoto" component={AddPhoto} />
-              <Stack.Screen name="AddAdhar" component={AddAdhar} />
-              <Stack.Screen
-                name="PersonalDetails"
-                component={PersonalDetails}
-              />
-              <Stack.Screen name="BankDetails" component={BankDetails} />
-              <Stack.Screen name="ProfileDetails" component={ProfileDetails} />
-              <Stack.Screen name="ProductDetail" component={ProductDetail} />
-              <Stack.Screen name="Scanner" component={Scanner} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </AlertNotificationRoot>
+        <NavigationContainer onReady={onLayoutRootView}>
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName={token ? "Home" : "StartScreen"}
+          >
+            <Stack.Screen name="StartScreen" component={StartScreen} />
+            <Stack.Screen name="PreLogin" component={PreLogin} />
+            <Stack.Screen name="Category" component={Category} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="CustomDrawer" component={CustomDrawer} />
+            <Stack.Screen name="Product" component={Product} />
+            <Stack.Screen name="CashBack" component={CashBack} />
+            <Stack.Screen name="Offers" component={Offers} />
+            <Stack.Screen name="Wallet" component={Wallet} />
+            <Stack.Screen name="AddPhoto" component={AddPhoto} />
+            <Stack.Screen name="AddAdhar" component={AddAdhar} />
+            <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+            <Stack.Screen name="BankDetails" component={BankDetails} />
+            <Stack.Screen name="ProfileDetails" component={ProfileDetails} />
+            <Stack.Screen name="ProductDetail" component={ProductDetail} />
+            <Stack.Screen name="Scanner" component={Scanner} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </PaperProvider>
     </GestureHandlerRootView>
   );
