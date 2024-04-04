@@ -24,59 +24,6 @@ import { axiosCallAPI } from "../Api/Axios";
 import { FlatGrid } from "react-native-super-grid";
 
 export default function Product({ navigation }) {
-  const pickerRef = useRef(null);
-
-  const data = [
-    {
-      name: "Product 1",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Te",
-    },
-    {
-      name: "Product 2",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Ted",
-    },
-    {
-      name: "Product 3",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Tef",
-    },
-    {
-      name: "Product 4",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Teg",
-    },
-    {
-      name: "Product 5",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Teh",
-    },
-    {
-      name: "Product 6",
-      image: icon.CEMENT,
-      price: "21000",
-      size: "20",
-      categoery: "Ceramic",
-      ProductCode: "C2Tei",
-    },
-  ];
-
   // function open() {
   //   pickerRef.current.focus();
   // }
@@ -100,18 +47,18 @@ export default function Product({ navigation }) {
       //  setError(null);
 
       try {
-        const requestOptions = {
-          headers: {
-            Accept: "application/json",
-            Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
-          },
-        };
+        // const requestOptions = {
+        //   headers: {
+        //     Accept: "application/json",
+        //     Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        //   },
+        // };
 
         const response = await axiosCallAPI(
           "get",
           PRODUCT_CATEGORY,
           "",
-          requestOptions,
+          "",
           true,
           navigation
         );
@@ -158,10 +105,10 @@ export default function Product({ navigation }) {
     setIsLoading(true);
     try {
       const requestOptions = {
-        headers: {
-          Accept: "application/json",
-          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
-        },
+        // headers: {
+        //   Accept: "application/json",
+        //   Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        // },
         params: {
           categoryId: selectedValue,
           page: currentPage, // Pass the current page as a query parameter
@@ -179,7 +126,7 @@ export default function Product({ navigation }) {
       );
       console.log(response.result);
       const newData = response.result;
-     
+
       setProductData(newData);
       setTotalPages(response.pages);
       setCurrentPage(currentPage + 1);
@@ -293,8 +240,7 @@ export default function Product({ navigation }) {
                   margin: 10,
                 }}
               >
-               
-                 <TouchableOpacity
+                <TouchableOpacity
                   style={{ alignItems: "center" }}
                   onPress={() => navigation.navigate("ProductDetail", item)}
                 >
@@ -315,7 +261,7 @@ export default function Product({ navigation }) {
                   <Text style={{ fontFamily: font.GoldPlay_Medium }}>
                     {item.product_name}
                   </Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
               </View>
             );
           }}

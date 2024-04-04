@@ -30,7 +30,9 @@ export default function AddAdhar({ navigation }) {
 
         if (storedDetails) {
           const { aadharCardNo } = storedDetails;
-          setAadharNumber(aadharCardNo);
+          if (aadharCardNo !== "") {
+            setAadharNumber(aadharCardNo);
+          }
         }
       } catch (error) {
         console.error("Error retrieving personal details:", error);
@@ -41,10 +43,12 @@ export default function AddAdhar({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // Automatically focus the next TextInput when one is filled
-    if (aadharNumber.length === 4 || aadharNumber.length === 8) {
-      // Focus the next TextInput
-      inputRefs.current[aadharNumber.length / 4].focus();
+    if (aadharNumber) {
+      // Automatically focus the next TextInput when one is filled
+      if (aadharNumber.length === 4 || aadharNumber.length === 8) {
+        // Focus the next TextInput
+        inputRefs.current[aadharNumber.length / 4].focus();
+      }
     }
   }, [aadharNumber]);
 
@@ -86,7 +90,7 @@ export default function AddAdhar({ navigation }) {
             <TextInput
               key={index}
               ref={(ref) => (inputRefs.current[index] = ref)}
-              value={aadharNumber.substr(index * 4, 4)}
+              value={aadharNumber ? aadharNumber.substr(index * 4, 4) : ""}
               mode="outlined"
               outlineStyle={{
                 borderColor: "white",
@@ -99,6 +103,12 @@ export default function AddAdhar({ navigation }) {
               placeholderTextColor={colors.LIGHT_GREY}
               contentStyle={{ fontFamily: font.GoldPlay_Medium, fontSize: 25 }}
               onChangeText={(text) => {
+                // Handle the case where aadharNumber is null or empty
+                if (!aadharNumber) {
+                  setAadharNumber(text);
+                  return; // Exit the function if aadharNumber is null or empty
+                }
+
                 const newAadharNumber =
                   aadharNumber.substr(0, index * 4) +
                   text +

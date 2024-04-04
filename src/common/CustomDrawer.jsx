@@ -15,12 +15,16 @@ import * as Preference from "../StoreData/Preference";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import CommonAlert from "./CommonAlert";
 
 export default function CustomDrawer({ navigation }) {
   const [showUpdate, setShowUpdate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setprofile] = useState("");
   const [name, setName] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
   const menuItems = [
     "Home",
     "Products",
@@ -63,6 +67,48 @@ export default function CustomDrawer({ navigation }) {
     showUpdateButton();
   }, []);
 
+  useEffect(() => {
+    const retrieveProfile = async () => {
+      try {
+        const storedDetails = await Preference.getPreference("profile");
+        if (storedDetails) {
+          const {
+            image,
+            address,
+            aadharCardNo,
+            panCardNo,
+            accountHolderName,
+            accountNumber,
+            bankName,
+            ifscCode,
+          } = storedDetails;
+          console.log("Profile details retrieved:", {
+            address,
+          });
+
+          if (
+            image &&
+            address &&
+            aadharCardNo &&
+            panCardNo &&
+            accountHolderName &&
+            accountNumber &&
+            bankName &&
+            ifscCode
+          ) {
+            console.log("Profile is Complete");
+            setProfileDetailsComplete(true);
+          } else {
+            setProfileDetailsComplete(false);
+          }
+        }
+      } catch (error) {
+        console.error("Error retrieving details:", error);
+      }
+    };
+    retrieveProfile();
+  }, [navigation]);
+
   const renderItem = (item, index) => {
     const handleItemPress = () => {
       // Navigation logic based on the selected item
@@ -79,8 +125,12 @@ export default function CustomDrawer({ navigation }) {
         console.log("Offers Pressed");
         navigation.navigate("Offers");
       } else if (item === "Wallet History") {
-        console.log("Wallet History Pressed");
-        navigation.navigate("Wallet");
+        if (!profileDetailsComplete) {
+          setShowAlert(true);
+          setErrorMessage("Please Complete Your Profile!");
+        } else {
+          navigation.navigate("Wallet");
+        }
       } else if (item === "Log Out") {
         Logout();
       }
@@ -139,7 +189,6 @@ export default function CustomDrawer({ navigation }) {
             <Text
               style={{
                 fontFamily: font.GoldPlay_SemiBold,
-
                 color: isDisabled ? colors.LIGHT_GREY : "white",
                 // color: "white",
                 fontSize: 18,
@@ -159,6 +208,16 @@ export default function CustomDrawer({ navigation }) {
       style={{ flex: 1, backgroundColor: colors.YELLOW, height: SCREEN_HEIGHT }}
     >
       <CommonHeader navigation={navigation} screen={"Custom"} showBack />
+      <CommonAlert
+        visible={showAlert} // Pass visibility state to the CommonAlert component
+        hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+        handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title="Error" // Pass title text
+        iconName="error"
+        bodyText={errorMessage} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
+      />
       <View style={{ justifyContent: "flex-start", marginTop: 20, gap: 20 }}>
         <View style={{ alignItems: "center" }}>
           <Image
