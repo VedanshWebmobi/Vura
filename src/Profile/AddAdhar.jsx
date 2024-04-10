@@ -62,7 +62,7 @@ export default function AddAdhar({ navigation }) {
     //   });
     //   return;
     // }
-    console.log(aadharNumber);
+    console.log("Yeh ja raha tha bhai", aadharNumber);
     console.log(profilePhoto);
     navigation.navigate("PersonalDetails", {
       aadharNo: aadharNumber,
@@ -113,6 +113,10 @@ export default function AddAdhar({ navigation }) {
                   aadharNumber.substr(0, index * 4) +
                   text +
                   aadharNumber.substr((index + 1) * 4);
+
+                console.log("====================================");
+                console.log(newAadharNumber);
+                console.log("====================================");
                 setAadharNumber(newAadharNumber);
               }}
               maxLength={4}

@@ -201,23 +201,23 @@ export default function AddPhoto({ navigation }) {
       } = response;
 
       // Check for "null" and "undefined" strings and treat them as empty strings
-      const formattedName = name === "null" ? "" : name;
-      const formattedMobileNo = mobileNo === "null" ? "" : mobileNo;
-      const formattedAddress = address === "null" ? "" : address;
-      const formattedState = state === "null" ? "" : state;
-      const formattedCity = city === "null" ? "" : city;
-      const formattedAadharCardNo = aadharCardNo === "null" ? "" : aadharCardNo;
-      const formattedPanCardNo = panCardNo === "null" ? "" : panCardNo;
+      const formattedName = name === null ? "" : name;
+      const formattedMobileNo = mobileNo === null ? "" : mobileNo;
+      const formattedAddress = address === null ? "" : address;
+      const formattedState = state === null ? "" : state;
+      const formattedCity = city === null ? "" : city;
+      const formattedAadharCardNo = aadharCardNo === null ? "" : aadharCardNo;
+      const formattedPanCardNo = panCardNo === null ? "" : panCardNo;
       const formattedAccountHolderName =
-        accountHolderName === "null" ? "" : accountHolderName;
+        accountHolderName === null ? "" : accountHolderName;
       const formattedAccountNumber =
-        accountNumber === "null" ? "" : accountNumber;
-      const formattedBankName = bankName === "null" ? "" : bankName;
-      const formattedIfscCode = ifscCode === "null" ? "" : ifscCode;
+        accountNumber === null ? "" : accountNumber;
+      const formattedBankName = bankName === null ? "" : bankName;
+      const formattedIfscCode = ifscCode === null ? "" : ifscCode;
       const formattedImage = image || "";
 
       setImage(formattedImage);
-      console.log("....", formattedImage);
+      console.log("....", formattedAadharCardNo);
       // Store non-setive profile data in AsyncStorage
       await Preference.storePreference("profile", {
         name: formattedName,
