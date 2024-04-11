@@ -76,13 +76,20 @@ export default function ProfileDetails({ navigation }) {
       //       }
       //     : ""
       // );
-      if (profilePhoto) {
+
+      if (profilePhoto.includes("http") || profilePhoto.includes("https")) {
+        // profileFormData.append("image", profilePhoto);
+      } else {
+        console.log("====================================");
+        console.log("yess huin bhai", profilePhoto);
+        console.log("====================================");
         profileFormData.append("image", {
           uri: profilePhoto,
           type: "image/jpeg",
           name: "profile_image.jpg",
         });
       }
+
       profileFormData.append("address", address);
       profileFormData.append("state", state);
       profileFormData.append("city", city);
