@@ -346,6 +346,7 @@ export default function PersonalDetails({ navigation }) {
                     contentStyle={{
                       fontFamily: font.GoldPlay_Medium,
                       fontSize: 25,
+                      marginStart: 10,
                     }}
                     // onChangeText={(text) => {
                     //   const newAadharNumber =
