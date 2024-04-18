@@ -97,15 +97,13 @@ export default function Login({ navigation }) {
 
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
-        console.log("Response from server:", response);
+        // console.log("Response from server:", response);
         if (response && response.status) {
           setIconColor("green");
           setShowAlert(true);
           setAlertTitle("Success");
           setAlertMessage(response.message);
           setShowOtp(true);
-
-          //console.log("Response if success");
         } else {
           setIconColor("red");
           setShowAlert(true);
@@ -121,64 +119,60 @@ export default function Login({ navigation }) {
   };
 
   const verifyOTP_API = () => {
-    var loginFormData = new FormData();
-    loginFormData.append("mobileNo", number);
-    loginFormData.append("otp", otp);
+    if (validateNumber() && ValidationOTP()) {
+      var loginFormData = new FormData();
+      loginFormData.append("mobileNo", number);
+      loginFormData.append("otp", otp);
 
-    let requestOptions = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
+      let requestOptions = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
 
-    axiosCallAPI(
-      "post",
-      VERIFY_OTP,
-      loginFormData,
-      requestOptions,
-      false,
-      navigation
-    )
-      .then((response) => {
-        console.log("yeh res hai", response);
+      axiosCallAPI(
+        "post",
+        VERIFY_OTP,
+        loginFormData,
+        requestOptions,
+        false,
+        navigation
+      )
+        .then((response) => {
+          if (response && response.status) {
+            Preference.save(ExpoSecureKey.IS_LOGIN, true);
+            Preference.save(
+              ExpoSecureKey.TOKEN,
+              "Bearer " + response.data.access_token
+            );
+            if (response.data.is_registered === "no") {
+              Preference.save(ExpoSecureKey.IS_REGISTER, "false");
 
-        if (response && response.status) {
-          Preference.save(ExpoSecureKey.IS_LOGIN, true);
-          Preference.save(
-            ExpoSecureKey.TOKEN,
-            "Bearer " + response.data.access_token
-          );
-          if (response.data.is_registered === "no") {
-            Preference.save(ExpoSecureKey.IS_REGISTER, "false");
-
-            navigation.dispatch(StackActions.replace("AddPhoto"));
+              navigation.dispatch(StackActions.replace("AddPhoto"));
+            } else {
+              Preference.save(ExpoSecureKey.IS_REGISTER, "true");
+              getProfile();
+              //  navigation.dispatch(StackActions.replace("Home"));
+            }
           } else {
-            Preference.save(ExpoSecureKey.IS_REGISTER, "true");
-            getProfile();
-            //  navigation.dispatch(StackActions.replace("Home"));
+            setIconColor("red");
+            setShowAlert(true);
+            setAlertTitle("Error");
+            setAlertMessage(response);
+            setShowOtp(true);
           }
-        } else {
-          console.log("idhar bhi aaraha hai ");
+        })
+        .catch((error) => {
           setIconColor("red");
           setShowAlert(true);
           setAlertTitle("Error");
-          setAlertMessage(response);
+          setAlertMessage(error);
           setShowOtp(true);
-        }
-      })
-      .catch((error) => {
-        setIconColor("red");
-        setShowAlert(true);
-        setAlertTitle("Error");
-        setAlertMessage(error);
-        setShowOtp(true);
-      });
+        });
+    }
   };
 
   const getProfile = async () => {
-    console.log("====================================");
-    console.log("GEt api called in login");
-    console.log("====================================");
     setIsLoading(true);
     try {
       const requestOptions = {
@@ -197,7 +191,7 @@ export default function Login({ navigation }) {
         navigation
       );
 
-      console.log("Bhai yeh method mai yeh mil raha", response);
+      //  console.log("Bhai yeh method mai yeh mil raha", response);
       //  Extract relevant data from the API response
       const {
         name,
@@ -230,7 +224,6 @@ export default function Login({ navigation }) {
       const formattedIfscCode = ifscCode === "null" ? "" : ifscCode;
       const formattedImage = image || "";
 
-      console.log("....", formattedImage);
       // Store non-setive profile data in AsyncStorage
       await Preference.storePreference("profile", {
         name: formattedName,

@@ -101,7 +101,11 @@ export default function AddAdhar({ navigation }) {
               style={styles.input}
               placeholder="1234"
               placeholderTextColor={colors.LIGHT_GREY}
-              contentStyle={{ fontFamily: font.GoldPlay_Medium, fontSize: 25 }}
+              contentStyle={{
+                fontFamily: font.GoldPlay_Medium,
+                fontSize: 25,
+                marginStart: 10,
+              }}
               onChangeText={(text) => {
                 // Handle the case where aadharNumber is null or empty
                 if (!aadharNumber) {

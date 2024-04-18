@@ -144,9 +144,7 @@ export default function CustomDrawer({ navigation }) {
           const storedDetails = await Preference.getPreference("profile");
           if (storedDetails) {
             const { image, name } = storedDetails;
-            console.log("====================================");
-            console.log("Image customDrawer mai yeh aaraha hai", image);
-            console.log("====================================");
+
             setprofile(image);
             setName(name);
           }
@@ -247,6 +245,8 @@ export default function CustomDrawer({ navigation }) {
                   stylesCommon.preButtonLabelStyle,
                   { textAlign: "center" },
                 ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
               >
                 {showUpdate ? name : "CREATE YOUR PROFILE"}
               </Text>

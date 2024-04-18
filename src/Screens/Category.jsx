@@ -67,6 +67,7 @@ export default function Category({ navigation }) {
       <TouchableOpacity
         onPress={() => setSelectedItem(item)}
         disabled={disabled}
+        activeOpacity={0.8}
       >
         <View
           style={{

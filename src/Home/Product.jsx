@@ -5,6 +5,7 @@ import {
   Image,
   FlatList,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import stylesCommon, {
@@ -168,27 +169,34 @@ export default function Product({ navigation }) {
     <SafeAreaView style={stylesCommon.whitebg}>
       <StatusBar backgroundColor={colors.YELLOW} />
       <CommonHeader screen={"Product"} navigation={navigation} showBack />
-      <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <View>
-            <Text
-              style={{
-                fontFamily: font.GoldPlay_SemiBold,
-                fontSize: 18,
-                marginBottom: 5,
-              }}
-            >
-              Our Prdoucts
-            </Text>
-          </View>
-          <View>
-            {/* <Picker
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={colors.YELLOW}
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        />
+      ) : (
+        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 18,
+                  marginBottom: 5,
+                }}
+              >
+                Our Prdoucts
+              </Text>
+            </View>
+            <View>
+              {/* <Picker
               ref={pickerRef}
               selectedValue={selected}
               onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
@@ -196,82 +204,83 @@ export default function Product({ navigation }) {
               <Picker.Item label="Java" value="java" />
               <Picker.Item label="JavaScript" value="js" />
             </Picker> */}
-            <DropDownPicker
-              open={open}
-              value={value}
-              items={categories}
-              // setItems={setCategories}
-              setOpen={setOpen}
-              setValue={setValue}
-              onSelectItem={handleSelectedItem}
-              placeholder={"Category"}
-              textStyle={{ fontSize: 15, fontFamily: font.GoldPlay_Medium }}
-              style={{
-                width: SCREEN_WIDTH / 2.2,
-                height: 50,
-                borderRadius: 10,
-              }}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            backgroundColor: colors.GREY_TXT,
-            height: 1,
-            width: "100%",
-            marginVertical: 10,
-          }}
-        />
-        <FlatGrid
-          data={productData}
-          spacing={0}
-          ListEmptyComponent={renderEmptyComponent}
-          renderItem={({ item, index }) => {
-            return (
-              <View
+              <DropDownPicker
+                open={open}
+                value={value}
+                items={categories}
+                // setItems={setCategories}
+                setOpen={setOpen}
+                setValue={setValue}
+                onSelectItem={handleSelectedItem}
+                placeholder={"Category"}
+                textStyle={{ fontSize: 15, fontFamily: font.GoldPlay_Medium }}
                 style={{
-                  //flex: 1,
-                  //width: SCREEN_WIDTH / 2 - 26,
-                  elevation: 3,
-                  padding: 15,
-                  backgroundColor: "white",
-                  alignItems: "center",
+                  width: SCREEN_WIDTH / 2.2,
+                  height: 50,
                   borderRadius: 10,
-                  margin: 10,
                 }}
-              >
-                <TouchableOpacity
-                  style={{ alignItems: "center" }}
-                  onPress={() => navigation.navigate("ProductDetail", item)}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: colors.GREY_TXT,
+              height: 1,
+              width: "100%",
+              marginVertical: 10,
+            }}
+          />
+          <FlatGrid
+            data={productData}
+            spacing={0}
+            ListEmptyComponent={renderEmptyComponent}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  style={{
+                    //flex: 1,
+                    //width: SCREEN_WIDTH / 2 - 26,
+                    elevation: 3,
+                    padding: 15,
+                    backgroundColor: "white",
+                    alignItems: "center",
+                    borderRadius: 10,
+                    margin: 10,
+                  }}
                 >
-                  <View style={{}}>
-                    <Image
-                      source={{ uri: item.productImages[0].productImg }}
-                      style={{ height: 150, width: 100, resizeMode: "cover" }}
+                  <TouchableOpacity
+                    style={{ alignItems: "center" }}
+                    onPress={() => navigation.navigate("ProductDetail", item)}
+                  >
+                    <View style={{}}>
+                      <Image
+                        source={{ uri: item.productImages[0].productImg }}
+                        style={{ height: 150, width: 100, resizeMode: "cover" }}
+                      />
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: colors.GREY,
+                        height: 1,
+                        width: "100%",
+                        marginVertical: 10,
+                      }}
                     />
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor: colors.GREY,
-                      height: 1,
-                      width: "100%",
-                      marginVertical: 10,
-                    }}
-                  />
-                  <Text style={{ fontFamily: font.GoldPlay_Medium }}>
-                    {item.product_name}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-          keyExtractor={(item, index) => item.id}
-          //numColumns={2}
-          maxItemsPerRow={2}
-          showsVerticalScrollIndicator={false}
-          // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
-        />
-      </View>
+                    <Text style={{ fontFamily: font.GoldPlay_Medium }}>
+                      {item.product_name}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            }}
+            keyExtractor={(item, index) => item.id}
+            //numColumns={2}
+            maxItemsPerRow={2}
+            showsVerticalScrollIndicator={false}
+            // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 }

@@ -14,7 +14,7 @@ import stylesCommon, {
 import { colors, font } from "../constants";
 import { TextInput, Button, Checkbox } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-
+import CommonAlert from "../common/CommonAlert";
 import * as Preference from "../StoreData/Preference";
 import { TouchableHighlight } from "react-native-gesture-handler";
 
@@ -24,7 +24,10 @@ export default function BankDetails({ navigation }) {
   const [reEnterAccountNumber, setReEnterAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [visible, setVisible] = React.useState(false);
   const route = useRoute();
+  const hideModal = () => setVisible(false);
   const {
     profilePhoto,
     name,
@@ -41,34 +44,39 @@ export default function BankDetails({ navigation }) {
   console.log("Bankdetails wala huin", aadharNo);
   console.log("====================================");
   const handleNext = () => {
-    // if (!accountHolderName) {
-    //   showAlert("ACCOUNT HOLDER'S NAME cannot be empty");
-    // } else if (accountNumber.length < 9 || accountNumber.length > 16) {
-    //   showAlert("Account number should be between 9 and 16 characters");
-    // } else if (accountNumber !== reEnterAccountNumber) {
-    //   showAlert("Account numbers do not match");
-    // } else if (!bankName) {
-    //   showAlert("BANK NAME cannot be empty");
-    // } else if (ifscCode.length !== 11) {
-    //   showAlert("ISFC CODE should be 11 digits");
-    // } else {
-    // All validations passed, navigate to the next screen
-    console.log(name, phoneNo);
-    navigation.navigate("ProfileDetails", {
-      profilePhoto,
-      name,
-      phoneNo,
-      aadharNo,
-      address,
-      panNo,
-      sameAddress,
-      city,
-      state,
-      accountHolderName,
-      accountNumber,
-      bankName,
-      ifscCode,
-    });
+    if (accountNumber !== reEnterAccountNumber) {
+      setErrorMessage("Account number must be same");
+      setVisible(true);
+    } else {
+      // if (!accountHolderName) {
+      //   showAlert("ACCOUNT HOLDER'S NAME cannot be empty");
+      // } else if (accountNumber.length < 9 || accountNumber.length > 16) {
+      //   showAlert("Account number should be between 9 and 16 characters");
+      // } else if (accountNumber !== reEnterAccountNumber) {
+      //   showAlert("Account numbers do not match");
+      // } else if (!bankName) {
+      //   showAlert("BANK NAME cannot be empty");
+      // } else if (ifscCode.length !== 11) {
+      //   showAlert("ISFC CODE should be 11 digits");
+      // } else {
+      // All validations passed, navigate to the next screen
+      console.log(name, phoneNo);
+      navigation.navigate("ProfileDetails", {
+        profilePhoto,
+        name,
+        phoneNo,
+        aadharNo,
+        address,
+        panNo,
+        sameAddress,
+        city,
+        state,
+        accountHolderName,
+        accountNumber,
+        bankName,
+        ifscCode,
+      });
+    }
     //  }
   };
 
@@ -101,6 +109,16 @@ export default function BankDetails({ navigation }) {
   return (
     <View style={stylesCommon.yellowbg}>
       <CommonHeader navigation={navigation} showBack />
+      <CommonAlert
+        visible={visible} // Pass visibility state to the CommonAlert component
+        hideModal={hideModal} // Pass function to hide the modal
+        handleOkPress={() => setVisible(false)} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title="Error" // Pass title text
+        iconName="error"
+        bodyText={errorMessage} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
+      />
       <ScrollView>
         <View
           style={{
@@ -147,7 +165,7 @@ export default function BankDetails({ navigation }) {
                 width: "75%",
               }}
               placeholderTextColor={colors.LIGHT_GREY}
-              placeholder="JOHN DOE"
+              placeholder="Enter your name"
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
                 marginLeft: 10,
@@ -191,7 +209,7 @@ export default function BankDetails({ navigation }) {
                 marginVertical: 10,
                 width: "75%",
               }}
-              placeholder="1234567890123"
+              placeholder="Enter account number"
               placeholderTextColor={colors.LIGHT_GREY}
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
@@ -200,7 +218,7 @@ export default function BankDetails({ navigation }) {
               }}
               onChangeText={(text) => setAccountNumber(text)}
               minLength={9}
-              maxLength={16}
+              maxLength={20}
               cursorColor="white"
             />
           </View>
@@ -237,7 +255,7 @@ export default function BankDetails({ navigation }) {
                 margin: 10,
                 width: "75%",
               }}
-              placeholder="1234567890123"
+              placeholder="Enter account number"
               placeholderTextColor={colors.LIGHT_GREY}
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
@@ -246,7 +264,7 @@ export default function BankDetails({ navigation }) {
               }}
               onChangeText={(text) => setReEnterAccountNumber(text)}
               minLength={9}
-              maxLength={16}
+              maxLength={20}
               cursorColor="white"
             />
           </View>
@@ -284,7 +302,7 @@ export default function BankDetails({ navigation }) {
                 width: "75%",
               }}
               placeholderTextColor={colors.LIGHT_GREY}
-              placeholder="SBI BANK"
+              placeholder="Enter your bank name"
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
                 marginLeft: 10,
@@ -323,12 +341,12 @@ export default function BankDetails({ navigation }) {
                 backgroundColor: "transparent",
                 borderRadius: 10,
               }}
-              inputMode="numeric"
+              inputMode="text"
               style={{
                 margin: 10,
                 width: "75%",
               }}
-              placeholder="1234567890123"
+              placeholder="ABCDEF1234567"
               placeholderTextColor={colors.LIGHT_GREY}
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
@@ -338,14 +356,21 @@ export default function BankDetails({ navigation }) {
               onChangeText={(text) => setIfscCode(text)}
               maxLength={11}
               cursorColor="white"
+              autoCapitalize="characters"
             />
-            <TouchableOpacity onPress={() => console.log("Verify Pressed")}>
+            {/* <TouchableOpacity
+              onPress={() => console.log("Verify Pressed")}
+              style={{
+                left: SCREEN_WIDTH / 3.5,
+                bottom: SCREEN_HEIGHT / 13,
+                flexWrap: "wrap",
+                padding: 10,
+
+                color: "white",
+              }}
+            >
               <Text
                 style={{
-                  left: SCREEN_WIDTH / 3.5,
-                  bottom: SCREEN_HEIGHT / 13,
-                  flexWrap: "wrap",
-                  padding: 10,
                   fontFamily: font.GoldPlay_Medium,
                   fontSize: 15,
                   color: "white",
@@ -353,7 +378,7 @@ export default function BankDetails({ navigation }) {
               >
                 VERIFY
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 

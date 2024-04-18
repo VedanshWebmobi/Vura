@@ -270,30 +270,40 @@ export default function AddPhoto({ navigation }) {
               justifyContent: "space-evenly",
             }}
           >
-            <Button
-              icon={({ size, color }) => (
-                <Image
-                  source={icon.CAMERA}
-                  style={{
-                    width: 55,
-                    height: 55,
-                  }}
-                />
-              )}
-              onPress={() => uploadImage("camera")}
-            />
-            <Button
-              icon={({ size, color }) => (
-                <Image
-                  source={icon.GALLERY}
-                  style={{
-                    width: 55,
-                    height: 55,
-                  }}
-                />
-              )}
-              onPress={() => uploadImage("gallery")}
-            />
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={icon.CAMERA}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      marginStart: 10,
+                    }}
+                  />
+                )}
+                onPress={() => uploadImage("camera")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold }}>Camera</Text>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={icon.GALLERY}
+                    style={{
+                      width: 55,
+                      height: 55,
+                      marginStart: 10,
+                    }}
+                  />
+                )}
+                onPress={() => uploadImage("gallery")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold }}>
+                Gallery
+              </Text>
+            </View>
           </View>
         </Modal>
       </Portal>
