@@ -33,8 +33,10 @@ export default function ProductDetail({ navigation, route }) {
     productImages,
     productCode,
     productDocuments,
+    characteristics,
   } = route.params;
 
+  console.log("Chars", characteristics);
   const downloadCallback = (downloadProgress) => {
     const progress =
       downloadProgress.totalBytesWritten /
@@ -181,7 +183,7 @@ export default function ProductDetail({ navigation, route }) {
               elevation: 1,
             }}
           >
-            <View style={{ marginBottom: 15 }}>
+            <View style={{ marginBottom: 0 }}>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20 }}>
                 {product_name}
               </Text>
@@ -213,14 +215,16 @@ export default function ProductDetail({ navigation, route }) {
                 </Text>
               </View> */}
             </View>
-            <View style={{ gap: 5 }}>
+            {/* <View
+              style={{ justifyContent: "space-between", flexDirection: "row" }}
+            >
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}>
                 Size
               </Text>
               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}>
                 ({size}kg)
               </Text>
-            </View>
+            </View> */}
           </View>
 
           {/* Render other product details as needed */}
@@ -274,11 +278,7 @@ export default function ProductDetail({ navigation, route }) {
                 <Text
                   style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}
                 >
-                  - C1 T compliant with EN 12004 standard{"\n"}- Type 1 T as per
-                  IS 15477-2019{"\n"}- For ceramic and gres tiles adhesive{"\n"}
-                  - No vertical slip{"\n"}- Application up to 10mm{"\n"}-
-                  Prolonged workability{"\n"}- Adjustable{"\n"}- Excellent
-                  workability{"\n"}- For larger vitrified tiles up to 4 sq.ft.
+                  {characteristics}
                 </Text>
               </Text>
             </View>
@@ -287,7 +287,10 @@ export default function ProductDetail({ navigation, route }) {
           <View>
             <View style={{ padding: 15 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 15,
+                }}
               >
                 Documents & Downloads
               </Text>
@@ -295,15 +298,17 @@ export default function ProductDetail({ navigation, route }) {
 
             <SimpleGrid
               data={productDocuments}
+              maxItemsPerRow={2}
               renderItem={(item, index) => {
                 console.log("yeh hai bhai ", item.item.productDocName);
                 return (
-                  <View style={{ gap: 5 }} key={index}>
+                  <View style={{}} key={index}>
                     <View
                       style={{
                         justifyContent: "space-around",
                         alignItems: "center",
                         flexDirection: "row",
+                        // backgroundColor: "red",
                       }}
                     >
                       <TouchableOpacity
@@ -315,16 +320,28 @@ export default function ProductDetail({ navigation, route }) {
                           )
                         }
                       >
-                        <View style={{ gap: 5, alignItems: "center" }}>
+                        <View
+                          style={{
+                            gap: 5,
+                            alignItems: "center",
+                          }}
+                        >
                           <Image
                             source={icon.DOWNLOAD_ICON}
-                            style={{ height: 50, width: 40 }}
+                            style={{
+                              height: 60,
+                              width: 60,
+                              resizeMode: "contain",
+                              //backgroundColor: "blue",
+                            }}
                           />
                           <View
                             style={{
                               backgroundColor: colors.LINE_GREY,
-                              width: SCREEN_WIDTH / 2.4,
+                              //backgroundColor: "red",
+                              // width: SCREEN_WIDTH / 2,
                               padding: 5,
+                              paddingHorizontal: 40,
                               borderRadius: 5,
                             }}
                           >

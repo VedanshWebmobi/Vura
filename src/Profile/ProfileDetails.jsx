@@ -251,6 +251,8 @@ export default function ProfileDetails({ navigation }) {
                 stylesCommon.preButtonLabelStyle,
                 { textAlign: "center" },
               ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
             >
               {name}
             </Text>

@@ -248,7 +248,7 @@ export default function PersonalDetails({ navigation }) {
                   //marginBottom: 20,
                   width: "75%",
                 }}
-                placeholder="Joe Doe"
+                placeholder="Enter your name"
                 placeholderTextColor={colors.LIGHT_GREY}
                 contentStyle={{
                   fontFamily: font.GoldPlay_Medium,
@@ -257,6 +257,7 @@ export default function PersonalDetails({ navigation }) {
                 }}
                 onChangeText={(text) => setname(text)}
                 cursorColor="white"
+                maxLength={32}
               />
             </View>
 
@@ -294,7 +295,7 @@ export default function PersonalDetails({ navigation }) {
                   //marginBottom: 20,
                   width: "75%",
                 }}
-                placeholder="1234567890"
+                placeholder="Enter your number"
                 placeholderTextColor={colors.LIGHT_GREY}
                 contentStyle={{
                   fontFamily: font.GoldPlay_Medium,
@@ -397,9 +398,7 @@ export default function PersonalDetails({ navigation }) {
                   width: SCREEN_WIDTH / 1.3,
                   height: SCREEN_HEIGHT / 6,
                 }}
-                placeholder="Building Number : 27
-                          Street Name : Malpani Street
-                          State : Goa"
+                placeholder="Enter your address"
                 placeholderTextColor={colors.LIGHT_GREY}
                 contentStyle={{
                   fontFamily: font.GoldPlay_Medium,
@@ -412,6 +411,7 @@ export default function PersonalDetails({ navigation }) {
                 numberOfLines={5}
                 multiline={true}
                 cursorColor="white"
+                maxLength={100}
               />
             </View>
 
@@ -448,7 +448,7 @@ export default function PersonalDetails({ navigation }) {
                   marginBottom: 20,
                   width: "75%",
                 }}
-                placeholder="ABCDEG1234"
+                placeholder="Pan Card Number"
                 placeholderTextColor={colors.LIGHT_GREY}
                 contentStyle={{
                   fontFamily: font.GoldPlay_Medium,
@@ -562,7 +562,7 @@ export default function PersonalDetails({ navigation }) {
                       marginBottom: 20,
                       width: "75%",
                     }}
-                    placeholder="VADODARA"
+                    placeholder="Enter your city"
                     placeholderTextColor={colors.LIGHT_GREY}
                     contentStyle={{
                       fontFamily: font.GoldPlay_Medium,
@@ -570,7 +570,7 @@ export default function PersonalDetails({ navigation }) {
                       fontSize: 20,
                     }}
                     onChangeText={(text) => setcity(text)}
-                    maxLength={10}
+                    maxLength={32}
                     cursorColor="white"
                   />
                 </View>
@@ -608,7 +608,7 @@ export default function PersonalDetails({ navigation }) {
                       marginBottom: 20,
                       width: "75%",
                     }}
-                    placeholder="GUJARAT"
+                    placeholder="Enter your state"
                     placeholderTextColor={colors.LIGHT_GREY}
                     contentStyle={{
                       fontFamily: font.GoldPlay_Medium,
@@ -616,7 +616,7 @@ export default function PersonalDetails({ navigation }) {
                       fontSize: 20,
                     }}
                     onChangeText={(text) => setstate(text)}
-                    maxLength={10}
+                    maxLength={32}
                     cursorColor="white"
                   />
                 </View>
