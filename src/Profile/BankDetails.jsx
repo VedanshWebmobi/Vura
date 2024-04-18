@@ -323,7 +323,7 @@ export default function BankDetails({ navigation }) {
                 backgroundColor: "transparent",
                 borderRadius: 10,
               }}
-              inputMode="numeric"
+              inputMode="text"
               style={{
                 margin: 10,
                 width: "75%",
@@ -338,14 +338,21 @@ export default function BankDetails({ navigation }) {
               onChangeText={(text) => setIfscCode(text)}
               maxLength={11}
               cursorColor="white"
+              autoCapitalize="characters"
             />
-            <TouchableOpacity onPress={() => console.log("Verify Pressed")}>
+            {/* <TouchableOpacity
+              onPress={() => console.log("Verify Pressed")}
+              style={{
+                left: SCREEN_WIDTH / 3.5,
+                bottom: SCREEN_HEIGHT / 13,
+                flexWrap: "wrap",
+                padding: 10,
+
+                color: "white",
+              }}
+            >
               <Text
                 style={{
-                  left: SCREEN_WIDTH / 3.5,
-                  bottom: SCREEN_HEIGHT / 13,
-                  flexWrap: "wrap",
-                  padding: 10,
                   fontFamily: font.GoldPlay_Medium,
                   fontSize: 15,
                   color: "white",
@@ -353,7 +360,7 @@ export default function BankDetails({ navigation }) {
               >
                 VERIFY
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 
