@@ -106,6 +106,12 @@ export default function BankDetails({ navigation }) {
     retrieveBankDetails();
   }, []);
 
+  const handleBankName = (text) => {
+    // Filter out non-letter characters
+    const filteredText = text.replace(/[^a-zA-Z\s]/g, "");
+    setBankName(filteredText);
+  };
+
   return (
     <View style={stylesCommon.yellowbg}>
       <CommonHeader navigation={navigation} showBack />
@@ -308,7 +314,7 @@ export default function BankDetails({ navigation }) {
                 marginLeft: 10,
                 fontSize: 20,
               }}
-              onChangeText={(text) => setBankName(text)}
+              onChangeText={(text) => handleBankName(text)}
               maxLength={14}
               cursorColor="white"
             />
