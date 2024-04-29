@@ -121,8 +121,8 @@ export default function Category({ navigation }) {
     }
   };
   return (
-    <SafeAreaView style={{ flex: 1, gap: 30, backgroundColor: colors.YELLOW }}>
-      <StatusBar backgroundColor={colors.YELLOW} />
+    <SafeAreaView style={{ flex: 1, gap: 30, backgroundColor: colors.BLACK }}>
+      <StatusBar backgroundColor={colors.BLACK} />
 
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
