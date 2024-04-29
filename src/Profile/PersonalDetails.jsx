@@ -177,6 +177,12 @@ export default function PersonalDetails({ navigation }) {
 
     retrievePersonalDetails();
   }, []);
+
+  const handleName = (text) => {
+    // Filter out non-letter characters
+    const filteredText = text.replace(/[^a-zA-Z\s]/g, "");
+    setname(filteredText);
+  };
   return (
     <View style={stylesCommon.yellowbg}>
       <CommonHeader navigation={navigation} showBack />
@@ -255,7 +261,7 @@ export default function PersonalDetails({ navigation }) {
                   marginLeft: 10,
                   fontSize: 20,
                 }}
-                onChangeText={(text) => setname(text)}
+                onChangeText={(text) => handleName(text)}
                 cursorColor="white"
                 maxLength={32}
               />
