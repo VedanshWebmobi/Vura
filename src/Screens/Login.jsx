@@ -11,6 +11,7 @@ import {
   Platform,
   ScrollView,
   BackHandler,
+  Dimensions
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -19,6 +20,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput, Button } from "react-native-paper";
 import { OtpInput } from "react-native-otp-entry";
 import * as Preference from "../StoreData/Preference";
+import PhoneInput from "react-native-international-phone-number";
 
 import axios from "axios";
 
@@ -29,10 +31,11 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { axiosCallAPI } from "../Api/Axios";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Login({ navigation }) {
   const height = useHeaderHeight();
-
+  const SCREEN_DIMENSIONS = Dimensions.get('window');
   const [number, setNumber] = useState("");
   const [showotp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState();
@@ -41,7 +44,20 @@ export default function Login({ navigation }) {
   const [alertTitle, setAlertTitle] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [iconColor, setIconColor] = useState("red");
+  const [isValidNumber, setIsValidNumber] = useState(false);
 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+
+useEffect(() =>{
+  const unsubscribe = navigation.addListener('focus', () => {
+    console.log("Phone Number",number);
+  
+
+});
+
+// Return the function to unsubscribe from the event so it gets removed on unmount
+return unsubscribe;
+},[])
   const handleBackPress = () => {
     if (navigation.canGoBack()) {
       // Check if navigation can go back
@@ -75,7 +91,9 @@ export default function Login({ navigation }) {
     }
   }
   const validateNumber = () => {
-    if (number.length != 10) {
+    const p_number = number.replace(" ",'');
+    console.log(number)
+    if (p_number.length != 10) {
       setIconColor("red");
       setAlertTitle("Error");
       setAlertMessage("Enter a Valid Number");
@@ -88,7 +106,7 @@ export default function Login({ navigation }) {
   const sendOTP = (button) => {
     let loginFormData = new FormData();
 
-    loginFormData.append("mobileNo", number);
+    loginFormData.append("mobileNo", number.replace(" ",""));
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -103,13 +121,13 @@ export default function Login({ navigation }) {
           setShowAlert(true);
           setAlertTitle("Success");
           setAlertMessage(response.message);
-          setShowOtp(true);
+         // setShowOtp(true);
         } else {
           setIconColor("red");
           setShowAlert(true);
           setAlertTitle("Error");
           setAlertMessage(response.error[0]);
-          setShowOtp(true);
+         // setShowOtp(true);
           console.error("Invalid response data:", response);
         }
       })
@@ -247,21 +265,43 @@ export default function Login({ navigation }) {
       // Hide loader after fetching data
     }
   };
+  function handleSelectedCountry(country) {
+    setSelectedCountry(country);
+    console.log(country.callingCode);
+  }
+
+  function handleInputValue(phoneNumber){
+    const tempNumber = phoneNumber.replace(" ","");
+    if(tempNumber.length == 10){
+      setIsValidNumber(true);
+    }
+    else{
+      setIsValidNumber(false);
+    }
+    setNumber(phoneNumber);
+  }
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: colors.YELLOW }}
+      style={{ flex: 1, backgroundColor: colors.BLACK }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       //keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -60}
       //keyboardVerticalOffset={}
     >
-      <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
-        <StatusBar backgroundColor={colors.YELLOW} />
+      <SafeAreaView style={{ flex: 1,  }}>
+        <StatusBar backgroundColor={colors.BLACK} />
 
         <CommonAlert
           visible={showAlert} // Pass visibility state to the CommonAlert component
-          hideModal={() => setShowAlert(false)} // Pass function to hide the modal
-          handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+          hideModal={() => {
+            setShowAlert(false)
+            navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
+          }} // Pass function to hide the modal
+          handleOkPress={() =>{
+         
+            setShowAlert(false)
+            navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
+          } } // Pass function to handle Ok button press
           //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
           title={alertTitle} // Pass title text
           iconColor={iconColor}
@@ -269,42 +309,53 @@ export default function Login({ navigation }) {
           // cancelButton={true} // Pass whether Cancel button should be displayed
         />
 
-        <View style={{}}>
+        <View style={{marginStart:16, marginEnd:16}}>
+        {
+          !showotp ? 
+       
+        <View>
+        <View style={{height:(SCREEN_DIMENSIONS.height/5), alignItems:'center', justifyContent:'center', alignContent:'center',}}>
+           <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
+        </View>
           <View style={[stylesCommon.logoViewStyle]}>
-            <Image source={icon.BLACK_ICON} style={stylesCommon.logoStyle} />
-            <View style={{ alignItems: "center", marginTop: 30 }}>
-              <Text style={stylesCommon.welcomeText}>
+         
+            <View style={{ alignItems: "center", marginTop: 20 }}>
+              <Text style={[stylesCommon.welcomeText,{color:"#fff"}]}>
                 {"LOGIN WITH MOBILE NUMBER"}
               </Text>
-            </View>
-          </View>
-
-          <View style={{ alignItems: "center" }}>
-            <TextInput
-              value={number}
-              mode="outlined"
-              outlineStyle={{
-                borderColor: "white",
-                backgroundColor: "transparent",
-                borderRadius: 20,
-              }}
-              inputMode="numeric"
-              style={{
-                width: "75%",
-              }}
-              placeholder="Enter your Number"
-              contentStyle={{
-                fontFamily: font.GoldPlay_Medium,
-                marginLeft: 10,
-                fontSize: 20,
-              }}
-              onChangeText={(text) => setNumber(text)}
-              maxLength={10}
-              cursorColor="white"
-            />
-          </View>
-
-          <View style={{ marginTop: 20, alignItems: "center" }}>
+              <Text style={[stylesCommon.welcomeText,{color:"#fff", fontSize:14, textAlign:"center",padding:10, fontFamily:font.GoldPlay_Medium}]}>
+                {"We Will Send You An One-Time-Password(OTP) To Your Mobile Number"}
+              </Text>
+           <View     style={{
+               width:SCREEN_DIMENSIONS.width-50,
+               marginTop:60
+              }}>
+              <PhoneInput
+      phoneInputStyles={{
+        flag:{fontSize:15},
+        caret:{fontSize:10},
+        callingCode:{fontSize:15},
+        flagContainer:{
+         backgroundColor: 'rgba(52, 52, 52, 0)',
+         
+        },
+        container:{
+          height:60,
+          borderRadius:10,
+          backgroundColor:'#fff'
+        }
+      }}
+        placeholder={"00000 00000"}
+        customMask={['##### #####']}
+        defaultCountry="IN"
+        value={number}
+        onChangePhoneNumber={handleInputValue}
+        selectedCountry={selectedCountry}
+        onChangeSelectedCountry={handleSelectedCountry}
+      />
+      </View> 
+          <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular,fontSize:12, marginTop:10}}>By Clicking Send OTP You Will Agree To Our <Text style={{color:'#fff', fontFamily:font.GoldPlay_SemiBold}}>Terms & Conditions</Text></Text>  
+              <View style={{ marginTop: 60, alignItems: "center" }}>
             <TouchableHighlight
               onPress={() => handleGenerate("Generate")}
               underlayColor={"black"}
@@ -312,18 +363,15 @@ export default function Login({ navigation }) {
             >
               <View
                 // style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
-                style={[
-                  stylesCommon.preLoginButtonStyle,
-                  { backgroundColor: "transparent", width: 150 },
-                ]}
+              
               >
-                <Text style={stylesCommon.preButtonLabelStyle}>
+                <Text style={[stylesCommon.preButtonLabelStyle,{textDecorationLine:'underline',color:isValidNumber? colors.YELLOW : "#666666" }]}>
                   GENERATE OTP
                 </Text>
               </View>
             </TouchableHighlight>
 
-            <TouchableHighlight
+            {/* <TouchableHighlight
               onPress={() => handleGenerate("OTP")}
               underlayColor={"black"}
               style={{ borderRadius: 15, marginTop: 20 }}
@@ -336,67 +384,73 @@ export default function Login({ navigation }) {
               >
                 <Text style={stylesCommon.preButtonLabelStyle}>RESEND</Text>
               </View>
-            </TouchableHighlight>
+            </TouchableHighlight> */}
+          </View>
+            </View>
+          </View>
+          <Ionicons name="arrow-back" size={24} color="white" style={{position:'absolute',marginTop:20}} onPress={()=>{console.log(navigation.goBack())}} /> 
+          </View>       
+          :
+
+          <View
+          style={{
+          }}
+        >
+      
+            <View style={{height:(SCREEN_DIMENSIONS.height/5),width:SCREEN_DIMENSIONS.width,  alignItems:'center', justifyContent:'center', alignContent:'center',}}>
+           
+        <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
+        </View>
+          <View style={{ alignItems: "center" }}>
+            <Text style={stylesCommon.welcomeText}>
+              INSERT YOUR OTP HERE
+            </Text>
+          </View>
+          <View style={{ marginHorizontal: 10 }}>
+            <OtpInput
+              numberOfDigits={6}
+              onTextChange={(text) => setOtp(text)}
+              secureTextEntry
+              theme={{
+                containerStyle: {
+                  marginHorizontal: 35,
+                  marginVertical: 25,
+                },
+                inputsContainerStyle: { width: 100 },
+                pinCodeContainerStyle: {
+                  height: 40,
+                  width: 40,
+                  borderRadius: 10,
+                  borderColor: "white",
+                },
+                focusedPinCodeContainerStyle: {
+                  borderColor: colors.BLACK,
+                },
+                focusStickStyle: { backgroundColor: colors.BLACK },
+              }}
+            />
           </View>
 
-          {showotp ? (
-            <View
-              style={{
-                //position: "relative",
-                //bottom: -80,
-                marginTop: 80,
-              }}
+          <View style={{ alignItems: "center" }}>
+            <TouchableHighlight
+              onPress={() => verifyOTP()}
+              underlayColor={"black"}
+              style={{ borderRadius: 15, marginTop: 20 }}
             >
-              <View style={{ alignItems: "center" }}>
-                <Text style={stylesCommon.welcomeText}>
-                  INSERT YOUR OTP HERE
+              <View
+                style={[
+                  stylesCommon.preLoginButtonStyle,
+                  { backgroundColor: "transparent", width: 150 },
+                ]}
+              >
+                <Text style={stylesCommon.preButtonLabelStyle}>
+                  CONFIRM
                 </Text>
               </View>
-              <View style={{ marginHorizontal: 10 }}>
-                <OtpInput
-                  numberOfDigits={6}
-                  onTextChange={(text) => setOtp(text)}
-                  secureTextEntry
-                  theme={{
-                    containerStyle: {
-                      marginHorizontal: 35,
-                      marginVertical: 25,
-                    },
-                    inputsContainerStyle: { width: 100 },
-                    pinCodeContainerStyle: {
-                      height: 40,
-                      width: 40,
-                      borderRadius: 10,
-                      borderColor: "white",
-                    },
-                    focusedPinCodeContainerStyle: {
-                      borderColor: colors.BLACK,
-                    },
-                    focusStickStyle: { backgroundColor: colors.BLACK },
-                  }}
-                />
-              </View>
-
-              <View style={{ alignItems: "center" }}>
-                <TouchableHighlight
-                  onPress={() => verifyOTP()}
-                  underlayColor={"black"}
-                  style={{ borderRadius: 15, marginTop: 20 }}
-                >
-                  <View
-                    style={[
-                      stylesCommon.preLoginButtonStyle,
-                      { backgroundColor: "transparent", width: 150 },
-                    ]}
-                  >
-                    <Text style={stylesCommon.preButtonLabelStyle}>
-                      CONFIRM
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              </View>
-            </View>
-          ) : null}
+            </TouchableHighlight>
+          </View>
+        </View>
+      } 
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

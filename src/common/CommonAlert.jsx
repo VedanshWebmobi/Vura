@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View, Image } from "react-native";
 import React from "react";
 import { TextInput, Button, Checkbox, Modal, Portal } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -22,10 +22,10 @@ export default function ({
   //   const hideModal = () => setVisible(false);
 
   const containerStyle = {
-    backgroundColor: colors.YELLOW,
+    backgroundColor: "#fff",
     padding: 20,
     margin: 30,
-    height: SCREEN_HEIGHT / 3,
+    height: SCREEN_HEIGHT / 2.5,
     borderRadius: 20,
   };
 
@@ -45,14 +45,16 @@ export default function ({
               flex: 1,
             }}
           >
-            <Icon
+            { <Image style={{height:100, width:100}}
+            source ={require('../../assets/success.gif')} /> }
+            {/* <Icon
               name={"error"}
               size={40}
               color={
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
-            />
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 25 }}>
+            /> */}
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:-30 }}>
               {title}
             </Text>
             <Text
@@ -74,13 +76,13 @@ export default function ({
                 alignItems: "center",
                 backgroundColor: "transparent",
                 borderWidth: 1,
-                borderColor: "white",
+                borderColor: "black",
                 paddingVertical: 10,
                 width: 80,
                 borderRadius: 10,
                 //justifyContent: "flex-end",
               }}
-              underlayColor={"black"}
+              underlayColor={colors.YELLOW}
               onPress={handleOkPress}
             >
               <Text
@@ -88,7 +90,7 @@ export default function ({
                   textAlign: "center",
                   fontFamily: font.GoldPlay_SemiBold,
                   fontSize: 18,
-                  color: "white",
+                  color: "black",
                 }}
               >
                 Ok

@@ -57,7 +57,7 @@ export default StyleSheet.create({
 
   welcomeText: {
     fontFamily: font.GoldPlay_SemiBold,
-    fontSize: 18,
+    fontSize: 16,
   },
   otpText: {
     fontFamily: font.INTER,

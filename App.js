@@ -21,6 +21,7 @@ import * as SplashScreen from "expo-splash-screen";
 import PreLogin from "./src/Screens/PreLogin";
 import Category from "./src/Screens/Category";
 import Login from "./src/Screens/Login";
+import OTPScreen from "./src/Screens/OTPScreen";
 import LandingPage from "./src/Screens/LandingPage";
 import AddPhoto from "./src/Profile/AddPhoto";
 import AddAdhar from "./src/Profile/AddAdhar";
@@ -125,6 +126,7 @@ export default function App() {
             <Stack.Screen name="PreLogin" component={PreLogin} />
             <Stack.Screen name="Category" component={Category} />
             <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="OTPScreen" component={OTPScreen} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="CustomDrawer" component={CustomDrawer} />
             <Stack.Screen name="Product" component={Product} />

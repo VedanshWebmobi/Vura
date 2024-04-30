@@ -18,6 +18,8 @@ import * as Animatable from 'react-native-animatable';
 export default function PreLogin({ navigation }) {
   const MONEY_DIMENSIONS = {width: 49, height: 26};
 const SCREEN_DIMENSIONS = Dimensions.get('window');
+const SCREEN_HEIGHT = SCREEN_DIMENSIONS.height;
+console.log("Height", SCREEN_HEIGHT +", "+(SCREEN_HEIGHT/3) );
 const WIGGLE_ROOM = 50;
 const rotation = useRef(new Animated.Value(0)).current;
 const scale = useRef(new Animated.Value(1)).current;
@@ -184,14 +186,14 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
       style={{
         flex: 1,
         backgroundColor: "#000000",
-        justifyContent: "center",
+     
         alignItems: "center",
         gap: 50,
       }}
     >
       <StatusBar backgroundColor={"black"} />
 
-      <View style={{height:200, alignItems:'center', justifyContent:'center', alignContent:'center'}}>
+      <View style={{height:(SCREEN_HEIGHT/5), alignItems:'center', justifyContent:'center', alignContent:'center'}}>
         <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
       </View>
     <View style={{flex:1,  justifyContent:"center"}}>
@@ -287,7 +289,7 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
         </TouchableOpacity>
         </View>
       </View>  
-      <View style={{height:200 }}>
+      <View style={{height:(SCREEN_HEIGHT/4), justifyContent:"center",   }}>
       <View style={stylesCommon.preLoginContainerView}>
         <TouchableHighlight
           onPress={() => handleOnPress("Login")}

@@ -38,6 +38,7 @@
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-image-slider-box": "^2.0.7",
+    "react-native-international-phone-number": "^0.7.6",
     "react-native-otp-entry": "^1.4.1",
     "react-native-paper": "^5.12.3",
     "react-native-progress": "^5.0.1",
