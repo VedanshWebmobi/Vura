@@ -13,6 +13,7 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
+import CommonHeaderNew from "../common/CommonHeader_new";
 import { Modal, Portal, Button } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
@@ -24,9 +25,10 @@ import { GET_PROFILE } from "../Api/Utils";
 import * as Progress from "react-native-progress";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import {Fontisto } from '@expo/vector-icons';
 
 export default function AddPhoto({ navigation }) {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(true);
   const [image, setImage] = useState("");
   const [isVisible, setisVisible] = useState("");
 
@@ -35,7 +37,7 @@ export default function AddPhoto({ navigation }) {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [showAlert, setShowAlert] = useState(false);
-  const containerStyle = { backgroundColor: "white", padding: 20 };
+  const containerStyle = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
   const uploadImage = async (mode) => {
     let result = {};
     try {
@@ -70,6 +72,7 @@ export default function AddPhoto({ navigation }) {
     try {
       setImage(image);
       hideModal();
+      setTimeout(() =>{handleNext()},1000)
     } catch (error) {
       throw error;
     }
@@ -242,7 +245,7 @@ export default function AddPhoto({ navigation }) {
   };
 
   return (
-    <View style={stylesCommon.yellowbg}>
+    <View style={[stylesCommon.yellowbg,{backgroundColor:'#fff',  justifyContent:"center", alignItems:"center"}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
 
       <CommonAlert
@@ -263,56 +266,68 @@ export default function AddPhoto({ navigation }) {
           contentContainerStyle={containerStyle}
           style={{ flex: 1, justifyContent: "flex-end" }}
         >
+          <View >
+            <Fontisto name="close" size={24} color={"#999999"} style={{alignSelf:'flex-end'}} onPress={()=>hideModal()}/>
+            <Text style={{color:colors.BLACK, fontSize:20, fontFamily:font.GoldPlay_SemiBold, alignSelf:"center", marginBottom:30}}>UPLOAD PHOTO</Text>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-evenly",
+              paddingBottom:20
             }}
           >
             <View style={{ alignItems: "center" }}>
               <Button
                 icon={({ size, color }) => (
                   <Image
-                    source={icon.CAMERA}
+                    source={require('../../assets/take_from_camera.png')}
                     style={{
-                      width: 50,
-                      height: 50,
+                      width: 65,
+                      height: 65,
                       marginStart: 10,
+                      resizeMode:'contain'
                     }}
+
                   />
                 )}
                 onPress={() => uploadImage("camera")}
               />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold }}>Camera</Text>
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize:16, textDecorationLine:'underline' }}>Camera</Text>
             </View>
             <View style={{ alignItems: "center" }}>
               <Button
                 icon={({ size, color }) => (
                   <Image
-                    source={icon.GALLERY}
+                    source={require('../../assets/take_from_gallery.png')}
                     style={{
-                      width: 55,
-                      height: 55,
+                      width: 65,
+                      height: 65,
                       marginStart: 10,
+                      resizeMode:'contain'
                     }}
                   />
                 )}
                 onPress={() => uploadImage("gallery")}
               />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold }}>
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold,fontSize:16, textDecorationLine:'underline' }}>
                 Gallery
               </Text>
             </View>
           </View>
+          </View>
         </Modal>
       </Portal>
-      <CommonHeader
+      <CommonHeaderNew header_title={"CREATE PROFILE"}
+      header_color={colors.YELLOW} 
+      navigation ={navigation}
+      />
+      {/* <CommonHeader
         handleGoBack={handleGoBack}
         navigation={navigation}
         screen={"addPhoto"}
         showBack={showback}
-      />
+      /> */}
       {isLoading ? (
         <View style={stylesCommon.loaderViewStyle}>
           <Progress.CircleSnail
@@ -324,31 +339,28 @@ export default function AddPhoto({ navigation }) {
       ) : (
         <View
           style={{
-            flex: 1,
+            flex: 3,
             justifyContent: "center",
             alignItems: "center",
+         
           }}
         >
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 24,
-            }}
-          >
-            <TouchableOpacity onPress={showModal}>
+        
+            <TouchableOpacity onPress={showModal} >
               <Image
-                source={image ? { uri: image } : icon.PROFILE_PIC}
-                style={{ width: 150, height: 150, borderRadius: 80 }}
+                source={image ? { uri: image } : icon.PROFILE_CIRCLE}
+                style={{ width: 150, height: 150, borderRadius: 80, backgroundColor:'#cccccc' }}
               />
 
               <Image
-                source={icon.CAMERA}
+                source={icon.CAMERA_NEW}
                 style={{
                   position: "absolute",
-                  width: 50,
-                  height: 50,
-                  left: 100,
-                  top: 100,
+                  width: 100,
+                  height: 100,
+                  left: 85,
+                  top: 80,
+                  
                 }}
               />
               {/* <Image
@@ -356,9 +368,9 @@ export default function AddPhoto({ navigation }) {
                   style={{ width: 52, height: 45 }}
                 /> */}
             </TouchableOpacity>
-          </View>
+         
 
-          <Text
+          {/* <Text
             style={{
               fontFamily: font.GoldPlay_Medium,
               fontSize: 20,
@@ -369,10 +381,10 @@ export default function AddPhoto({ navigation }) {
             }}
           >
             UPLOAD YOUR PHOTO {"\n"} OR SELFIE
-          </Text>
+          </Text> */}
         </View>
       )}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
         <TouchableHighlight
           onPress={handleNext}
           style={{ backgroundColor: "transparent", borderRadius: 10 }}
@@ -400,6 +412,9 @@ export default function AddPhoto({ navigation }) {
           </View>
         </TouchableHighlight>
       </View>
+      <View style={{position:"absolute", bottom:30}}>
+            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{}} >SKIP</Text></Text>
+        </View>
     </View>
   );
 }

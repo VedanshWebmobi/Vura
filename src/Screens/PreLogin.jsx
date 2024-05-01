@@ -16,6 +16,9 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import * as Animatable from 'react-native-animatable';
 
 export default function PreLogin({ navigation }) {
+  const [showView, setSHowView] = useState(false);
+  const [showView1, setSHowView1] = useState(false);
+  const [showView2, setSHowView2] = useState(false);
   const MONEY_DIMENSIONS = {width: 49, height: 26};
 const SCREEN_DIMENSIONS = Dimensions.get('window');
 const SCREEN_HEIGHT = SCREEN_DIMENSIONS.height;
@@ -202,6 +205,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
         <TouchableOpacity
         activeOpacity={1}
           onPress={() => {
+            setSHowView(true);
+            setTimeout(() =>{
+                setSHowView(false);
+            },450);
           rotateImage(rotation);
           stretch(stretchValue);
           scaleText(scale);
@@ -212,6 +219,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
           style={{ borderRadius: 30 }}
         >
           <View style={{}}>
+          {
+                showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
+                 width:191,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,}}></Animated.View>
+            }
           <Animated.View
             style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
               borderColor: "#ffffff", width:190,height:50,
@@ -232,6 +243,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
         <TouchableOpacity
         activeOpacity={1}
           onPress={() =>{ 
+            setSHowView1(true);
+            setTimeout(() =>{
+                setSHowView1(false);
+            },450);
             rotateImage(rotation_cash);
             stretch(stretchValue_cash);
             scaleText(scale_cash);
@@ -241,6 +256,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
           style={{ borderRadius: 15, marginTop:30 }}
         >
           <View style={{}}>
+          {
+                showView1 &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation_cash}],
+                 width:191,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,}}></Animated.View>
+            }
           <Animated.View
             style={{transform:[{scaleX:interpolatedStretchAnimation_cash}],  borderRadius: 30,
               borderColor: "#ffffff", width:190,height:50,
@@ -263,6 +282,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
         activeOpacity={1}
           onPress={() =>{ 
           //  handleOnPress("Offers")
+          setSHowView2(true);
+          setTimeout(() =>{
+              setSHowView2(false);
+          },450);
           rotateImage(rotation_offer);
           stretch(stretchValue_offer);
           scaleText(scale_offer);
@@ -271,6 +294,10 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
           style={{ borderRadius: 15, marginTop:30 }}
         >
        <View style={{}}>
+       {
+                showView2 &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation_offer}],
+                 width:191,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,}}></Animated.View>
+            }
           <Animated.View
             style={{transform:[{scaleX:interpolatedStretchAnimation_offer}],  borderRadius: 30,
               borderColor: "#ffffff", width:190,height:50,

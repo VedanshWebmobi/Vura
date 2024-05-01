@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   StatusBar,
+  Image,Animated,Easing, Dimensions
 } from "react-native";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
@@ -14,13 +15,90 @@ import { useRoute } from "@react-navigation/native";
 import * as Preference from "../StoreData/Preference";
 
 import { TouchableHighlight } from "react-native-gesture-handler";
+import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function AddAdhar({ navigation }) {
+  const SCREEN_DIMENSIONS = Dimensions.get('window');
   const [aadharNumber, setAadharNumber] = useState("");
+  const [showView, setSHowView] = useState(false);
   const route = useRoute();
   const { profilePhoto } = route.params;
-
+  console.log("ProfilePhot", profilePhoto);
   const inputRefs = useRef([]);
+  const rotation = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+  const stretchValue = useRef(new Animated.Value(1)).current;
+
+  const interpolatedRotateAnimation = rotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '-13deg'],
+  });
+
+  const interpolatedStretchAnimation = stretchValue.interpolate({
+    inputRange: [1, 2],
+    outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
+  });
+
+  const stretch = (stretch_Value) => {
+    Animated.sequence([
+      Animated.timing(stretch_Value, {
+        toValue: 2, // You can adjust this value to control the stretch level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(stretch_Value, {
+        toValue: 1, // You can adjust this value to control the stretch level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ])
+  .start(() => {
+      // Reset the stretch value to 1
+      stretch_Value.setValue(1);
+    });
+  };
+  const rotateImage = (rota_value) => {
+    Animated.sequence([
+      Animated.timing(rota_value, {
+        toValue: 2,
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rota_value, {
+        toValue: 1,
+        duration: 200,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ])
+   .start(() => {
+      // Reset the rotation to 0
+      rota_value.setValue(0);
+    });
+  };
+  const scaleText = (scale_value) => {
+    Animated.sequence([
+      Animated.timing(scale_value, {
+        toValue: 0.9, // You can adjust this value to control the scale level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale_value, {
+        toValue: 1, // You can adjust this value to control the scale level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ])
+  .start(() => {
+      // Reset the scale to 1
+      scale_value.setValue(1);
+    });
+  };
 
   useEffect(() => {
     // Retrieve Aadhaar number from AsyncStorage (if implemented)
@@ -71,21 +149,29 @@ export default function AddAdhar({ navigation }) {
   };
 
   return (
-    <View style={stylesCommon.yellowbg}>
+    <View style={[stylesCommon.yellowbg,{backgroundColor:'#f2f2f2'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeader navigation={navigation} showBack />
-      <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
+      <CommonHeaderNew header_title={"CREATE PROFILE"}
+      header_color={colors.YELLOW} 
+      navigation ={navigation}
+      />
+      {/* <CommonHeader navigation={navigation} showBack /> */}
+      <View style={{ alignItems: "center", flex: 4,  }}>
+          <View style={{height:100, width:130, margin:30, alignItems:"center", justifyContent:'center'}}>
+            <Image source={{ uri: profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            <Image source={require('../../assets/edit_black.png')} style={{height:40, width:40, resizeMode:'contain', position:'absolute', bottom:0, right:0}}/>  
+          </View>
         <Text
           style={{
             fontFamily: font.GoldPlay_SemiBold,
-            fontSize: 18,
-            marginTop: 20,
-            color: "white",
+            fontSize: 16,
+            marginTop: 40,
+            color: colors.BLACK,
           }}
         >
-          ENTER YOUR AADHAR CARD NUMBER
+          Enter Your Aadhar Card Number
         </Text>
-        <View style={styles.inputRow}>
+        <View style={[styles.inputRow,{marginTop:10}]}>
           {[...Array(3)].map((_, index) => (
             <TextInput
               key={index}
@@ -93,9 +179,10 @@ export default function AddAdhar({ navigation }) {
               value={aadharNumber ? aadharNumber.substr(index * 4, 4) : ""}
               mode="outlined"
               outlineStyle={{
-                borderColor: "white",
+                borderColor: "#999999",
                 backgroundColor: "transparent",
                 borderRadius: 15,
+                borderWidth:1
               }}
               keyboardType="numeric"
               style={styles.input}
@@ -104,7 +191,12 @@ export default function AddAdhar({ navigation }) {
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
                 fontSize: 25,
-                marginStart: 10,
+                textAlign:'center',
+                backgroundColor:'#fff',
+                borderRadius: 15,
+                borderColor: "#999999",
+                borderWidth:1
+
               }}
               onChangeText={(text) => {
                 // Handle the case where aadharNumber is null or empty
@@ -128,9 +220,53 @@ export default function AddAdhar({ navigation }) {
             />
           ))}
         </View>
+        <TouchableOpacity
+        activeOpacity={1}
+          onPress={() => {
+            setSHowView(true);
+             setTimeout(() =>{
+                 setSHowView(false);
+                 handleNext()
+             },450);
+          rotateImage(rotation);
+          stretch(stretchValue);
+          scaleText(scale);
+            //handleOnPress("Products")
+          }
+          }
+          //underlayColor={colors.YELLOW}
+          style={{ borderRadius: 30, 
+            marginTop:50
+            }}
+        >
+          <View style={{}}>
+          {
+                showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
+                 width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
+            }
+          
+          <Animated.View
+            style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
+              borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
+              backgroundColor: colors.BLACK, flexDirection:'row',}}
+          >
+            
+            <View style={{width:0, }}></View>
+            <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
+           
+          </Animated.View>
+          {/* <Animated.Image
+          source={icon.PROFILE_NEW} 
+          style={ { transform: [{ rotate: interpolatedRotateAnimation }], height:50, width:50,position:'absolute' }}
+        /> */}
+          </View> 
+        </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <TouchableHighlight
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
+      <View style={{position:"absolute", bottom:30}}>
+            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{}} >SKIP</Text></Text>
+        </View>
+        {/* <TouchableHighlight
           onPress={handleNext}
           style={{ backgroundColor: "transparent", borderRadius: 10 }}
           underlayColor={"black"}
@@ -155,7 +291,7 @@ export default function AddAdhar({ navigation }) {
               NEXT
             </Text>
           </View>
-        </TouchableHighlight>
+        </TouchableHighlight> */}
       </View>
     </View>
   );

@@ -44,7 +44,8 @@ export default function CustomDrawer({ navigation }) {
     // Reset the navigation stack to navigate to the "LoginScreen"
     navigation.reset({
       //  index: 0, // Reset to the first screen in the stack
-      routes: [{ name: "Category" }], // Set the route to navigate to
+      //routes: [{ name: "Category" }], // Set the route to navigate to
+       routes: [{ name: "PreLogin" }], // Set the route to navigate to
     });
   };
 
@@ -254,12 +255,15 @@ export default function CustomDrawer({ navigation }) {
           </TouchableHighlight>
         </View>
       </View>
-
-      <View style={{ marginTop: 30 }}>
+      <ScrollView style={{ marginTop: 30 }}>
+      <View >
+      
         {menuItems.map((item, index) => (
           <View key={index}>{renderItem(item, index)}</View>
         ))}
+       
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

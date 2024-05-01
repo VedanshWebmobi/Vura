@@ -10,6 +10,7 @@ export const icon = {
   CHECK_ICON: require("../../assets/check_circle.png"),
   EDIT: require("../../assets/edit.png"),
   CAMERA: require("../../assets/camera.png"),
+  CAMERA_NEW: require("../../assets/camera_new.png"),
   PROFILE_PIC: require("../../assets/profile.png"),
   GALLERY: require("../../assets/gallery.png"),
   SUNFLOWER: require("../../assets/sunFlower.png"),
@@ -35,6 +36,8 @@ export const icon = {
   IMAGE6: require("../../assets/image6.png"),
   CEMENT: require("../../assets/cement.png"),
   DOWNLOAD_ICON: require("../../assets/downloadIcon.png"),
+  PROFILE_NEW :require("../../assets/profile_new.png"),
+  PROFILE_CIRCLE:require("../../assets/profile_circle.png")
 };
 
 export const font = {

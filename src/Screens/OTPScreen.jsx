@@ -50,9 +50,12 @@ import CountdownTimer from "../common/CountDownTimer";
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [enableResend, setEnableResend] = useState(false);
     const [isOTPWrong, setIsOTPWrong] = useState(false);
+    const [second, setSecond] = useState(10);
+    const [alertType, setAlertType] = useState("");
   
     useEffect(() =>{
         console.log("Route", route);
+        setNumber(route.params.n_phone);
     },[])
   
     const handleBackPress = () => {
@@ -62,7 +65,9 @@ import CountdownTimer from "../common/CountDownTimer";
         return true; // Prevent default back button behavior
       }
     };
-    
+    const restartTimer =()=>{
+        setSecond(10);
+    }
     const handleOtpTimer = () =>{
         setEnableResend(true);
     } 
@@ -107,7 +112,7 @@ import CountdownTimer from "../common/CountDownTimer";
     const sendOTP = (button) => {
       let loginFormData = new FormData();
   
-      loginFormData.append("mobileNo", number.replace(" ",""));
+      loginFormData.append("mobileNo", route.params.n_phone);
       let requestOptions = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -119,9 +124,12 @@ import CountdownTimer from "../common/CountDownTimer";
           // console.log("Response from server:", response);
           if (response && response.status) {
             setIconColor("green");
+            setAlertType("Resend_OTP");
             setShowAlert(true);
             setAlertTitle("Success");
             setAlertMessage(response.message);
+            setEnableResend(false)
+            restartTimer();
            // setShowOtp(true);
           } else {
             setIconColor("red");
@@ -166,8 +174,12 @@ import CountdownTimer from "../common/CountDownTimer";
               );
               if (response.data.is_registered === "no") {
                 Preference.save(ExpoSecureKey.IS_REGISTER, "false");
-  
-                navigation.dispatch(StackActions.replace("AddPhoto"));
+                setIconColor("green");
+                setAlertType("OTP_Verified");
+                setShowAlert(true);
+                setAlertTitle("Successful!");
+                setAlertMessage("Your Mobile Number Has Been Successfully Verified");
+                //navigation.dispatch(StackActions.replace("AddPhoto"));
               } else {
                 Preference.save(ExpoSecureKey.IS_REGISTER, "true");
                 getProfile();
@@ -295,7 +307,10 @@ import CountdownTimer from "../common/CountDownTimer";
             visible={showAlert} // Pass visibility state to the CommonAlert component
             hideModal={() => setShowAlert(false)} // Pass function to hide the modal
             handleOkPress={() =>{
-                navigation.goBack();
+                setShowAlert(false);
+                if(alertType === 'OTP_Verified'){
+                  navigation.dispatch(StackActions.replace("Login_Success"));
+                }
             } } // Pass function to handle Ok button press
             //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
             title={alertTitle} // Pass title text
@@ -454,9 +469,13 @@ import CountdownTimer from "../common/CountDownTimer";
           </Text>     
            }     
              
-              <TouchableHighlight
-                onPress={() => verifyOTP()}
-                underlayColor={"black"}
+              <TouchableOpacity
+              activeOpacity={isOTPFilled ? 0.8 : 1}
+                onPress={() =>{
+                  if(isOTPFilled)
+                  verifyOTP()
+                } }
+              //  underlayColor={"black"}
                 style={{ borderRadius: 15, marginTop: 20 }}
               >
                 <View>
@@ -464,9 +483,15 @@ import CountdownTimer from "../common/CountDownTimer";
                     VERIFY OTP
                   </Text>
                 </View>
-              </TouchableHighlight>
-              <CountdownTimer handleTimer={handleOtpTimer}/>
-              <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular, marginTop:10}}>Don't Get an OTP <Text style={{color:enableResend ? colors.YELLOW : '#666666', textDecorationLine:'underline', fontFamily:font.GoldPlay_SemiBold}}>RESEND OTP</Text></Text>
+              </TouchableOpacity>
+              <CountdownTimer handleTimer={handleOtpTimer} second={second} setSecond={setSecond}/>
+              <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular, marginTop:10}}>Don't Get an OTP <Text style={{color:enableResend ? colors.YELLOW : '#666666', textDecorationLine:'underline', fontFamily:font.GoldPlay_SemiBold}} onPress={()=> {
+                
+                 if(enableResend){
+                   handleGenerate("OTP")
+                 }
+               
+                }}>RESEND OTP</Text></Text>
             </View>
             <Ionicons name="arrow-back" size={24} color="white" style={{position:'absolute',marginTop:20}} onPress={()=>{navigation.goBack()}} />
           </View>

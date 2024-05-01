@@ -22,6 +22,7 @@ import PreLogin from "./src/Screens/PreLogin";
 import Category from "./src/Screens/Category";
 import Login from "./src/Screens/Login";
 import OTPScreen from "./src/Screens/OTPScreen";
+import LoginSuccessScreen from "./src/Screens/LoginSuccessScreen";
 import LandingPage from "./src/Screens/LandingPage";
 import AddPhoto from "./src/Profile/AddPhoto";
 import AddAdhar from "./src/Profile/AddAdhar";
@@ -40,6 +41,7 @@ import ProductDetail from "./src/Home/ProductDetail";
 
 import * as Preference from "./src/StoreData/Preference";
 import { ExpoSecureKey } from "./src/constants";
+import CreateProfileScreen from "./src/Screens/CreateProfileScreen";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -127,6 +129,8 @@ export default function App() {
             <Stack.Screen name="Category" component={Category} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="OTPScreen" component={OTPScreen} />
+            <Stack.Screen name="Login_Success" component={LoginSuccessScreen} />
+            <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="CustomDrawer" component={CustomDrawer} />
             <Stack.Screen name="Product" component={Product} />
