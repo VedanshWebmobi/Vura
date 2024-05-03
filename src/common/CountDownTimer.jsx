@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
    
   },
   timerText: {
-    fontSize: 22,
+    fontSize: 18,
     color:'#fff',
     fontFamily:font.GoldPlay_SemiBold
     

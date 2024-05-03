@@ -23,7 +23,7 @@ import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
 import { axiosCallAPI } from "../Api/Axios";
 import { FlatGrid } from "react-native-super-grid";
-
+import CommonHeaderNew from "../common/CommonHeader_new";
 export default function Product({ navigation }) {
   // function open() {
   //   pickerRef.current.focus();
@@ -166,9 +166,10 @@ export default function Product({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={stylesCommon.whitebg}>
+    <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeader screen={"Product"} navigation={navigation} showBack />
+      <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/>
+      {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
       {isLoading ? (
         <ActivityIndicator
           size="large"
@@ -176,7 +177,7 @@ export default function Product({ navigation }) {
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         />
       ) : (
-        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15 }}>
+        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15,paddingBottom:100  }}>
           <View
             style={{
               flexDirection: "row",

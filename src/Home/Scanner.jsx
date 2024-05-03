@@ -22,6 +22,9 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { getValueFor, save } from "../StoreData/Preference";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonAlert from "../common/CommonAlert";
+import CommonHeaderNew from "../common/CommonHeader_new";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function Scanner({ navigation }) {
   const height = useHeaderHeight();
@@ -33,6 +36,7 @@ export default function Scanner({ navigation }) {
   const [title, setTitle] = useState("");
   const [iconColor, setIconColor] = useState("red");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isButtonVisible, setIsButtonVisible] = useState(false);
 
   const handleCodeScanned = (data) => {
     console.log("Bhai le tera data", data.data);
@@ -42,9 +46,21 @@ export default function Scanner({ navigation }) {
   };
 
   useEffect(() => {
+
     requestPermission();
   }, []);
+  useFocusEffect(
+    React.useCallback(() => {
 
+        setIsScanning(false);
+
+      return () => {
+
+       
+        // Useful for cleanup functions
+
+      };
+    }, []));
   const sendCoupon = async () => {
     var couponFormData = new FormData();
 
@@ -124,15 +140,16 @@ export default function Scanner({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
+    <View style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
       <StatusBar backgroundColor={colors.YELLOW} />
       <KeyboardAvoidingView
-        style={{ backgroundColor: "black" }}
+        style={{ backgroundColor: "#f2f2f2" }}
         behavior={Platform.OS === "ios" ? "padding" : "position"}
         keyboardVerticalOffset={100}
         enabled
       >
-        <CommonHeader navigation={navigation} showBack />
+        <CommonHeaderNew header_title={"SCAN QR CODE"} header_color={colors.YELLOW} navigation={navigation}/>
+        {/* <CommonHeader navigation={navigation} showBack /> */}
 
         <CommonAlert
           visible={showAlert} // Pass visibility state to the CommonAlert component
@@ -169,60 +186,46 @@ export default function Scanner({ navigation }) {
               />
             </View>
           ) : (
-            <View style={{ alignItems: "center", gap: 40 }}>
+            <View style={{ alignItems: "center", gap:20 }}>
               <View style={{ gap: 25, alignItems: "center" }}>
-                <Image source={icon.SCAN} style={{ height: 80, width: 80 }} />
+                <Image source={require('../../assets/scan_fram.png')} style={{ height:120, width: 120 }} />
 
                 <TouchableHighlight
                   onPress={handleScan}
                   style={{ backgroundColor: "transparent", borderRadius: 15 }}
                   underlayColor={colors.YELLOW}
                 >
-                  <View
-                    style={[
-                      stylesCommon.homeTextView,
-                      {
-                        borderColor: "white",
-                        width: 140,
-                        height: 40,
-                        borderRadius: 15,
-                      },
-                    ]}
-                  >
+          
                     <Text
                       style={[
                         stylesCommon.homeText,
-                        { color: "white", fontSize: 15 },
+                        { color: "blank", fontSize: 15, textDecorationLine:'underline' },
                       ]}
                     >
-                      SCAN QR CODE
+                      CLICK HERE FOR SCAN
                     </Text>
-                  </View>
+                  
                 </TouchableHighlight>
               </View>
               <View
                 style={{
                   flexDirection: "row",
-                  gap: 15,
+                  
                   justifyContent: "center",
                   alignItems: "center",
                 }}
               >
-                <View
-                  style={{ backgroundColor: colors.GREY, height: 1, width: 50 }}
-                ></View>
+              
                 <Text
                   style={{
                     fontFamily: font.GoldPlay_SemiBold,
                     fontSize: 18,
-                    color: colors.GREY,
+                    color: colors.BLACK,
                   }}
                 >
                   OR
                 </Text>
-                <View
-                  style={{ backgroundColor: colors.GREY, height: 1, width: 50 }}
-                ></View>
+               
               </View>
 
               <View
@@ -232,20 +235,18 @@ export default function Scanner({ navigation }) {
                   width: "90%",
                 }}
               >
-                <Image
-                  source={icon.CASHBACK}
-                  style={{ height: 80, width: 80 }}
-                ></Image>
+               
                 <View
                   style={{
                     width: "100%",
                     gap: 15,
+                    alignItems:'center'
                   }}
                 >
                   <Text
                     style={{
-                      color: "white",
-                      fontFamily: font.GoldPlay_SemiBold,
+                      color: colors.BLACK,
+                      fontFamily: font.GoldPlay_Medium,
                       fontSize: 18,
                     }}
                   >
@@ -253,15 +254,26 @@ export default function Scanner({ navigation }) {
                   </Text>
                   <TextInput
                     style={{
-                      height: 40,
+                      height: 50,
                       borderWidth: 1,
                       padding: 10,
-                      borderColor: "white",
+                      borderColor: "black",
                       borderRadius: 15,
-                      color: "white",
+                      color: "black",
                       fontFamily: font.GoldPlay_SemiBold,
+                      width:'90%',
+                      textAlign:'center',
+                      backgroundColor:'#fff'
                     }}
-                    onChangeText={(t) => setQrCode(t)}
+                    onChangeText={(t) =>{ 
+                      if(t.length >= 20){
+                        setIsButtonVisible(true);
+                      }
+                      else{
+                        setIsButtonVisible(false);
+                      }
+                      setQrCode(t)
+                    } }
                     value={qrCode}
                     placeholder="GESGR-3134-FEWG"
                     keyboardType="default"
@@ -270,34 +282,37 @@ export default function Scanner({ navigation }) {
                 </View>
               </View>
 
-              <View>
-                <TouchableHighlight
-                  onPress={handleSubmit}
-                  style={{ backgroundColor: "transparent", borderRadius: 15 }}
-                  underlayColor={colors.YELLOW}
-                >
-                  <View
-                    style={[
-                      stylesCommon.homeTextView,
-                      {
-                        borderColor: "white",
-                        width: 140,
-                        height: 40,
-                        borderRadius: 15,
-                      },
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        stylesCommon.homeText,
-                        { color: "white", fontSize: 15 },
-                      ]}
-                    >
-                      SUBMIT
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              </View>
+             {
+               isButtonVisible && 
+               <TouchableOpacity
+               onPress={handleSubmit}
+               style={{ backgroundColor: "transparent", borderRadius: 15 }}
+             
+             >
+               <View
+                 style={[
+                   stylesCommon.homeTextView,
+                   {
+                    borderColor:'#f2f2f2',
+                     width: 140,
+                     height: 40,
+                     borderRadius: 15,
+                   },
+                 ]}
+               >
+                 <Text
+                   style={[
+                     stylesCommon.homeText,
+                     { color: "black", fontSize: 15, textDecorationLine:'underline' },
+                   ]}
+                 >
+                   CONFORM
+                 </Text>
+               </View>
+             </TouchableOpacity>
+             }
+               
+             
             </View>
           )}
         </View>

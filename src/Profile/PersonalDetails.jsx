@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Image,Animated,Dimensions,Easing
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import CommonHeader from "../common/CommonHeader";
@@ -12,17 +13,60 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { colors, font } from "../constants";
-import { TextInput, Button, Checkbox, Modal, Portal } from "react-native-paper";
+import { TextInput, Button, Checkbox, Modal, Portal, Card } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
-import Icon from "@expo/vector-icons/MaterialIcons";
+import {Fontisto} from "@expo/vector-icons";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import CommonHeaderNew from "../common/CommonHeader_new";
+import ProfileCustomView from "../common/ProfileCustomeView";
 
 export default function PersonalDetails({ navigation }) {
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const rotateAnim_address = useRef(new Animated.Value(0)).current;
+  const SCREEN_DIMENSIONS = Dimensions.get('window');
+  const [rotated, setRotated] = useState(true);
+  const [rotated_address, setRotatedAddress] = useState(true);
+  const [rotated_bank, setRotatedBank] = useState(true)
   const inputRefs = useRef([]);
+
+//  ref for focus change
+  const PanRef = useRef(null);
+  const NameRef = useRef(null);
+  const FlatRef = useRef(null);
+  const AreaRef = useRef(null);
+  const CityRef = useRef(null);
+  const StateRef = useRef(null);
+  const PinRef = useRef(null);
+  const CountryRef = useRef(null);
+  const CurrentState = useRef(null);
+  const CurrentCity = useRef(null);
+  const AccHolderNameRef = useRef(null);
+  const AccNumberRef = useRef(null);
+  const BankNameRef = useRef(null);
+  const IFSCRef = useRef(null);
+
+  //Animation ref
+  const rotation = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(1)).current;
+  const stretchValue = useRef(new Animated.Value(1)).current;
+
+ // new state 
+  const [flat_house, setFlatHouse] = useState("");
+  const [area_street, setAreaStreet] = useState("");
+  const [city_town, setCityTown] = useState("");
+  const [state_new, setStateNew] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [country, setCountry] =useState("");
+  const [accountHolderName, setAccountHolderName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [showView, setSHowView] = useState(false);
+
   const [aadharNumber, setAadharNumber] = useState("");
   const [name, setname] = useState("");
   const [phoneNo, setphoneNo] = useState("");
@@ -58,22 +102,98 @@ export default function PersonalDetails({ navigation }) {
   //   route.params.sameAddress !== undefined ? route.params.sameAddress : true;
   // currAddress = route.params.currAddress ? route.params.currAddress : "";
   // }, []);
+
+  const rotation_per =rotateAnim.interpolate({
+    inputRange:[0, 1],
+    outputRange: ['0deg','180deg'] 
+    
+  });
+  const rotation_address =rotateAnim_address.interpolate({
+    inputRange:[0, 1],
+    outputRange: ['0deg','180deg'] 
+    
+  });
+  const HandleAnimation = () =>{
+    Animated.timing(rotateAnim,{
+      toValue:rotated ? 0 : 1,
+      duration:300,
+      useNativeDriver:true,
+    }).start(() => {
+    });
+    setRotated(!rotated);
+  }
+  const HandleAnimation_Address = () =>{
+    Animated.timing(rotateAnim_address,{
+      toValue:rotated_address ? 0 : 1,
+      duration:300,
+      useNativeDriver:true,
+    }).start(() => {
+    });
+    setRotatedAddress(!rotated_address);
+  }
+
+  const interpolatedStretchAnimation = stretchValue.interpolate({
+    inputRange: [1, 2],
+    outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
+  });
+  const stretch = (stretch_Value) => {
+    Animated.sequence([
+      Animated.timing(stretch_Value, {
+        toValue: 2, // You can adjust this value to control the stretch level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(stretch_Value, {
+        toValue: 1, // You can adjust this value to control the stretch level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ])
+  .start(() => {
+      // Reset the stretch value to 1
+      stretch_Value.setValue(1);
+    });
+  };
+  const scaleText = (scale_value) => {
+    Animated.sequence([
+      Animated.timing(scale_value, {
+        toValue: 0.9, // You can adjust this value to control the scale level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale_value, {
+        toValue: 1, // You can adjust this value to control the scale level
+        duration: 200, // You can adjust the duration of the animation
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ])
+  .start(() => {
+      // Reset the scale to 1
+      scale_value.setValue(1);
+    });
+  };
+
   const handleNext = () => {
     // Aadhar card number validation
     if (validation()) {
       console.log(profilePhoto);
       // All validations passed, navigate to BankDetails screen
-      navigation.navigate("BankDetails", {
-        profilePhoto,
-        name,
-        phoneNo,
-        aadharNo: aadharNumber,
-        address,
-        panNo,
-        sameAddress,
-        city,
-        state,
-      });
+
+      // navigation.navigate("BankDetails", {
+      //   profilePhoto,
+      //   name,
+      //   phoneNo,
+      //   aadharNo: aadharNumber,
+      //   address,
+      //   panNo,
+      //   sameAddress,
+      //   city,
+      //   state,
+      // });
     }
   };
 
@@ -178,14 +298,17 @@ export default function PersonalDetails({ navigation }) {
     retrievePersonalDetails();
   }, []);
 
+
+
   const handleName = (text) => {
     // Filter out non-letter characters
     const filteredText = text.replace(/[^a-zA-Z\s]/g, "");
     setname(filteredText);
   };
   return (
-    <View style={stylesCommon.yellowbg}>
-      <CommonHeader navigation={navigation} showBack />
+    <View style={[stylesCommon.yellowbg,{backgroundColor:"#f2f2f2"}]}>
+      {/* <CommonHeader navigation={navigation} showBack /> */}
+      <CommonHeaderNew navigation={navigation} header_color={colors.YELLOW} header_title={'CREATE PROFILE'}/>
 
       <CommonAlert
         visible={visible} // Pass visibility state to the CommonAlert component
@@ -213,14 +336,302 @@ export default function PersonalDetails({ navigation }) {
               alignItems: "center",
               flex: 1,
               justifyContent: "center",
-              marginTop: 40,
+             
+             
             }}
           >
-            <View style={{ alignItems: "center" }}>
-              <Text style={stylesCommon.welcomeText}>{"PERSONAL DETAILS"}</Text>
+              <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
+            <Image source={{ uri: profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>  
+          </View>
+          <Card style={{width:'90%', padding:16,backgroundColor:"#fff"}}>
+          <View style={{}}>
+            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
+                <Image source={require('../../assets/user.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
+                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"PERSONAL DETAILS"}</Text>
+                <TouchableOpacity activeOpacity={0.5} onPress={()=>{HandleAnimation()}}>
+                <Animated.Image 
+                source={require('../../assets/frame.png')} 
+                style={{height:20,width:20, resizeMode:'contain',transform:[{rotate:rotation_per}]}} />
+                </TouchableOpacity>
             </View>
+            {
+              !rotated &&   
+              <View>
+              <Text style={[styles.lableText,{marginTop:10}]}>
+                  Aadhar Card Number
+                </Text>
+                <View style={styles.inputRow}>
+                  {[...Array(3)].map((_, index) => (
+                    <TextInput
+                      key={index}
+                      ref={(ref) => (inputRefs.current[index] = ref)}
+                      value={aadharNo.substr(index * 4, 4)}
+                      mode="outlined"
+                      outlineStyle={{
+                        borderColor: colors.YELLOW,
+                        backgroundColor: "transparent",
+                        borderRadius: 15,
+                        
+                      }}
+                      keyboardType="numeric"
+                      style={styles.input}
+                      placeholder="1234"
+                      placeholderTextColor={colors.LIGHT_GREY}
+  
+                      contentStyle={{
+                        fontFamily: font.GoldPlay_Medium,
+                     
+                        borderColor:colors.YELLOW,
+                        textAlign:'center'
+                      }}
+                      // onChangeText={(text) => {
+                      //   const newAadharNumber =
+                      //     aadharNumber.substr(0, index * 4) +
+                      //     text +
+                      //     aadharNumber.substr((index + 1) * 4);
+                      //   setAadharNumber(newAadharNumber);
+                      // }}
+                      editable={false}
+                      maxLength={4}
+                      cursorColor="white"
+                    />
+                  ))}
+                  
+                </View>
+                <ProfileCustomView 
+                item_value={panNo} 
+                item_setValue={setPanNo} 
+                item_Ref={PanRef}
+                item_Ref_next={NameRef}
+                item_label={"PAN N:"}
+                item_place_holder={'Enter your Pan Card Number'}
+                item_return_key_type={'next'}
+                />
+              <ProfileCustomView 
+                item_value={name} 
+                item_setValue={setname} 
+                item_Ref={NameRef}
+                item_label={"Full Name:"}
+                item_place_holder={'Enter your Full Name'}
+                item_return_key_type={'next'}
+                />
+                </View>
+            } 
+          
+            </View>
+          </Card>
+          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
+        marginTop:20}}>
+          <View style={{}}>
+            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
+                <Image source={require('../../assets/location.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
+                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"ADDRESS"}</Text>
+                <TouchableOpacity activeOpacity={0.5} onPress={()=>{HandleAnimation_Address()}}>
+                <Animated.Image 
+                source={require('../../assets/frame.png')} 
+                style={{height:20,width:20, resizeMode:'contain',transform:[{rotate:rotation_address}]}} />
+                </TouchableOpacity>
+            </View>
+            {
+              !rotated_address &&   
+              <View>
+                <ProfileCustomView 
+                item_value={flat_house} 
+                item_setValue={setFlatHouse} 
+                item_Ref={FlatRef}
+                item_Ref_next={AreaRef}
+                item_label={"Flat/House:"}
+                item_place_holder={'Enter your Flat/House'}
+                item_return_key_type={'next'}
+                />
+              <ProfileCustomView 
+                item_value={area_street} 
+                item_setValue={setAreaStreet} 
+                item_Ref={AreaRef}
+                item_Ref_next={CityRef}
+                item_label={"Area/Street:"}
+                item_place_holder={'Enter your Area/Street'}
+                item_return_key_type={'next'}
+                />
+                 <ProfileCustomView 
+                item_value={city_town} 
+                item_setValue={setCityTown} 
+                item_Ref={CityRef}
+                item_Ref_next={StateRef}
+                item_label={"City/Town:"}
+                item_place_holder={'Enter your City/Town'}
+                item_return_key_type={'next'}
+                />
+              <ProfileCustomView 
+                item_value={state_new} 
+                item_setValue={setStateNew} 
+                item_Ref={StateRef}
+                item_Ref_next={PinRef}
+                item_label={"State:"}
+                item_place_holder={'Enter your State'}
+                item_return_key_type={'next'}
+                />
+                 <ProfileCustomView 
+                item_value={pincode} 
+                item_setValue={setPincode} 
+                item_Ref={PinRef}
+                item_Ref_next={CountryRef}
+                item_label={"Pin Code:"}
+                item_place_holder={'Enter your Pin Code'}
+                item_return_key_type={'next'}
+                />
+              <ProfileCustomView 
+                item_value={country} 
+                item_setValue={setCountry} 
+                item_Ref={CountryRef}
+                item_label={"Country:"}
+                item_place_holder={'Enter your Country'}
+                item_return_key_type={'next'}
+                />
+               <Text style={[stylesCommon.welcomeText,{fontSize:14, flex:1,marginTop:20}]}>{"CURRENT ADDRESS"}</Text>
+               <TouchableOpacity activeOpacity={0.6} style={{flexDirection:'row', alignItems:'center',marginTop:20 }} onPress={() =>{
+                 setSameAddress(!sameAddress);
+               }}>
+                <Image source={sameAddress ?require('../../assets/checkbox_selected.png') : require('../../assets/checkbox_unselected.png')} 
+                style={{height:15, width:15,marginTop:0, resizeMode:'contain'}}/>
+                <Text style={{fontSize:14, marginStart:10, fontFamily:sameAddress? font.GoldPlay_SemiBold : font.GoldPlay_Regular}}>SAME AS ABOVE ADDRESS</Text>
+                </TouchableOpacity> 
+                {
+                   !sameAddress && 
+                   <View> 
+                    <Text style={{fontSize:14, marginTop:20, fontFamily: font.GoldPlay_Regular, alignSelf:"center"}}>OR</Text>
+                    <TouchableOpacity activeOpacity={0.6} style={{alignSelf:"center", marginTop:30}} onPress={()=>{}}>
+                    <Text style={{fontSize:12, fontFamily: font.GoldPlay_SemiBold, alignSelf:"center", textDecorationLine:"underline"}}>ADD CURRENT ADDRESS</Text>
+                    </TouchableOpacity>
+                    <View style={{marginTop:20, marginBottom:10}}>
+                    <ProfileCustomView 
+                      item_value={city} 
+                      item_setValue={setcity} 
+                      item_Ref={CurrentCity}
+                      item_Ref_next={CurrentState}
+                      item_label={"City/Town:"}
+                      item_place_holder={'Enter your City/Town'}
+                      item_return_key_type={'next'}
+                      />
+                    <ProfileCustomView 
+                      item_value={state} 
+                      item_setValue={setstate} 
+                      item_Ref={CurrentState}
+                      item_label={"State:"}
+                      item_place_holder={'Enter your State'}
+                      item_return_key_type={'done'}
+                      
+                      />
+                  </View>
+                   </View>
+                }
+             
+                </View>
+            } 
+          
+            </View>
+          </Card>
+          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
+        marginTop:20}}>
+            <View style={{}}>
+            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
+                <Image source={require('../../assets/bank.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
+                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"BANK DETAILS"}</Text>
+                <TouchableOpacity activeOpacity={0.5} onPress={()=>{ setRotatedBank(!rotated_bank)}}>
+                  {
+                    rotated_bank ? <Text style={{fontFamily:font.GoldPlay_SemiBold, padding:10,textDecorationLine:"underline", fontSize:12}} >ADD</Text> : <Fontisto name="close" color={colors.BLACK} size={20}/>
+                  }
+                </TouchableOpacity>
+            </View>
+            {
+              !rotated_bank && 
+               <View style={{marginBottom:10}}>
+                    <ProfileCustomView 
+                      item_value={accountHolderName} 
+                      item_setValue={setAccountHolderName} 
+                      item_Ref={AccHolderNameRef}
+                      item_Ref_next={AccNumberRef}
+                      item_label={"Account Holder's Name"}
+                      item_place_holder={'Enter your Name'}
+                      item_return_key_type={'next'}
+                      item_is_bank = {true}
+                      />
+                    <ProfileCustomView 
+                      item_value={accountNumber} 
+                      item_setValue={setAccountNumber} 
+                      item_Ref={AccNumberRef}
+                      item_Ref_next={BankNameRef}
+                      item_label={"Account Number"}
+                      item_place_holder={'Enter Your Bank Account Number'}
+                      item_return_key_type={'next'}
+                      item_is_bank = {true}
+                      item_input ={'numeric'}
+                      />
+                       <ProfileCustomView 
+                      item_value={bankName} 
+                      item_setValue={setBankName} 
+                      item_Ref={BankNameRef}
+                      item_Ref_next={IFSCRef}
+                      item_label={"Bank Name"}
+                      item_place_holder={'Enter Your Bank Name'}
+                      item_return_key_type={'next'}
+                      item_is_bank = {true}
+                      />
+                    <ProfileCustomView 
+                      item_value={ifscCode} 
+                      item_setValue={setIfscCode} 
+                      item_Ref={IFSCRef}
+                      item_label={"IFSC Code"}
+                      item_place_holder={'Enter IFSC Code'}
+                      item_return_key_type={'done'}
+                      item_is_bank = {true}
+                      />
+              </View>
+            }
+            </View>
+        </Card>
 
-            <View
+        <TouchableOpacity
+          activeOpacity={1}
+            onPress={() => {
+              setSHowView(true);
+               setTimeout(() =>{
+                   setSHowView(false);
+                   handleNext()
+               },450);
+           // rotateImage(rotation);
+            stretch(stretchValue);
+            scaleText(scale);
+              //handleOnPress("Products")
+            }
+            }
+            //underlayColor={colors.YELLOW}
+            style={{ borderRadius: 30, 
+              marginTop:50
+              }}
+          >
+            <View style={{}}>
+            {
+                  showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
+                   width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
+              }
+            
+            <Animated.View
+              style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
+                borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
+                backgroundColor: colors.BLACK, flexDirection:'row',}}
+            >
+              
+              <View style={{width:0, }}></View>
+              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
+             
+            </Animated.View>
+            </View> 
+          </TouchableOpacity> 
+             <View style={{height:20}}></View>
+
+            {/* <View
               style={{
                 width: "100%",
                 justifyContent: "center",
@@ -322,52 +733,8 @@ export default function PersonalDetails({ navigation }) {
                 marginBottom: 10,
               }}
             >
-              <Text
-                style={{
-                  fontFamily: font.GoldPlay_Medium,
-                  fontSize: 18,
-                  marginTop: 20,
-                  textAlign: "center",
-                  alignItems: "center",
-                  color: "white",
-                }}
-              >
-                AADHAR CARD NUMBER
-              </Text>
-              <View style={styles.inputRow}>
-                {[...Array(3)].map((_, index) => (
-                  <TextInput
-                    key={index}
-                    ref={(ref) => (inputRefs.current[index] = ref)}
-                    value={aadharNo.substr(index * 4, 4)}
-                    mode="outlined"
-                    outlineStyle={{
-                      borderColor: "white",
-                      backgroundColor: "transparent",
-                      borderRadius: 15,
-                    }}
-                    keyboardType="numeric"
-                    style={styles.input}
-                    placeholder="1234"
-                    placeholderTextColor={colors.LIGHT_GREY}
-                    contentStyle={{
-                      fontFamily: font.GoldPlay_Medium,
-                      fontSize: 25,
-                      marginStart: 10,
-                    }}
-                    // onChangeText={(text) => {
-                    //   const newAadharNumber =
-                    //     aadharNumber.substr(0, index * 4) +
-                    //     text +
-                    //     aadharNumber.substr((index + 1) * 4);
-                    //   setAadharNumber(newAadharNumber);
-                    // }}
-                    editable={false}
-                    maxLength={4}
-                    cursorColor="white"
-                  />
-                ))}
-              </View>
+            
+              
             </View>
 
             <View
@@ -627,9 +994,9 @@ export default function PersonalDetails({ navigation }) {
                   />
                 </View>
               </View>
-            )}
+            )} */}
           </View>
-          <View
+          {/* <View
             style={{
               flex: 1,
               justifyContent: "center",
@@ -664,7 +1031,7 @@ export default function PersonalDetails({ navigation }) {
                 </Text>
               </View>
             </TouchableHighlight>
-          </View>
+          </View> */}
         </ScrollView>
       )}
     </View>
@@ -675,11 +1042,17 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    marginVertical: 10,
+    paddingHorizontal: 0,
+    marginVertical: 15,
   },
   input: {
     marginHorizontal: 5,
+    fontSize:20,
     flex: 1,
   },
+  lableText:{
+    color:'#999999',
+    fontFamily:font.GoldPlay_Regular,
+    fontSize:16
+  }
 });

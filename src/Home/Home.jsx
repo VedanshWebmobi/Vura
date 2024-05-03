@@ -10,6 +10,7 @@ import React, { useState, useEffect } from "react";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import Header from "../common/Header";
 import CommonHeader from "../common/CommonHeader";
+import CommonHeaderNew from "../common/CommonHeader_new";
 import { SliderBox } from "react-native-image-slider-box";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { BackHandler } from "react-native";
@@ -134,12 +135,12 @@ export default function Home({ navigation }) {
       }}
     >
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeader
+      {/* <CommonHeader
         screen={"Home"}
         navigation={navigation}
         showMenu={showMenutoggle}
-      />
-
+      /> */}
+    <CommonHeaderNew navigation={navigation} showBack={false} header_color={colors.YELLOW}/>
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => setShowAlert(false)} // Pass function to hide the modal

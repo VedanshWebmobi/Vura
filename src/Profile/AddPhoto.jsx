@@ -72,7 +72,7 @@ export default function AddPhoto({ navigation }) {
     try {
       setImage(image);
       hideModal();
-      setTimeout(() =>{handleNext()},1000)
+      setTimeout(() =>{navigation.navigate("AddAdhar", { profilePhoto: image });},1000)
     } catch (error) {
       throw error;
     }

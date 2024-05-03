@@ -446,8 +446,8 @@ import CountdownTimer from "../common/CountDownTimer";
                   },
                   inputsContainerStyle: { width: 100 },
                   pinCodeContainerStyle: {
-                    height: 50,
-                    width: 50,
+                    height: 45,
+                    width: 45,
                     borderRadius: 10,
                     borderWidth:2,
                     backgroundColor:"#333333"

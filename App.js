@@ -26,6 +26,7 @@ import LoginSuccessScreen from "./src/Screens/LoginSuccessScreen";
 import LandingPage from "./src/Screens/LandingPage";
 import AddPhoto from "./src/Profile/AddPhoto";
 import AddAdhar from "./src/Profile/AddAdhar";
+import HelpAndSupport from "./src/Screens/Help_Support";
 import PersonalDetails from "./src/Profile/PersonalDetails";
 import BankDetails from "./src/Profile/BankDetails";
 import ProfileDetails from "./src/Profile/ProfileDetails";
@@ -42,6 +43,7 @@ import ProductDetail from "./src/Home/ProductDetail";
 import * as Preference from "./src/StoreData/Preference";
 import { ExpoSecureKey } from "./src/constants";
 import CreateProfileScreen from "./src/Screens/CreateProfileScreen";
+import HomeTabScreen from "./src/Home/HomeTabScreen";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -122,7 +124,8 @@ export default function App() {
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={token ? "Home" : "StartScreen"}
+            // initialRouteName={token ? "Home" : "StartScreen"}
+            initialRouteName={token ? "HomeTab" : "StartScreen"}
           >
             <Stack.Screen name="StartScreen" component={StartScreen} />
             <Stack.Screen name="PreLogin" component={PreLogin} />
@@ -144,6 +147,8 @@ export default function App() {
             <Stack.Screen name="ProfileDetails" component={ProfileDetails} />
             <Stack.Screen name="ProductDetail" component={ProductDetail} />
             <Stack.Screen name="Scanner" component={Scanner} />
+            <Stack.Screen name="Help" component={HelpAndSupport} />
+            <Stack.Screen name="HomeTab" component={HomeTabScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

@@ -7,13 +7,15 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { colors, icon } from "../constants";
+import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function CashBack({ navigation }) {
   return (
-    <SafeAreaView style={stylesCommon.blackbg}>
+    <SafeAreaView style={[stylesCommon.blackbg,{backgroundColor:'#fff'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeader screen={"Product"} navigation={navigation} showBack />
-      <View style={{ flex: 1 }}>
+      <CommonHeaderNew header_title={"CASH BACKS"} header_color={colors.YELLOW} navigation={navigation}/>
+      {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
+      <View style={{ flex: 1 , paddingBottom:100}}>
         <ImageZoom
           source={icon.CASHBACK_CHART}
           style={{

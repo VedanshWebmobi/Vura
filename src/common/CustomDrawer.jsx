@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image,  StatusBar,ScrollView } from "react-native";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import {
   createDrawerNavigator,
@@ -16,6 +16,7 @@ import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonAlert from "./CommonAlert";
+import CommonHeaderNew from "./CommonHeader_new";
 
 export default function CustomDrawer({ navigation }) {
   const [showUpdate, setShowUpdate] = useState(false);
@@ -25,15 +26,20 @@ export default function CustomDrawer({ navigation }) {
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
+  // const menuItems = [
+  //   "Home",
+  //   "Products",
+  //   "Cash Back Charts",
+  //   "Offers",
+  //   "Catalogues",
+  //   "Wallet History",
+  //   "FAQ's",
+  //   "Log Out",
+  // ];
   const menuItems = [
-    "Home",
-    "Products",
-    "Cash Back Charts",
-    "Offers",
-    "Catalogues",
-    "Wallet History",
-    "FAQ's",
-    "Log Out",
+    "WALLET HISTORY",
+    "HELP & SUPPORT",
+    "LOGOUT",
   ];
   const Logout = () => {
     Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
@@ -158,7 +164,7 @@ export default function CustomDrawer({ navigation }) {
 
     return (
       <View key={index}>
-        <View style={{ height: 1, backgroundColor: "white" }} />
+      
         <TouchableOpacity
           style={{ padding: 15 }}
           activeOpacity={0.5}
@@ -171,7 +177,7 @@ export default function CustomDrawer({ navigation }) {
               flexDirection: "row",
               justifyContent: "flex-start",
               alignItems: "center",
-              marginStart: "20%", // Adjusted for better alignment
+              // Adjusted for better alignment
               gap: 10,
             }}
           >
@@ -204,9 +210,11 @@ export default function CustomDrawer({ navigation }) {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: colors.YELLOW, height: SCREEN_HEIGHT }}
+      style={{ flex: 1, backgroundColor: colors.BLACK, height: SCREEN_HEIGHT }}
     >
-      <CommonHeader navigation={navigation} screen={"Custom"} showBack />
+          <StatusBar backgroundColor={"black"} />
+      <CommonHeaderNew navigation={navigation} header_color={colors.BLACK} header_title_color={"#fff"}/>
+      {/* <CommonHeader navigation={navigation} screen={"Custom"} showBack /> */}
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => setShowAlert(false)} // Pass function to hide the modal
@@ -217,14 +225,22 @@ export default function CustomDrawer({ navigation }) {
         bodyText={errorMessage} // Pass body text
         // cancelButton={true} // Pass whether Cancel button should be displayed
       />
-      <View style={{ justifyContent: "flex-start", marginTop: 20, gap: 20 }}>
-        <View style={{ alignItems: "center" }}>
+      <View style={{ justifyContent: "flex-start", gap: 20, padding:10 }}>
+        <View style={{flexDirection:'row' }}>
           <Image
             source={profile ? { uri: profile } : icon.PROFILE_PIC}
-            style={{ width: 100, height: 100, borderRadius: 80 }}
+            style={{ width: 80, height: 80, borderRadius: 40, borderWidth:2, borderColor:colors.YELLOW }}
           />
+          <View style={{flex:1, paddingStart:20, paddingEnd:10, paddingTop:2,}}>
+            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold, fontSize:20}}>{name.length > 0 ? name : "Unknown" }</Text>
+            <View style={{flexDirection:'row', marginTop:10, alignItems:"center",  }}>
+              <Image source={require('../../assets/image_.png')} style={{height:20, width:20, resizeMode:'contain'}}/>
+              <Text style={{color:'#fff',fontFamily:font.GoldPlay_Medium, fontSize:14, marginStart:10}}>Artisan</Text>
+              </View>
+          </View>
+          <Image style={{height:35, width:35}} source={require('../../assets/edit_yellow.png')}/>
         </View>
-        <View style={{ alignItems: "center" }}>
+        {/* <View style={{ alignItems: "center" }}>
           <TouchableHighlight
             onPress={() => navigation.navigate("AddPhoto")}
             style={{ backgroundColor: "transparent", borderRadius: 10 }}
@@ -253,15 +269,49 @@ export default function CustomDrawer({ navigation }) {
               </Text>
             </View>
           </TouchableHighlight>
-        </View>
+        </View> */}
       </View>
+      <View style={{height:1, 
+        marginTop:20,backgroundColor:colors.YELLOW}}/>
       <ScrollView style={{ marginTop: 30 }}>
-      <View >
-      
-        {menuItems.map((item, index) => (
+      <View style={{paddingStart:10, paddingEnd:10}}>
+        
+         {/* {menuItems.map((item, index) => (
           <View key={index}>{renderItem(item, index)}</View>
-        ))}
-       
+        ))}  */}
+        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
+           if (!profileDetailsComplete) {
+            setShowAlert(true);
+            setErrorMessage("Please Complete Your Profile!");
+          } else {
+            navigation.navigate("Wallet");
+          }
+        }}>
+        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
+          <Image style={{height:20, width:20, resizeMode:'contain'}} 
+          source={require('../../assets/wallet_minus.png')}/>
+          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>WALLET HISTORY</Text>
+        </View>
+        </TouchableOpacity>
+        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
+        <TouchableOpacity activeOpacity={0.8} onPress={() =>{
+           navigation.navigate("Help");
+        }}>
+        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
+          <Image style={{height:20, width:20, resizeMode:'contain'}} 
+          source={require('../../assets/warning.png')}/>
+          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>HELP & SUPPORT</Text>
+        </View>
+        </TouchableOpacity>
+        <View style={{height:1, 
+        marginTop:20,backgroundColor:colors.YELLOW}}/>
+         <TouchableOpacity activeOpacity={0.8} style={{marginTop:10}} >
+        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
+          <Image style={{height:20, width:20, resizeMode:'contain'}} 
+          source={require('../../assets/logout.png')}/>
+          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>LOGOUT</Text>
+        </View>
+        </TouchableOpacity>
       </View>
       </ScrollView>
     </SafeAreaView>

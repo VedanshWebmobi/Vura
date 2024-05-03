@@ -45,7 +45,13 @@ export default function ({
               flex: 1,
             }}
           >
-            { <Image style={{height:100, width:100}}
+            { title === "Error" ? <Icon
+              name={"error"}
+              size={40}
+              color={
+                iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
+              }
+            /> :<Image style={{height:100, width:100}}
             source ={require('../../assets/success.gif')} /> }
             {/* <Icon
               name={"error"}
@@ -54,7 +60,7 @@ export default function ({
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
             /> */}
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:-30 }}>
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:title === "Error" ? 1 : -30 }}>
               {title}
             </Text>
             <Text

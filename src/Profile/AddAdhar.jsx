@@ -159,7 +159,7 @@ export default function AddAdhar({ navigation }) {
       <View style={{ alignItems: "center", flex: 4,  }}>
           <View style={{height:100, width:130, margin:30, alignItems:"center", justifyContent:'center'}}>
             <Image source={{ uri: profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
-            <Image source={require('../../assets/edit_black.png')} style={{height:40, width:40, resizeMode:'contain', position:'absolute', bottom:0, right:0}}/>  
+            <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>  
           </View>
         <Text
           style={{
@@ -178,6 +178,7 @@ export default function AddAdhar({ navigation }) {
               ref={(ref) => (inputRefs.current[index] = ref)}
               value={aadharNumber ? aadharNumber.substr(index * 4, 4) : ""}
               mode="outlined"
+              
               outlineStyle={{
                 borderColor: "#999999",
                 backgroundColor: "transparent",
@@ -198,6 +199,7 @@ export default function AddAdhar({ navigation }) {
                 borderWidth:1
 
               }}
+              
               onChangeText={(text) => {
                 // Handle the case where aadharNumber is null or empty
                 if (!aadharNumber) {
@@ -220,47 +222,58 @@ export default function AddAdhar({ navigation }) {
             />
           ))}
         </View>
-        <TouchableOpacity
-        activeOpacity={1}
-          onPress={() => {
-            setSHowView(true);
-             setTimeout(() =>{
-                 setSHowView(false);
-                 handleNext()
-             },450);
-          rotateImage(rotation);
-          stretch(stretchValue);
-          scaleText(scale);
-            //handleOnPress("Products")
-          }
-          }
-          //underlayColor={colors.YELLOW}
-          style={{ borderRadius: 30, 
-            marginTop:50
-            }}
-        >
-          <View style={{}}>
-          {
-                showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
-                 width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
+        {
+          aadharNumber.length == 12 ? 
+          <TouchableOpacity
+          activeOpacity={1}
+            onPress={() => {
+              setSHowView(true);
+               setTimeout(() =>{
+                   setSHowView(false);
+                   handleNext()
+               },450);
+            rotateImage(rotation);
+            stretch(stretchValue);
+            scaleText(scale);
+              //handleOnPress("Products")
             }
-          
-          <Animated.View
-            style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
-              borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
-              backgroundColor: colors.BLACK, flexDirection:'row',}}
+            }
+            //underlayColor={colors.YELLOW}
+            style={{ borderRadius: 30, 
+              marginTop:50
+              }}
           >
+            <View style={{}}>
+            {
+                  showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
+                   width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
+              }
             
-            <View style={{width:0, }}></View>
-            <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
-           
-          </Animated.View>
-          {/* <Animated.Image
-          source={icon.PROFILE_NEW} 
-          style={ { transform: [{ rotate: interpolatedRotateAnimation }], height:50, width:50,position:'absolute' }}
-        /> */}
-          </View> 
-        </TouchableOpacity>
+            <Animated.View
+              style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
+                borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
+                backgroundColor: colors.BLACK, flexDirection:'row',}}
+            >
+              
+              <View style={{width:0, }}></View>
+              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
+             
+            </Animated.View>
+            </View> 
+          </TouchableOpacity>
+          :
+          <View
+          style={{  borderRadius: 30,
+            borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
+            backgroundColor: "#cccccc", flexDirection:'row', marginTop:50}}
+        >
+          
+          <View style={{width:0, }}></View>
+          <Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#999999',alignSelf:"center",  alignContent:"center", }]}>CONFIRM</Text>
+         
+        </View>
+        }
+      
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
       <View style={{position:"absolute", bottom:30}}>
@@ -307,5 +320,6 @@ const styles = StyleSheet.create({
   input: {
     marginHorizontal: 5,
     flex: 1,
+    
   },
 });
