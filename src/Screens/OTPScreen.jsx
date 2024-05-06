@@ -237,6 +237,15 @@ import CountdownTimer from "../common/CountDownTimer";
           bankName,
           ifscCode,
           image,
+          current_address,
+          current_city,
+          current_country,
+          current_pincode,
+          current_state,
+          current_street,
+          country,
+          street,
+          pincode
         } = response;
   
         // Check for "null" and "undefined" strings and treat them as empty strings
@@ -254,7 +263,15 @@ import CountdownTimer from "../common/CountDownTimer";
         const formattedBankName = bankName === "null" ? "" : bankName;
         const formattedIfscCode = ifscCode === "null" ? "" : ifscCode;
         const formattedImage = image || "";
-  
+        const formattedCountry = country === "null" ? "" : country;
+        const formattedStreet = street === "null" ? "" : street;
+        const formattedPincode = pincode === "null" ? "" : pincode;
+        const formattedCurrentAddress = current_address === "null" ? "" : current_address;
+        const formattedCurrentCity = current_city === "null" ? "" : current_city;
+        const formattedCurrentCountry = current_country === "null" ? "" : current_country;
+        const formattedCurrentPincode = current_pincode === "null" ? "" : current_pincode;
+        const formattedCurrentState = current_state === "null" ? "" : current_state;
+        const formattedCurrentStreet = current_street === "null" ? "" : current_street;
         // Store non-setive profile data in AsyncStorage
         await Preference.storePreference("profile", {
           name: formattedName,
@@ -269,11 +286,20 @@ import CountdownTimer from "../common/CountDownTimer";
           accountNumber: formattedAccountNumber,
           bankName: formattedBankName,
           ifscCode: formattedIfscCode,
+          country:formattedCountry,
+          current_address: formattedCurrentAddress,
+          current_city:formattedCurrentCity,
+          current_country: formattedCurrentCountry,
+          current_pincode:formattedCurrentPincode,
+          current_state:formattedCurrentState,
+          current_street:formattedCurrentStreet,
+          street:formattedStreet,
+          pincode:formattedPincode
         });
       } catch (error) {
         console.error("Error fetching or storing profile data:", error);
       } finally {
-        navigation.dispatch(StackActions.replace("Home"));
+        navigation.dispatch(StackActions.replace("HomeTab"));
         setIsLoading(false);
         // Hide loader after fetching data
       }

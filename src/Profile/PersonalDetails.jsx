@@ -12,10 +12,10 @@ import stylesCommon, {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
-import { colors, font } from "../constants";
+import { axiosCallAPI } from "../Api/Axios";
 import { TextInput, Button, Checkbox, Modal, Portal, Card } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
-
+import { ExpoSecureKey, colors, font, icon } from "../constants";
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
 import {Fontisto} from "@expo/vector-icons";
@@ -23,12 +23,15 @@ import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import ProfileCustomView from "../common/ProfileCustomeView";
+import { ADD_PROFILE, GET_PROFILE } from "../Api/Utils";
+
+import * as ImagePicker from "expo-image-picker";
 
 export default function PersonalDetails({ navigation }) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim_address = useRef(new Animated.Value(0)).current;
   const SCREEN_DIMENSIONS = Dimensions.get('window');
-  const [rotated, setRotated] = useState(true);
+  const [rotated, setRotated] = useState(false);
   const [rotated_address, setRotatedAddress] = useState(true);
   const [rotated_bank, setRotatedBank] = useState(true)
   const inputRefs = useRef([]);
@@ -66,6 +69,14 @@ export default function PersonalDetails({ navigation }) {
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [showView, setSHowView] = useState(false);
+  const [image, setImage] = useState("");
+  
+  // current location
+  // const [current_flat_house, setCurrentFlatHouse] = useState("");
+  // const [current_area_street, setCurrentAreaStreet] = useState("");
+  // const [current_pincode, setCurrentPincode] = useState("");
+  // const [current_country, setCurrentCountry] = useState("");
+
 
   const [aadharNumber, setAadharNumber] = useState("");
   const [name, setname] = useState("");
@@ -77,9 +88,11 @@ export default function PersonalDetails({ navigation }) {
   const [panNo, setPanNo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = React.useState(false);
-  const [showModel, setShowModel] = useState(false);
-  const showModal = () => setVisible(true);
+  const [visibleModel, setVisibleModel] = useState(false);
+  const [showCameraModel, setShowCameraModel] = useState(false);
+  const showModal = () => setVisible(false);
   const hideModal = () => setVisible(false);
+  const hideCameraModal = () => setShowCameraModel(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const containerStyle = {
@@ -89,11 +102,11 @@ export default function PersonalDetails({ navigation }) {
     height: SCREEN_HEIGHT / 3,
     borderRadius: 20,
   };
-
+  const containerStyleNew = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
   const route = useRoute();
 
   const { profilePhoto, aadharNo } = route.params;
-  console.log(route.params);
+ // setImage(profilePhoto);
   // useEffect(() => {
   //   setAadharNumber(aadharNo);
   // address = route.params.address ? route.params.address : "";
@@ -181,6 +194,7 @@ export default function PersonalDetails({ navigation }) {
     // Aadhar card number validation
     if (validation()) {
       console.log(profilePhoto);
+      submitProfile();
       // All validations passed, navigate to BankDetails screen
 
       // navigation.navigate("BankDetails", {
@@ -194,6 +208,185 @@ export default function PersonalDetails({ navigation }) {
       //   city,
       //   state,
       // });
+    }
+  };
+  const submitProfile = async () => {
+    console.log("yeh ja raha hia ander.....", profilePhoto);
+    setIsLoading(true);
+    try {
+      let profileFormData = new FormData();
+      console.log("====================================");
+      console.log("Apiiiii callled...", profilePhoto);
+      console.log("====================================");
+      profileFormData.append("name", name);
+      if(image.length > 0){
+          profileFormData.append("image", {
+          uri: image,
+          type: "image/jpeg",
+          name: "profile_image.jpg",
+        });
+      }
+
+      // if (profilePhoto.includes("http") || profilePhoto.includes("https")) {
+      //   // profileFormData.append("image", profilePhoto);
+      // } else {
+      //   console.log("====================================");
+      //   console.log("yess huin bhai", profilePhoto);
+      //   console.log("====================================");
+
+        
+      // }
+
+      profileFormData.append("address", flat_house);
+      profileFormData.append("street",area_street);
+      profileFormData.append("state", state_new);
+      profileFormData.append("city", city_town);
+      profileFormData.append("pincode",pincode);
+      profileFormData.append("country", country);
+      profileFormData.append("aadharCardNo", aadharNo);
+      profileFormData.append("panCardNo", panNo);
+      profileFormData.append("accountHolderName", accountHolderName);
+      profileFormData.append("accountNumber", accountNumber);
+      profileFormData.append("bankName", bankName);
+      profileFormData.append("ifscCode", ifscCode);
+      profileFormData.append("current_address", sameAddress ? flat_house : "" );
+      profileFormData.append("current_street", sameAddress ? area_street : "" );
+      profileFormData.append("current_city", sameAddress ? city_town : city);
+      profileFormData.append("current_state", sameAddress ? state_new:state);
+      profileFormData.append("current_pincode", sameAddress? pincode : "" );
+      profileFormData.append("current_country", sameAddress ? country : "");
+
+      console.log("====================================");
+      console.log("yeh hai bhai", profileFormData);
+      console.log("====================================");
+      let requestOptions = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
+
+      const response = await axiosCallAPI(
+        "post",
+        ADD_PROFILE,
+        profileFormData,
+        requestOptions,
+        true,
+        navigation
+      );
+
+      console.log("LE Bhai", response);
+
+      if (response && response.status) {
+        Preference.save(ExpoSecureKey.IS_REGISTER, "true");
+        await getProfile();
+        // navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.error("Error submitting profile:", error);
+    } finally {
+      setIsLoading(true);
+    }
+  };
+  const getProfile = async () => {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        headers: {
+          Accept: "application/json",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
+
+      const response = await axiosCallAPI(
+        "get",
+        GET_PROFILE,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+
+      console.log("Bhai yeh method mai yeh mil raha", response);
+      //  Extract relevant data from the API response
+      const {
+        name,
+        mobileNo,
+        address,
+        state,
+        city,
+        aadharCardNo,
+        panCardNo,
+        accountHolderName,
+        accountNumber,
+        bankName,
+        ifscCode,
+        image,
+        current_address,
+        current_city,
+        current_country,
+        current_pincode,
+        current_state,
+        current_street,
+        country,
+        street, pincode
+      } = response;
+
+      // Check for "null" and "undefined" strings and treat them as empty strings
+      const formattedName = name === "null" ? "" : name;
+      const formattedMobileNo = mobileNo === "null" ? "" : mobileNo;
+      const formattedAddress = address === "null" ? "" : address;
+      const formattedState = state === "null" ? "" : state;
+      const formattedCity = city === "null" ? "" : city;
+      const formattedAadharCardNo = aadharCardNo === "null" ? "" : aadharCardNo;
+      const formattedPanCardNo = panCardNo === "null" ? "" : panCardNo;
+      const formattedAccountHolderName =
+        accountHolderName === "null" ? "" : accountHolderName;
+      const formattedAccountNumber =
+        accountNumber === "null" ? "" : accountNumber;
+      const formattedBankName = bankName === "null" ? "" : bankName;
+      const formattedIfscCode = ifscCode === "null" ? "" : ifscCode;
+      const formattedImage = image || "";
+      const formattedCountry = country === "null" ? "" : country;
+      const formattedCurrentAddress = current_address === "null" ? "" : current_address;
+      const formattedCurrentCity = current_city === "null" ? "" : current_city;
+      const formattedCurrentCountry = current_country === "null" ? "" : current_country;
+      const formattedCurrentPincode = current_pincode === "null" ? "" : current_pincode;
+      const formattedCurrentState = current_state === "null" ? "" : current_state;
+      const formattedCurrentStreet = current_street === "null" ? "" : current_street;
+      const formattedStreet = street === "null" ? "":street;
+      const formattedPincode = pincode === "null" ? "" : pincode;
+
+      // Store non-setive profile data in AsyncStorage
+      await Preference.storePreference("profile", {
+        name: formattedName,
+        image: formattedImage,
+        mobileNo: formattedMobileNo,
+        address: formattedAddress,
+        state: formattedState,
+        city: formattedCity,
+        aadharCardNo: formattedAadharCardNo,
+        panCardNo: formattedPanCardNo,
+        accountHolderName: formattedAccountHolderName,
+        accountNumber: formattedAccountNumber,
+        bankName: formattedBankName,
+        ifscCode: formattedIfscCode,
+        country:formattedCountry,
+        current_address: formattedCurrentAddress,
+        current_city:formattedCurrentCity,
+        current_country: formattedCurrentCountry,
+        current_pincode:formattedCurrentPincode,
+        current_state:formattedCurrentState,
+        current_street:formattedCurrentStreet,
+        street:formattedStreet,
+        pincode:formattedPincode
+      });
+    } catch (error) {
+      console.error("Error fetching or storing profile data:", error);
+    } finally {
+      navigation.navigate("HomeTab");
+      setIsLoading(false);
+      // Hide loader after fetching data
     }
   };
 
@@ -256,7 +449,45 @@ export default function PersonalDetails({ navigation }) {
     // }
     return true;
   };
+  const uploadImage = async (mode) => {
+    let result = {};
+    try {
+      if (mode === "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else {
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.front,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      }
 
+      if (!result.canceled) {
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      alert("Error uploading image: " + error.message);
+      hideCameraModal();
+    }
+  };
+  const saveImage = async (image) => {
+    try {
+      setImage(image);
+   
+      hideCameraModal();
+      
+    } catch (error) {
+      throw error;
+    }
+  };
   const handleOkPress = () => {
     console.log("Ok Pressed");
   };
@@ -268,9 +499,28 @@ export default function PersonalDetails({ navigation }) {
       setIsLoading(true);
       try {
         const storedDetails = await Preference.getPreference("profile");
-
+        console.log("My Profile", storedDetails);
         if (storedDetails) {
-          const { name, mobileNo, address, state, city, panCardNo } =
+          const {    name,
+            image,
+            mobileNo,
+            address,
+            state,
+            city,
+            aadharCardNo,
+            panCardNo,
+            accountHolderName,
+            accountNumber,
+            bankName,
+            ifscCode,
+            country,
+            current_address,
+            current_city,
+            current_country,
+            current_pincode,
+            current_state,
+            current_street,
+            street,pincode } =
             storedDetails;
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
@@ -282,10 +532,28 @@ export default function PersonalDetails({ navigation }) {
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
+          setFlatHouse(address || "");
           setstate(state || "");
           setAadharNumber(aadharNo || "");
           setcity(city || "");
           setPanNo(panCardNo || "");
+          setAreaStreet(street || "");
+          setCityTown(city || "");
+          setStateNew(state || "");
+          setPincode(pincode || "");
+          setCountry(country || "");
+          setAccountHolderName(accountHolderName || "");
+          setAccountNumber(accountNumber || "");
+          setBankName(bankName || "");
+          setIfscCode(ifscCode || "");
+
+          if(address == current_address){
+            setSameAddress(true);
+            setstate("");
+            setcity("");
+
+          }
+
         }
       } catch (error) {
         console.error("Error retrieving personal details:", error);
@@ -308,6 +576,65 @@ export default function PersonalDetails({ navigation }) {
   return (
     <View style={[stylesCommon.yellowbg,{backgroundColor:"#f2f2f2"}]}>
       {/* <CommonHeader navigation={navigation} showBack /> */}
+      <Portal>
+        <Modal
+          visible={showCameraModel}
+          onDismiss={hideCameraModal}
+          contentContainerStyle={containerStyleNew}
+          style={{ flex: 1, justifyContent: "flex-end" }}
+        >
+          <View >
+            <Fontisto name="close" size={24} color={"#999999"} style={{alignSelf:'flex-end'}} onPress={()=>hideCameraModal()}/>
+            <Text style={{color:colors.BLACK, fontSize:20, fontFamily:font.GoldPlay_SemiBold, alignSelf:"center", marginBottom:30}}>UPLOAD PHOTO</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              paddingBottom:20
+            }}
+          >
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={require('../../assets/take_from_camera.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      marginStart: 10,
+                      resizeMode:'contain'
+                    }}
+
+                  />
+                )}
+                onPress={() => uploadImage("camera")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize:16, textDecorationLine:'underline' }}>Camera</Text>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={require('../../assets/take_from_gallery.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      marginStart: 10,
+                      resizeMode:'contain'
+                    }}
+                  />
+                )}
+                onPress={() => uploadImage("gallery")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold,fontSize:16, textDecorationLine:'underline' }}>
+                Gallery
+              </Text>
+            </View>
+          </View>
+          </View>
+        </Modal>
+      </Portal>
       <CommonHeaderNew navigation={navigation} header_color={colors.YELLOW} header_title={'CREATE PROFILE'}/>
 
       <CommonAlert
@@ -341,8 +668,10 @@ export default function PersonalDetails({ navigation }) {
             }}
           >
               <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
-            <Image source={{ uri: profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
-            <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>  
+            <Image source={{ uri:image.length > 0? image : profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            <TouchableOpacity style={{position:'absolute', bottom:0, right:5}} onPress={()=>setShowCameraModel(true)}>
+            <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
+            </TouchableOpacity>
           </View>
           <Card style={{width:'90%', padding:16,backgroundColor:"#fff"}}>
           <View style={{}}>

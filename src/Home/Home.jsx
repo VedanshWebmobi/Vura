@@ -7,7 +7,7 @@ import {
   StatusBar,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
+import stylesCommon, { SCREEN_WIDTH, SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import Header from "../common/Header";
 import CommonHeader from "../common/CommonHeader";
 import CommonHeaderNew from "../common/CommonHeader_new";
@@ -154,14 +154,14 @@ export default function Home({ navigation }) {
 
       <SliderBox
         images={images}
-        sliderBoxHeight={300}
+        sliderBoxHeight={SCREEN_HEIGHT-180}
         activeOpacity={0.5}
         autoplay={true}
         circleLoop={true}
         autoplayInterval={4000}
       />
 
-      <View style={{ flex: 1, margin: 20 }}>
+      {/* <View style={{ flex: 1, margin: 20 }}>
         <View
           style={{
             flex: 1,
@@ -224,7 +224,7 @@ export default function Home({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View> */}
     </View>
   );
 }

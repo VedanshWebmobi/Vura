@@ -168,7 +168,7 @@ export default function Product({ navigation }) {
   return (
     <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/>
+      {/* <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/> */}
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
       {isLoading ? (
         <ActivityIndicator
@@ -178,7 +178,7 @@ export default function Product({ navigation }) {
         />
       ) : (
         <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15,paddingBottom:100  }}>
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
@@ -197,14 +197,7 @@ export default function Product({ navigation }) {
               </Text>
             </View>
             <View>
-              {/* <Picker
-              ref={pickerRef}
-              selectedValue={selected}
-              onValueChange={(itemValue, itemIndex) => setSelected(itemValue)}
-            >
-              <Picker.Item label="Java" value="java" />
-              <Picker.Item label="JavaScript" value="js" />
-            </Picker> */}
+
               <DropDownPicker
                 open={open}
                 value={value}
@@ -222,7 +215,7 @@ export default function Product({ navigation }) {
                 }}
               />
             </View>
-          </View>
+          </View> */}
           <View
             style={{
               backgroundColor: colors.GREY_TXT,
@@ -254,8 +247,11 @@ export default function Product({ navigation }) {
                     onPress={() => navigation.navigate("ProductDetail", item)}
                   >
                     <View style={{}}>
+                      {
+                        console.log(item.productImages)
+                      }
                       <Image
-                        source={{ uri: item.productImages[0].productImg }}
+                        source={{ uri:item.productImages ?  item.productImages[0].productImg : "" }}
                         style={{ height: 150, width: 100, resizeMode: "cover" }}
                       />
                     </View>

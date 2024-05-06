@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image,  StatusBar,ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image,  StatusBar,ScrollView, Alert } from "react-native";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import {
   createDrawerNavigator,
@@ -23,6 +23,7 @@ export default function CustomDrawer({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setprofile] = useState("");
   const [name, setName] = useState("");
+  const [profileDetails, setProfileDetails] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
@@ -78,8 +79,11 @@ export default function CustomDrawer({ navigation }) {
     const retrieveProfile = async () => {
       try {
         const storedDetails = await Preference.getPreference("profile");
+        console.log("StoreDetails", storedDetails);
         if (storedDetails) {
+          setProfileDetails(storedDetails);
           const {
+            name,
             image,
             address,
             aadharCardNo,
@@ -89,6 +93,8 @@ export default function CustomDrawer({ navigation }) {
             bankName,
             ifscCode,
           } = storedDetails;
+          setName(name);
+          setprofile(image);
           console.log("Profile details retrieved:", {
             address,
           });
@@ -149,6 +155,7 @@ export default function CustomDrawer({ navigation }) {
       const retrieveProfile = async () => {
         try {
           const storedDetails = await Preference.getPreference("profile");
+           
           if (storedDetails) {
             const { image, name } = storedDetails;
 
@@ -238,7 +245,11 @@ export default function CustomDrawer({ navigation }) {
               <Text style={{color:'#fff',fontFamily:font.GoldPlay_Medium, fontSize:14, marginStart:10}}>Artisan</Text>
               </View>
           </View>
+        <TouchableOpacity  onPress={() => {
+              navigation.navigate("PersonalDetails",{profilePhoto:profileDetails.image, aadharNo:profileDetails.aadharCardNo});
+        }}>
           <Image style={{height:35, width:35}} source={require('../../assets/edit_yellow.png')}/>
+          </TouchableOpacity>  
         </View>
         {/* <View style={{ alignItems: "center" }}>
           <TouchableHighlight
@@ -305,7 +316,9 @@ export default function CustomDrawer({ navigation }) {
         </TouchableOpacity>
         <View style={{height:1, 
         marginTop:20,backgroundColor:colors.YELLOW}}/>
-         <TouchableOpacity activeOpacity={0.8} style={{marginTop:10}} >
+         <TouchableOpacity activeOpacity={0.8} style={{marginTop:10}} onPress={()=>{
+          Logout();
+         }}>
         <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
           <Image style={{height:20, width:20, resizeMode:'contain'}} 
           source={require('../../assets/logout.png')}/>

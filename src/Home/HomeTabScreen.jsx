@@ -19,7 +19,7 @@ import {
       import { createNativeStackNavigator } from "@react-navigation/native-stack";    
 import { colors } from '../constants';
       import Home from './Home';
-      import Product from './Product';
+      import ProductTabs from './ProductsTabScreen';
       import CashBack from './CashBack';
       import Scanner from './Scanner';
 
@@ -56,7 +56,7 @@ export default function HomeTabScreen({navigation}){
             <Image source={focused ? require('../../assets/home_icon.png'): require('../../assets/home_icon_white.png')} style={{height:20, width:20, resizeMode:'contain'}}/>
           )
         }}/>
-        <Tabs.Screen name="PRODUCTS" component={Product} 
+        <Tabs.Screen name="PRODUCTS" component={ProductTabs} 
           options={{
             tabBarIcon : ({ focused, color, size }) =>(
               <Image source={require('../../assets/box.png')} style={{height:20, width:20, resizeMode:'contain'}} tintColor={focused ? colors.BLACK : '#fff'}/>
