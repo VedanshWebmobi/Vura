@@ -18,7 +18,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from '@expo/vector-icons';
 export default function Category({ navigation }) {
   const data = [
-    "I Am An Employee",
+    // "I Am An Employee",
     "I Am A Market Operator",
     "I Am A Distributer",
     "I Am A Dealer",

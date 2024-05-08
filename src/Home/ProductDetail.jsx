@@ -21,6 +21,7 @@ import Icons from "@expo/vector-icons/FontAwesome5";
 import { Icon } from "react-native-paper";
 import { SimpleGrid } from "react-native-super-grid";
 import * as FileSystem from "expo-file-system";
+import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function ProductDetail({ navigation, route }) {
   const { StorageAccessFramework } = FileSystem;
@@ -139,8 +140,8 @@ export default function ProductDetail({ navigation, route }) {
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
       <StatusBar backgroundColor={colors.YELLOW} />
-
-      <CommonHeader navigation={navigation} showBack />
+      <CommonHeaderNew navigation={navigation} header_title=" "/>
+      {/* <CommonHeader navigation={navigation} showBack /> */}
       <ScrollView>
         <View style={styles.container}>
           {/* Render your product details here using the route params */}
@@ -263,7 +264,7 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
             </View>
           </View>
-
+          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
           <View style={{ padding: 15 }}>
             <View style={{ marginBottom: 5 }}>
               <Text
@@ -283,7 +284,61 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
             </View>
           </View>
+          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
+          <View style={{ padding: 15 }}>
+            <View style={{ marginBottom: 10 }}>
+              <Text
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+              >
+                User Guide
+              </Text>
+            </View>
+            <View style={{ gap: 5 }}>
+              <Text
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+              >
+                Substrate Preparation
+              </Text>
+              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
+                Adhesive can be applied on even and compact substrates, free of
+                any substances that reduce adherence (grease, bitumen, oil,
+                paint, dust etc.). Concrete should be at least 1 month old.
+                Cement screeds and plasters should be fully cured. Anhydrite
+                (residual moisture below 0.5%) substrates should be mechanically
+                roughened and cleaned from dust. Aerated concrete should be free
+                from dust. Substrates must not be wet. Any existing dirt, loose
+                layers and paint coating shall be mechanically removed.
+                Absorbent substrates shall be dampen and remove excess water
+                before application.
+              </Text>
 
+              <Text
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+              >
+                Application
+              </Text>
+              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
+                Pour VURA FasTile into a container with the precisely measured
+                amount of clean water and stir with a drill and mixer until a
+                homogeneous mass without lumps is obtained. Leave for 5 min. and
+                then stir again. Apply the mortar with a suitable notched
+                trowel. Use the proper sized notch trowel to ensure full bedding
+                in the tile. Do not soak tiles adhesive in the water. The back
+                buttering method shall be used for larger tiles and for outdoor
+                applications (ie. additionally a thin layer of the mortar should
+                be spread on the tile's back side, contact area > 90%). Place
+                the tiles only during the open time of the adhesive. Fresh
+                excess mortar can be removed with water, hardened material can
+                only be removed mechanically. Grouting on the wall can be done
+                after 8 hrs in (Gres tiles) and after 24 hrs in porous tiles
+                using VURA grouts. Floors are set to light traffic after approx.
+                24 hrs. Expansion joints, joints at the corners of walls and
+                floor and around sanitary equipment shall be filled with
+                sealants or shall be treated with appropriate treatment.
+              </Text>
+            </View>
+          </View>
+          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
           <View>
             <View style={{ padding: 15 }}>
               <Text
@@ -327,17 +382,17 @@ export default function ProductDetail({ navigation, route }) {
                           }}
                         >
                           <Image
-                            source={icon.DOWNLOAD_ICON}
+                            source={require('../../assets/pdf.png')}
                             style={{
-                              height: 60,
-                              width: 60,
+                              height: 80,
+                              width: 80,
                               resizeMode: "contain",
                               //backgroundColor: "blue",
                             }}
                           />
                           <View
                             style={{
-                              backgroundColor: colors.LINE_GREY,
+                            
                               //backgroundColor: "red",
                               // width: SCREEN_WIDTH / 2,
                               padding: 5,
@@ -347,10 +402,11 @@ export default function ProductDetail({ navigation, route }) {
                           >
                             <Text
                               style={{
-                                fontFamily: font.GoldPlay_Medium,
+                                fontFamily: font.GoldPlay_SemiBold,
                                 color: "black",
                                 fontSize: 12,
                                 textAlign: "center",
+                                textDecorationLine:'underline'
                               }}
                             >
                               {item.item.productDocName}
@@ -509,59 +565,7 @@ export default function ProductDetail({ navigation, route }) {
             </View> */}
           </View>
 
-          <View style={{ padding: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
-              >
-                User Guide
-              </Text>
-            </View>
-            <View style={{ gap: 5 }}>
-              <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
-              >
-                Substrate Preparation
-              </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
-                Adhesive can be applied on even and compact substrates, free of
-                any substances that reduce adherence (grease, bitumen, oil,
-                paint, dust etc.). Concrete should be at least 1 month old.
-                Cement screeds and plasters should be fully cured. Anhydrite
-                (residual moisture below 0.5%) substrates should be mechanically
-                roughened and cleaned from dust. Aerated concrete should be free
-                from dust. Substrates must not be wet. Any existing dirt, loose
-                layers and paint coating shall be mechanically removed.
-                Absorbent substrates shall be dampen and remove excess water
-                before application.
-              </Text>
-
-              <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
-              >
-                Application
-              </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
-                Pour VURA FasTile into a container with the precisely measured
-                amount of clean water and stir with a drill and mixer until a
-                homogeneous mass without lumps is obtained. Leave for 5 min. and
-                then stir again. Apply the mortar with a suitable notched
-                trowel. Use the proper sized notch trowel to ensure full bedding
-                in the tile. Do not soak tiles adhesive in the water. The back
-                buttering method shall be used for larger tiles and for outdoor
-                applications (ie. additionally a thin layer of the mortar should
-                be spread on the tile's back side, contact area > 90%). Place
-                the tiles only during the open time of the adhesive. Fresh
-                excess mortar can be removed with water, hardened material can
-                only be removed mechanically. Grouting on the wall can be done
-                after 8 hrs in (Gres tiles) and after 24 hrs in porous tiles
-                using VURA grouts. Floors are set to light traffic after approx.
-                24 hrs. Expansion joints, joints at the corners of walls and
-                floor and around sanitary equipment shall be filled with
-                sealants or shall be treated with appropriate treatment.
-              </Text>
-            </View>
-          </View>
+          
         </View>
       </ScrollView>
     </SafeAreaView>

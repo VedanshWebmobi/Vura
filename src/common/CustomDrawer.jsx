@@ -115,6 +115,7 @@ export default function CustomDrawer({ navigation }) {
             setProfileDetailsComplete(false);
           }
         }
+
       } catch (error) {
         console.error("Error retrieving details:", error);
       }
@@ -220,7 +221,7 @@ export default function CustomDrawer({ navigation }) {
       style={{ flex: 1, backgroundColor: colors.BLACK, height: SCREEN_HEIGHT }}
     >
           <StatusBar backgroundColor={"black"} />
-      <CommonHeaderNew navigation={navigation} header_color={colors.BLACK} header_title_color={"#fff"}/>
+      <CommonHeaderNew navigation={navigation} header_color={colors.BLACK} header_title_color={"#fff"} showBack={true} header_title={" "}/>
       {/* <CommonHeader navigation={navigation} screen={"Custom"} showBack /> */}
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
@@ -246,7 +247,18 @@ export default function CustomDrawer({ navigation }) {
               </View>
           </View>
         <TouchableOpacity  onPress={() => {
-              navigation.navigate("PersonalDetails",{profilePhoto:profileDetails.image, aadharNo:profileDetails.aadharCardNo});
+              console.log("Profile Details", profileDetails);
+              if(profileDetails.length == 0){
+                navigation.navigate("AddAdhar")  
+              }
+              else if(profileDetails.aadharCardNo == "")
+              {
+                navigation.navigate("AddAdhar")  
+              }
+              else{
+                navigation.navigate("PersonalDetails",{profilePhoto:profileDetails.image, aadharNo:profileDetails.aadharCardNo});
+              }
+              //
         }}>
           <Image style={{height:35, width:35}} source={require('../../assets/edit_yellow.png')}/>
           </TouchableOpacity>  
@@ -292,8 +304,9 @@ export default function CustomDrawer({ navigation }) {
         ))}  */}
         <TouchableOpacity activeOpacity={0.8} onPress={()=>{
            if (!profileDetailsComplete) {
-            setShowAlert(true);
-            setErrorMessage("Please Complete Your Profile!");
+           // setShowAlert(true);
+           // setErrorMessage("Please Complete Your Profile!");
+           navigation.navigate("CompleteProfile");
           } else {
             navigation.navigate("Wallet");
           }

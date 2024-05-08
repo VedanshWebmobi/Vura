@@ -1,7 +1,8 @@
 import { SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ImageZoom } from "@likashefqet/react-native-image-zoom";
 import CommonHeader from "../common/CommonHeader";
+import { useFocusEffect } from '@react-navigation/native';
 import stylesCommon, {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
@@ -10,9 +11,22 @@ import { colors, icon } from "../constants";
 import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function CashBack({ navigation }) {
+  const [statusColor, setStatusColor] = useState(colors.YELLOW);
+  useFocusEffect(
+    React.useCallback(() => {
+      setStatusColor(colors.YELLOW);
+
+      return () => {
+
+
+      };
+    
+    }, [navigation]));
+
+
   return (
     <SafeAreaView style={[stylesCommon.blackbg,{backgroundColor:'#fff'}]}>
-      <StatusBar backgroundColor={colors.YELLOW} />
+      <StatusBar backgroundColor={statusColor} />
       <CommonHeaderNew header_title={"CASH BACKS"} header_color={colors.YELLOW} navigation={navigation}/>
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
       <View style={{ flex: 1 , paddingBottom:100}}>

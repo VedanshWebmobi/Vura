@@ -4,16 +4,17 @@ import {
   Text,
   View,
   TouchableOpacity,
-  StatusBar,
+  StatusBar,Keyboard,
   Image,Animated,Easing, Dimensions
 } from "react-native";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
-import { TextInput } from "react-native-paper";
-import { colors, font } from "../constants";
+import { TextInput, Modal, Portal, Button } from "react-native-paper";
+import { colors, font,icon } from "../constants";
 import { useRoute } from "@react-navigation/native";
 import * as Preference from "../StoreData/Preference";
-
+import { MaterialIcons,Fontisto } from '@expo/vector-icons';
+import * as ImagePicker from "expo-image-picker";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 
@@ -21,9 +22,61 @@ export default function AddAdhar({ navigation }) {
   const SCREEN_DIMENSIONS = Dimensions.get('window');
   const [aadharNumber, setAadharNumber] = useState("");
   const [showView, setSHowView] = useState(false);
+  const [image, setImage] = useState("");
+  const [visible, setVisible] = React.useState(false);
+  const showModal = () =>{
+    Keyboard.dismiss();
+     setVisible(true)};
+  const hideModal = () => setVisible(false);
+  const containerStyle = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
   const route = useRoute();
-  const { profilePhoto } = route.params;
-  console.log("ProfilePhot", profilePhoto);
+  const profilePhoto = "";
+  if(route.params)
+  {
+    profilePhoto = route.params.profilePhoto;
+    //  const { profilePhoto } = route.params;
+   // console.log("ProfilePhot", profilePhoto);
+  }  
+  const uploadImage = async (mode) => {
+    let result = {};
+    try {
+      if (mode === "gallery") {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+        
+          quality: 1,
+        });
+      } else {
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          cameraType: ImagePicker.CameraType.front,
+          allowsEditing: true,
+        
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        await saveImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      alert("Error uploading image: " + error.message);
+      hideModal();
+    }
+  };
+
+  const saveImage = async (image) => {
+    try {
+      setImage(image);
+      hideModal();
+     // setTimeout(() =>{navigation.navigate("AddAdhar", { profilePhoto: image });},1000)
+    } catch (error) {
+      throw error;
+    }
+  };
+ 
   const inputRefs = useRef([]);
   const rotation = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
@@ -145,27 +198,87 @@ export default function AddAdhar({ navigation }) {
     navigation.navigate("PersonalDetails", {
       aadharNo: aadharNumber,
       profilePhoto: profilePhoto,
+      document:image
     });
   };
 
   return (
     <View style={[stylesCommon.yellowbg,{backgroundColor:'#f2f2f2'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+          style={{ flex: 1, justifyContent: "flex-end" }}
+        >
+          <View >
+            <Fontisto name="close" size={24} color={"#999999"} style={{alignSelf:'flex-end'}} onPress={()=>hideModal()}/>
+            <Text style={{color:colors.BLACK, fontSize:20, fontFamily:font.GoldPlay_SemiBold, alignSelf:"center", marginBottom:30}}>UPLOAD PHOTO</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              paddingBottom:20
+            }}
+          >
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={require('../../assets/take_from_camera.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      marginStart: 10,
+                      resizeMode:'contain'
+                    }}
+
+                  />
+                )}
+                onPress={() => uploadImage("camera")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize:16, textDecorationLine:'underline' }}>Camera</Text>
+            </View>
+            <View style={{ alignItems: "center" }}>
+              <Button
+                icon={({ size, color }) => (
+                  <Image
+                    source={require('../../assets/take_from_gallery.png')}
+                    style={{
+                      width: 65,
+                      height: 65,
+                      marginStart: 10,
+                      resizeMode:'contain'
+                    }}
+                  />
+                )}
+                onPress={() => uploadImage("gallery")}
+              />
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold,fontSize:16, textDecorationLine:'underline' }}>
+                Gallery
+              </Text>
+            </View>
+          </View>
+          </View>
+        </Modal>
+      </Portal>
       <CommonHeaderNew header_title={"CREATE PROFILE"}
       header_color={colors.YELLOW} 
       navigation ={navigation}
       />
       {/* <CommonHeader navigation={navigation} showBack /> */}
       <View style={{ alignItems: "center", flex: 4,  }}>
-          <View style={{height:100, width:130, margin:30, alignItems:"center", justifyContent:'center'}}>
-            <Image source={{ uri: profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
-            <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>  
-          </View>
+           <View style={{ margin:10, alignItems:"center", justifyContent:'center'}}>
+            <Image source={require('../../assets/aadhaar_logo.png')} style={{height:150, width:150, resizeMode:'contain'}}/>
+            {/* <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>   */}
+          </View> 
         <Text
           style={{
             fontFamily: font.GoldPlay_SemiBold,
             fontSize: 16,
-            marginTop: 40,
+            marginTop: 20,
             color: colors.BLACK,
           }}
         >
@@ -222,6 +335,26 @@ export default function AddAdhar({ navigation }) {
             />
           ))}
         </View>
+        <Text style={{
+            fontFamily: font.GoldPlay_SemiBold,
+            fontSize: 16,
+            marginTop: 20,
+            color: colors.BLACK,
+          }}>
+            Add Your Aadhar Card Photo
+          
+          </Text>
+          <TouchableOpacity  onPress={showModal}
+          style={{height:150,width:"80%", marginTop:10,backgroundColor:'#fff',borderColor:"#999999", borderWidth:1, borderRadius:20, alignItems:"center", justifyContent:"center", padding:10}}>
+
+              {
+                  image.length > 0 ?    
+                  <Image source={{uri:image}} style={{height:"100%", width:'80%', resizeMode:'contain', borderRadius:20}}/>
+                  :
+                  <MaterialIcons name="add-a-photo" size={40} color={colors.BLACK}/>  
+              }
+            
+            </TouchableOpacity> 
         {
           aadharNumber.length == 12 ? 
           <TouchableOpacity
@@ -240,7 +373,7 @@ export default function AddAdhar({ navigation }) {
             }
             //underlayColor={colors.YELLOW}
             style={{ borderRadius: 30, 
-              marginTop:50
+              marginTop:30
               }}
           >
             <View style={{}}>
@@ -265,7 +398,7 @@ export default function AddAdhar({ navigation }) {
           <View
           style={{  borderRadius: 30,
             borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
-            backgroundColor: "#cccccc", flexDirection:'row', marginTop:50}}
+            backgroundColor: "#cccccc", flexDirection:'row', marginTop:30}}
         >
           
           <View style={{width:0, }}></View>
@@ -277,7 +410,7 @@ export default function AddAdhar({ navigation }) {
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
       <View style={{position:"absolute", bottom:30}}>
-            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{}} >SKIP</Text></Text>
+            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
         </View>
         {/* <TouchableHighlight
           onPress={handleNext}

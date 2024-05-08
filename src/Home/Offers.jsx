@@ -7,13 +7,14 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { colors, icon } from "../constants";
+import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function Offers({ navigation }) {
   return (
     <SafeAreaView style={stylesCommon.blackbg}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeader screen={"Product"} navigation={navigation} showBack />
-
+      {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
+      <CommonHeaderNew navigation={navigation} showBack={true} header_title="OFFERS" header_color={colors.YELLOW}/>
       <ImageZoom
         source={icon.OFFER_CHART}
         style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}

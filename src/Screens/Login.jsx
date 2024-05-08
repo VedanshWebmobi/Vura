@@ -11,7 +11,8 @@ import {
   Platform,
   ScrollView,
   BackHandler,
-  Dimensions
+  Dimensions,
+  Keyboard
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -68,6 +69,7 @@ return unsubscribe;
 
   const handleGenerate = (buttonName) => {
     if (validateNumber()) {
+      Keyboard.dismiss();
       sendOTP(buttonName);
     }
   };

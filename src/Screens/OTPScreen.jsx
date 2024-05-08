@@ -11,7 +11,7 @@ import {
     Platform,
     ScrollView,
     BackHandler,
-    Dimensions
+    Dimensions,Keyboard
   } from "react-native";
   import React, { useEffect, useState } from "react";
   import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -74,12 +74,14 @@ import CountdownTimer from "../common/CountDownTimer";
 
     const handleGenerate = (buttonName) => {
       if (validateNumber()) {
+        Keyboard.dismiss();
         sendOTP(buttonName);
       }
     };
   
     function verifyOTP() {
       if (ValidationOTP()) {
+        Keyboard.dismiss();
         Preference.clearPreferences();
         verifyOTP_API();
       }
@@ -245,7 +247,8 @@ import CountdownTimer from "../common/CountDownTimer";
           current_street,
           country,
           street,
-          pincode
+          pincode,
+          gender,dateOfBirth
         } = response;
   
         // Check for "null" and "undefined" strings and treat them as empty strings
@@ -294,12 +297,14 @@ import CountdownTimer from "../common/CountDownTimer";
           current_state:formattedCurrentState,
           current_street:formattedCurrentStreet,
           street:formattedStreet,
-          pincode:formattedPincode
+          pincode:formattedPincode,
+          gender:gender,
+          dateOfBirth:dateOfBirth
         });
       } catch (error) {
         console.error("Error fetching or storing profile data:", error);
       } finally {
-        navigation.dispatch(StackActions.replace("HomeTab"));
+        navigation.dispatch(StackActions.replace("HomeTab",{position :0}));
         setIsLoading(false);
         // Hide loader after fetching data
       }

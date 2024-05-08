@@ -24,7 +24,8 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import ProfileCustomView from "../common/ProfileCustomeView";
 import { ADD_PROFILE, GET_PROFILE } from "../Api/Utils";
-
+import DatePicker from 'react-native-date-picker'
+import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 
 export default function PersonalDetails({ navigation }) {
@@ -51,6 +52,8 @@ export default function PersonalDetails({ navigation }) {
   const AccNumberRef = useRef(null);
   const BankNameRef = useRef(null);
   const IFSCRef = useRef(null);
+  const GenderRef = useRef(null);
+  const DOBRef = useRef(null);
 
   //Animation ref
   const rotation = useRef(new Animated.Value(0)).current;
@@ -70,6 +73,10 @@ export default function PersonalDetails({ navigation }) {
   const [ifscCode, setIfscCode] = useState("");
   const [showView, setSHowView] = useState(false);
   const [image, setImage] = useState("");
+  const [gender, setGender] = useState("");
+  const [dob, setDOB] = useState("");
+  const [date, setDate] = useState(new Date())
+  const [openDate, setOpenDate] = useState(false)
   
   // current location
   // const [current_flat_house, setCurrentFlatHouse] = useState("");
@@ -104,8 +111,14 @@ export default function PersonalDetails({ navigation }) {
   };
   const containerStyleNew = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
   const route = useRoute();
-
-  const { profilePhoto, aadharNo } = route.params;
+  var profilePhoto = "";
+  var document = "";
+  if(route.params)
+  {
+     profilePhoto = route.params.profilePhoto;
+     document = route.params.document;
+  }  
+  const { aadharNo } = route.params;
  // setImage(profilePhoto);
   // useEffect(() => {
   //   setAadharNumber(aadharNo);
@@ -115,7 +128,10 @@ export default function PersonalDetails({ navigation }) {
   //   route.params.sameAddress !== undefined ? route.params.sameAddress : true;
   // currAddress = route.params.currAddress ? route.params.currAddress : "";
   // }, []);
-
+  
+  const handleDatePicker = ()=>{
+      setOpenDate(true);
+  }
   const rotation_per =rotateAnim.interpolate({
     inputRange:[0, 1],
     outputRange: ['0deg','180deg'] 
@@ -226,17 +242,17 @@ export default function PersonalDetails({ navigation }) {
           name: "profile_image.jpg",
         });
       }
-
-      // if (profilePhoto.includes("http") || profilePhoto.includes("https")) {
-      //   // profileFormData.append("image", profilePhoto);
-      // } else {
-      //   console.log("====================================");
-      //   console.log("yess huin bhai", profilePhoto);
-      //   console.log("====================================");
-
-        
-      // }
-
+      if(document)
+      {
+      if(document.length > 0){
+        profileFormData.append("document", {
+          uri:document,
+          type: "image/jpeg",
+          name: "aadhar_document.jpg",
+        })
+      }
+    }
+   
       profileFormData.append("address", flat_house);
       profileFormData.append("street",area_street);
       profileFormData.append("state", state_new);
@@ -255,6 +271,8 @@ export default function PersonalDetails({ navigation }) {
       profileFormData.append("current_state", sameAddress ? state_new:state);
       profileFormData.append("current_pincode", sameAddress? pincode : "" );
       profileFormData.append("current_country", sameAddress ? country : "");
+      profileFormData.append("gender",gender);
+      profileFormData.append("dateOfBirth",dob);
 
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);
@@ -329,7 +347,7 @@ export default function PersonalDetails({ navigation }) {
         current_state,
         current_street,
         country,
-        street, pincode
+        street, pincode,gender,dateOfBirth
       } = response;
 
       // Check for "null" and "undefined" strings and treat them as empty strings
@@ -379,7 +397,9 @@ export default function PersonalDetails({ navigation }) {
         current_state:formattedCurrentState,
         current_street:formattedCurrentStreet,
         street:formattedStreet,
-        pincode:formattedPincode
+        pincode:formattedPincode,
+        gender:gender,
+        dateOfBirth:dateOfBirth
       });
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
@@ -398,12 +418,12 @@ export default function PersonalDetails({ navigation }) {
     }
 
     // Mobile number validation
-    if (phoneNo.length !== 10) {
-      //showModal();
-      setErrorMessage(`ENTER A VALID PHONE NUMBER`);
-      setVisible(true);
-      return;
-    }
+    // if (phoneNo.length !== 10) {
+    //   //showModal();
+    //   setErrorMessage(`ENTER A VALID PHONE NUMBER`);
+    //   setVisible(true);
+    //   return;
+    // }
 
     // if (aadharNumber.length !== 12) {
     //   Dialog.show({
@@ -520,7 +540,7 @@ export default function PersonalDetails({ navigation }) {
             current_pincode,
             current_state,
             current_street,
-            street,pincode } =
+            street,pincode,gender,dateOfBirth } =
             storedDetails;
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
@@ -529,6 +549,9 @@ export default function PersonalDetails({ navigation }) {
           );
 
           console.log("Yeh raha ", name, mobileNo, address, panCardNo);
+
+          setGender(gender);
+          setDOB(dateOfBirth);
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
@@ -664,16 +687,15 @@ export default function PersonalDetails({ navigation }) {
               flex: 1,
               justifyContent: "center",
              
-             
             }}
           >
               <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
-            <Image source={{ uri:image.length > 0? image : profilePhoto }} style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            <Image source={image.length > 0 ?  { uri:image } : profilePhoto.length > 0 ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
             <TouchableOpacity style={{position:'absolute', bottom:0, right:5}} onPress={()=>setShowCameraModel(true)}>
             <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
             </TouchableOpacity>
           </View>
-          <Card style={{width:'90%', padding:16,backgroundColor:"#fff"}}>
+          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",zIndex:1}}>
           <View style={{}}>
             <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
                 <Image source={require('../../assets/user.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
@@ -745,6 +767,26 @@ export default function PersonalDetails({ navigation }) {
                 item_place_holder={'Enter your Full Name'}
                 item_return_key_type={'next'}
                 />
+                   <ProfileCustomView 
+                item_value={gender} 
+                item_setValue={setGender} 
+                item_Ref={GenderRef}
+                item_label={"Gender:"}
+                item_place_holder={'Select your gender'}
+                item_return_key_type={'next'}
+                item_is_gender
+                />
+                   <ProfileCustomView 
+                item_value={dob} 
+                item_setValue={setDOB} 
+                item_Ref={DOBRef}
+                item_label={"DOB:"}
+                item_place_holder={'Enter your Date of Birth'}
+                item_return_key_type={'next'}
+                item_is_dob
+                item_dob_press={handleDatePicker}
+                />
+
                 </View>
             } 
           
@@ -1363,6 +1405,20 @@ export default function PersonalDetails({ navigation }) {
           </View> */}
         </ScrollView>
       )}
+       <DatePicker
+        modal
+        mode="date"
+        open={openDate}
+        date={date}
+        onConfirm={(date) => {
+          setOpenDate(false)
+          setDate(date)
+          setDOB(moment(date).format("YYYY-MM-DD"))
+        }}
+        onCancel={() => {
+          setOpenDate(false)
+        }}
+      />
     </View>
   );
 }

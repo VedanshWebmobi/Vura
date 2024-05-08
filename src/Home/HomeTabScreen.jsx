@@ -8,6 +8,7 @@ import {
       useColorScheme,
       View,
     } from 'react-native';
+    import { useRoute } from "@react-navigation/native";
     import {
         AnimatedTabBarNavigator,
         DotSize, // optional
@@ -15,6 +16,7 @@ import {
         TabButtonLayout, // optional
         IAppearanceOptions // optional
       } from 'react-native-animated-nav-tab-bar'
+      import React, { useEffect, useState, useRef } from "react";
       
       import { createNativeStackNavigator } from "@react-navigation/native-stack";    
 import { colors } from '../constants';
@@ -25,11 +27,27 @@ import { colors } from '../constants';
 
 export default function HomeTabScreen({navigation}){
     const Tabs = AnimatedTabBarNavigator();
-   
+    const [TabPosition, setTabPosition] = useState(-1)
+
+    const route = useRoute();
+    if(route.params)
+    {
+      const { position} = route.params;
+      if(TabPosition < 0)
+      {
+        setTabPosition(position);
+      }
+         // TabPosition.current.setActiveIndex(position);
+          //TabPosition.current.navigate((position == 2) ? "PRODUCTS" : (position == 3) ? "CASHBACK" : "Home")
+       
+    }
+
+
     return(
       <View style={{flex:1, }}>
         <Tabs.Navigator
         // default configuration from React Navigation
+        initialRouteName={ (TabPosition != undefined ? (TabPosition == 2) ? "PRODUCTS" : (TabPosition == 3) ? "CASHBACK" : "Home" : "Home")}
         key={1}
         tabBarOptions={{
           activeTintColor: "#000000",
@@ -47,6 +65,7 @@ export default function HomeTabScreen({navigation}){
              whenInactiveShow:'icon-only',
              }}
          backBehavior='history'    
+       
       >
     
       
@@ -71,9 +90,7 @@ export default function HomeTabScreen({navigation}){
                  return(
                     <Image source={require('../../assets/ticket_discount.png')} style={{height:20, width:20, resizeMode:'contain'}} tintColor={focused ? colors.BLACK : '#fff'}/>
                  )  ; 
-            }
-              
-            
+            } 
           }}
           
           />

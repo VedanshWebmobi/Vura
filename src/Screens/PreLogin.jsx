@@ -88,11 +88,13 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
     }
 
     if (buttonName === "CashBack") {
-      navigation.navigate("CashBack");
+  //    navigation.navigate("CashBack");
+  navigation.navigate("HomeTab",{position : 3});
     }
 
     if (buttonName === "Products") {
-      navigation.navigate("Product");
+      // navigation.navigate("Product",{position : 2});
+      navigation.navigate("HomeTab",{position : 2});
     }
   };
   const interpolatedRotateAnimation = rotation.interpolate({
@@ -208,6 +210,7 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
             setSHowView(true);
             setTimeout(() =>{
                 setSHowView(false);
+                handleOnPress("Products")
             },450);
           rotateImage(rotation);
           stretch(stretchValue);
@@ -246,6 +249,7 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
             setSHowView1(true);
             setTimeout(() =>{
                 setSHowView1(false);
+                handleOnPress("CashBack")
             },450);
             rotateImage(rotation_cash);
             stretch(stretchValue_cash);
@@ -281,10 +285,11 @@ const stretchValue_offer = useRef(new Animated.Value(1)).current;
         <TouchableOpacity
         activeOpacity={1}
           onPress={() =>{ 
-          //  handleOnPress("Offers")
+          // 
           setSHowView2(true);
           setTimeout(() =>{
               setSHowView2(false);
+              handleOnPress("Offers")
           },450);
           rotateImage(rotation_offer);
           stretch(stretchValue_offer);

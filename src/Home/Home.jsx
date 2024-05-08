@@ -16,6 +16,7 @@ import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { BackHandler } from "react-native";
 import * as Preference from "../StoreData/Preference";
 import CommonAlert from "../common/CommonAlert";
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function Home({ navigation }) {
   const [showMenutoggle, setshowMenutoggle] = useState(false);
@@ -50,69 +51,66 @@ export default function Home({ navigation }) {
       return true;
     }
   }
+useFocusEffect(React.useCallback(()=>{
+  const retrieveProfile = async () => {
+    try {
+      const storedDetails = await Preference.getPreference("profile");
+      if (storedDetails) {
+        const {
+          image,
+          address,
+          aadharCardNo,
+          panCardNo,
+          accountHolderName,
+          accountNumber,
+          bankName,
+          ifscCode,
+        } = storedDetails;
+        console.log("Profile details retrieved:", {
+          address,
+        });
 
-  useEffect(() => {
-    const retrieveProfile = async () => {
-      try {
-        const storedDetails = await Preference.getPreference("profile");
-        if (storedDetails) {
-          const {
-            image,
-            address,
-            aadharCardNo,
-            panCardNo,
-            accountHolderName,
-            accountNumber,
-            bankName,
-            ifscCode,
-          } = storedDetails;
-          console.log("Profile details retrieved:", {
-            address,
-          });
-
-          if (
-            image &&
-            address &&
-            aadharCardNo &&
-            panCardNo &&
-            accountHolderName &&
-            accountNumber &&
-            bankName &&
-            ifscCode
-          ) {
-            console.log("Profile is Complete");
-            setProfileDetailsComplete(true);
-          } else {
-            setProfileDetailsComplete(false);
-          }
+        if (
+          image &&
+          address &&
+          aadharCardNo &&
+          panCardNo &&
+          accountHolderName &&
+          accountNumber &&
+          bankName &&
+          ifscCode
+        ) {
+          console.log("Profile is Complete");
+          setProfileDetailsComplete(true);
+        } else {
+          setProfileDetailsComplete(false);
         }
-      } catch (error) {
-        console.error("Error retrieving details:", error);
       }
-    };
-    retrieveProfile();
-  }, [navigation]);
-
-  useEffect(() => {
-    const showMenu = async () => {
-      const token = await Preference.getValueFor(ExpoSecureKey.TOKEN);
-      if (token) {
-        console.log("Bhai token aaya");
-        setshowMenutoggle(true);
-      } else {
-        console.log("Idhar bhi");
-        setshowMenutoggle(false);
-      }
-    };
-
-    showMenu();
-  }, []);
+    } catch (error) {
+      console.error("Error retrieving details:", error);
+    }
+  };
+  const showMenu = async () => {
+    const token = await Preference.getValueFor(ExpoSecureKey.TOKEN);
+    if (token) {
+      console.log("Bhai token aaya");
+      setshowMenutoggle(true);
+    } else {
+      console.log("Idhar bhi");
+      setshowMenutoggle(false);
+    }
+  };
+  retrieveProfile();
+  showMenu();
+},[navigation]))
+ 
 
   const handleWalletPress = () => {
     console.log("Handle wallet pressed");
     if (!profileDetailsComplete) {
-      setShowAlert(true);
-      setErrorMessage("Please Complete Your Profile!");
+      navigation.navigate("CompleteProfile");
+     // setShowAlert(true);
+     // setErrorMessage("Please Complete Your Profile!");
     } else {
       navigation.navigate("Wallet");
     }
@@ -140,7 +138,11 @@ export default function Home({ navigation }) {
         navigation={navigation}
         showMenu={showMenutoggle}
       /> */}
-    <CommonHeaderNew navigation={navigation} showBack={false} header_color={colors.YELLOW}/>
+    <CommonHeaderNew 
+    navigation={navigation} 
+    showBack={!showMenutoggle} 
+    header_color={colors.YELLOW} 
+    onWalletPress={handleWalletPress}/>
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => setShowAlert(false)} // Pass function to hide the modal

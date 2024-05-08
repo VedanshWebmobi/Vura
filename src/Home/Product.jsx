@@ -6,6 +6,7 @@ import {
   FlatList,
   StatusBar,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import stylesCommon, {
@@ -24,7 +25,9 @@ import * as Progress from "react-native-progress";
 import { axiosCallAPI } from "../Api/Axios";
 import { FlatGrid } from "react-native-super-grid";
 import CommonHeaderNew from "../common/CommonHeader_new";
-export default function Product({ navigation }) {
+import {useFocusEffect} from '@react-navigation/native'
+
+export default function Product({ navigation, name, catID,p_navigation,search, setSearch}) {
   // function open() {
   //   pickerRef.current.focus();
   // }
@@ -37,12 +40,23 @@ export default function Product({ navigation }) {
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(2);
   const [productData, setProductData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState(catID);
+  const [isFirstTime, setIsFirstTime] = useState(true);
+
+  useFocusEffect(
+    React.useCallback(() =>{
+     // setSearch("");
+     if(!isFirstTime ){
+   
+  }
+    },[selectedValue,setSearch, search])
+  )
 
   useEffect(() => {
+    
     const fetchProductCategory = async () => {
       //  setIsLoading(true);
       //  setError(null);
@@ -82,15 +96,24 @@ export default function Product({ navigation }) {
       }
     };
 
-    fetchProductCategory();
+   // fetchProductCategory();
   }, []);
 
   useEffect(() => {
     console.log("After selecting value", currentPage);
 
     console.log("In use effect", currentPage, totalPages);
-    fetchProductData(selectedValue);
-  }, [selectedValue]);
+    setCurrentPage(1);
+    setTotalPages(2);
+    const timer = setTimeout(() => {
+     fetchProductData(selectedValue);
+   },1000);
+
+  return () => clearTimeout(timer);
+    
+  
+    
+  }, [selectedValue,setSearch, search]);
 
   const fetchProductData = async (selectedValue = 0) => {
     console.log("====================================");
@@ -111,9 +134,10 @@ export default function Product({ navigation }) {
         //   Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
         // },
         params: {
+          search:search,
           categoryId: selectedValue,
           page: currentPage, // Pass the current page as a query parameter
-          per_page: 10, // You may need to adjust this based on your API's pagination settings
+          per_page: 40, // You may need to adjust this based on your API's pagination settings
         },
       };
 
@@ -127,10 +151,18 @@ export default function Product({ navigation }) {
       );
       console.log(response.result);
       const newData = response.result;
-
-      setProductData(newData);
+ 
+        setProductData(newData);
+        
+      
+      if(response.pages == 0)
+      {
+        setTotalPages(2);
+      }
+      else{
       setTotalPages(response.pages);
-      setCurrentPage(currentPage + 1);
+      }
+     // setCurrentPage(currentPage + 1);
     } catch (error) {
       console.error("Error fetching wallet data:", error);
     } finally {
@@ -144,6 +176,15 @@ export default function Product({ navigation }) {
     setProductData([]);
     setSelectedValue(e.value);
   };
+  const renderFooter =()=>{
+    return <ActivityIndicator size="large" color={colors.BLACK}/>
+  }
+
+  const handleLoadMore = () =>{
+      setCurrentPage((value) => value+1);
+      fetchProductData(selectedValue);
+      
+  }
 
   const renderEmptyComponent = () => (
     <View
@@ -216,14 +257,7 @@ export default function Product({ navigation }) {
               />
             </View>
           </View> */}
-          <View
-            style={{
-              backgroundColor: colors.GREY_TXT,
-              height: 1,
-              width: "100%",
-              marginVertical: 10,
-            }}
-          />
+         
           <FlatGrid
             data={productData}
             spacing={0}
@@ -244,7 +278,10 @@ export default function Product({ navigation }) {
                 >
                   <TouchableOpacity
                     style={{ alignItems: "center" }}
-                    onPress={() => navigation.navigate("ProductDetail", item)}
+                    onPress={() => {
+                      //console.log(p_navigation);
+                       p_navigation.navigate("ProductDetail", item)
+                    }}
                   >
                     <View style={{}}>
                       {
@@ -252,18 +289,18 @@ export default function Product({ navigation }) {
                       }
                       <Image
                         source={{ uri:item.productImages ?  item.productImages[0].productImg : "" }}
-                        style={{ height: 150, width: 100, resizeMode: "cover" }}
+                        style={{ height: 150, width: 100, resizeMode: "contain" }}
                       />
                     </View>
                     <View
                       style={{
-                        backgroundColor: colors.GREY,
+                        
                         height: 1,
                         width: "100%",
                         marginVertical: 10,
                       }}
                     />
-                    <Text style={{ fontFamily: font.GoldPlay_Medium }}>
+                    <Text style={{ fontFamily: font.GoldPlay_Medium, paddingTop:20 }}>
                       {item.product_name}
                     </Text>
                   </TouchableOpacity>
@@ -271,9 +308,13 @@ export default function Product({ navigation }) {
               );
             }}
             keyExtractor={(item, index) => item.id}
+         //   ListFooterComponent={renderFooter}
             //numColumns={2}
             maxItemsPerRow={2}
             showsVerticalScrollIndicator={false}
+           // onEndReached={handleLoadMore}
+            //onEndReachedThreshold={0.9}
+            
             // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
           />
         </View>

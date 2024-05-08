@@ -28,7 +28,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import {Fontisto } from '@expo/vector-icons';
 
 export default function AddPhoto({ navigation }) {
-  const [visible, setVisible] = React.useState(true);
+  const [visible, setVisible] = React.useState(false);
   const [image, setImage] = useState("");
   const [isVisible, setisVisible] = useState("");
 
@@ -111,6 +111,7 @@ export default function AddPhoto({ navigation }) {
       "hardwareBackPress",
       // Conditionally set the function based on showback
       showback ? handleGoBack : handleBackButtonClick
+      //handleGoBack()
     );
 
     return () => backHandlerSubscription.remove();
@@ -156,7 +157,7 @@ export default function AddPhoto({ navigation }) {
       console.log("Value of isRegistered:", isRegistered);
       if (isRegistered === "false") {
         console.log("Bhai register nai hai");
-        setshowback(false);
+        setshowback(true);
       } else {
         console.log("Register hai");
         setshowback(true);
@@ -346,7 +347,7 @@ export default function AddPhoto({ navigation }) {
           }}
         >
         
-            <TouchableOpacity onPress={showModal} >
+            <TouchableOpacity onPress={showModal()} >
               <Image
                 source={image ? { uri: image } : icon.PROFILE_CIRCLE}
                 style={{ width: 150, height: 150, borderRadius: 80, backgroundColor:'#cccccc' }}
@@ -413,7 +414,7 @@ export default function AddPhoto({ navigation }) {
         </TouchableHighlight>
       </View>
       <View style={{position:"absolute", bottom:30}}>
-            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{}} >SKIP</Text></Text>
+            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
         </View>
     </View>
   );

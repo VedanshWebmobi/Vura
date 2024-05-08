@@ -35,6 +35,7 @@ import Scanner from "./src/Home/Scanner";
 import Product from "./src/Home/Product";
 import CashBack from "./src/Home/CashBack";
 import Offers from "./src/Home/Offers";
+import CompleteProfileScreen from "./src/Screens/CompleteProfileScreen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CustomDrawer from "./src/common/CustomDrawer";
 import Wallet from "./src/Home/Wallet";
@@ -149,6 +150,8 @@ export default function App() {
             <Stack.Screen name="Scanner" component={Scanner} />
             <Stack.Screen name="Help" component={HelpAndSupport} />
             <Stack.Screen name="HomeTab" component={HomeTabScreen} />
+            <Stack.Screen name="CompleteProfile" component={CompleteProfileScreen} />
+
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>
