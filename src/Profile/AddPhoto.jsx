@@ -109,9 +109,8 @@ export default function AddPhoto({ navigation }) {
   useEffect(() => {
     const backHandlerSubscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      // Conditionally set the function based on showback
       showback ? handleGoBack : handleBackButtonClick
-      //handleGoBack()
+     
     );
 
     return () => backHandlerSubscription.remove();
@@ -162,7 +161,7 @@ export default function AddPhoto({ navigation }) {
         console.log("Register hai");
         setshowback(true);
       }
-      getProfile();
+     // getProfile();
     };
 
     showMenu();
@@ -252,7 +251,7 @@ export default function AddPhoto({ navigation }) {
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => setShowAlert(false)} // Pass function to hide the modal
-        handleOkPress={handleClose} // Pass function to handle Ok button press
+        handleOkPress={()=> handleClose()} // Pass function to handle Ok button press
         handleCancelPress={() => setShowAlert(false)} // Pass function to handle Cancel button press
         title="Close Registeration?" // Pass title text
         iconName="error"
@@ -347,7 +346,7 @@ export default function AddPhoto({ navigation }) {
           }}
         >
         
-            <TouchableOpacity onPress={showModal()} >
+            <TouchableOpacity onPress={showModal} >
               <Image
                 source={image ? { uri: image } : icon.PROFILE_CIRCLE}
                 style={{ width: 150, height: 150, borderRadius: 80, backgroundColor:'#cccccc' }}
@@ -387,7 +386,7 @@ export default function AddPhoto({ navigation }) {
       )}
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
         <TouchableHighlight
-          onPress={handleNext}
+          onPress={() =>handleNext()}
           style={{ backgroundColor: "transparent", borderRadius: 10 }}
           underlayColor={"black"}
         >

@@ -359,7 +359,13 @@ return unsubscribe;
           <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular,fontSize:12, marginTop:10}}>By Clicking Send OTP You Will Agree To Our <Text style={{color:'#fff', fontFamily:font.GoldPlay_SemiBold}}>Terms & Conditions</Text></Text>  
               <View style={{ marginTop: 60, alignItems: "center" }}>
             <TouchableHighlight
-              onPress={() => handleGenerate("Generate")}
+              onPress={() =>{
+                if (isValidNumber)
+                {
+                 handleGenerate("Generate")
+                }
+              }
+                }
               underlayColor={"black"}
               style={{ borderRadius: 15 }}
             >

@@ -110,6 +110,7 @@ const interpolatedRotateAnimation = rotation.interpolate({
              setTimeout(() =>{
                  setSHowView(false);
                  navigation.dispatch(StackActions.replace("AddPhoto"));
+                //navigation.navigate("AddPhoto");
                  
              },450);
           rotateImage(rotation);

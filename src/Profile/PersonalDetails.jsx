@@ -27,6 +27,7 @@ import { ADD_PROFILE, GET_PROFILE } from "../Api/Utils";
 import DatePicker from 'react-native-date-picker'
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
+import { StackActions } from "@react-navigation/native";
 
 export default function PersonalDetails({ navigation }) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -116,6 +117,9 @@ export default function PersonalDetails({ navigation }) {
   if(route.params)
   {
      profilePhoto = route.params.profilePhoto;
+     if(profilePhoto && (!profilePhoto.includes("http") || !profilePhoto.includes("https")) && profilePhoto.length > 0){
+       // setImage(profilePhoto)
+     }
      document = route.params.document;
   }  
   const { aadharNo } = route.params;
@@ -242,6 +246,14 @@ export default function PersonalDetails({ navigation }) {
           name: "profile_image.jpg",
         });
       }
+      else  if((!profilePhoto.includes("http") || !profilePhoto.includes("https")) && profilePhoto.length > 0){
+        profileFormData.append("image", {
+          uri: profilePhoto,
+          type: "image/jpeg",
+          name: "profile_image.jpg",
+        });
+      }
+
       if(document)
       {
       if(document.length > 0){
@@ -298,7 +310,6 @@ export default function PersonalDetails({ navigation }) {
       if (response && response.status) {
         Preference.save(ExpoSecureKey.IS_REGISTER, "true");
         await getProfile();
-        // navigation.navigate("Home");
       }
     } catch (error) {
       console.error("Error submitting profile:", error);
@@ -347,7 +358,7 @@ export default function PersonalDetails({ navigation }) {
         current_state,
         current_street,
         country,
-        street, pincode,gender,dateOfBirth
+        street, pincode,gender,dateOfBirth,document
       } = response;
 
       // Check for "null" and "undefined" strings and treat them as empty strings
@@ -399,12 +410,14 @@ export default function PersonalDetails({ navigation }) {
         street:formattedStreet,
         pincode:formattedPincode,
         gender:gender,
-        dateOfBirth:dateOfBirth
+        dateOfBirth:dateOfBirth,
+        document:document
       });
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
     } finally {
-      navigation.navigate("HomeTab");
+      //navigation.navigate("HomeTab");
+      navigation.dispatch(StackActions.replace("HomeTab"));
       setIsLoading(false);
       // Hide loader after fetching data
     }
@@ -690,7 +703,7 @@ export default function PersonalDetails({ navigation }) {
             }}
           >
               <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
-            <Image source={image.length > 0 ?  { uri:image } : profilePhoto.length > 0 ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            <Image source={image.length > 0 ?  { uri:image } : (profilePhoto && profilePhoto.length > 0) ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
             <TouchableOpacity style={{position:'absolute', bottom:0, right:5}} onPress={()=>setShowCameraModel(true)}>
             <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
             </TouchableOpacity>
@@ -1410,6 +1423,7 @@ export default function PersonalDetails({ navigation }) {
         mode="date"
         open={openDate}
         date={date}
+        maximumDate={new Date()}
         onConfirm={(date) => {
           setOpenDate(false)
           setDate(date)

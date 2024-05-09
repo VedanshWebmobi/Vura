@@ -4,7 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  StatusBar,Keyboard,
+  StatusBar,Keyboard,ScrollView,
   Image,Animated,Easing, Dimensions
 } from "react-native";
 import stylesCommon, { SCREEN_WIDTH } from "../Themes/stylesCommon";
@@ -30,7 +30,7 @@ export default function AddAdhar({ navigation }) {
   const hideModal = () => setVisible(false);
   const containerStyle = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
   const route = useRoute();
-  const profilePhoto = "";
+  var profilePhoto = "";
   if(route.params)
   {
     profilePhoto = route.params.profilePhoto;
@@ -269,9 +269,10 @@ export default function AddAdhar({ navigation }) {
       navigation ={navigation}
       />
       {/* <CommonHeader navigation={navigation} showBack /> */}
+      
       <View style={{ alignItems: "center", flex: 4,  }}>
            <View style={{ margin:10, alignItems:"center", justifyContent:'center'}}>
-            <Image source={require('../../assets/aadhaar_logo.png')} style={{height:150, width:150, resizeMode:'contain'}}/>
+            <Image source={require('../../assets/aadhaar_logo.png')} style={{height:120, width:120, resizeMode:'contain'}}/>
             {/* <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>   */}
           </View> 
         <Text
@@ -411,34 +412,9 @@ export default function AddAdhar({ navigation }) {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
       <View style={{position:"absolute", bottom:30}}>
             <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
-        </View>
-        {/* <TouchableHighlight
-          onPress={handleNext}
-          style={{ backgroundColor: "transparent", borderRadius: 10 }}
-          underlayColor={"black"}
-        >
-          <View
-            style={{
-              paddingVertical: 8,
-              //backgroundColor: "black",
-              borderColor: "white",
-              alignItems: "center",
-              borderWidth: 1,
-              borderRadius: 10,
-              width: SCREEN_WIDTH / 3,
-            }}
-          >
-            <Text
-              style={[
-                stylesCommon.preButtonLabelStyle,
-                { textAlign: "center", fontSize: 16 },
-              ]}
-            >
-              NEXT
-            </Text>
-          </View>
-        </TouchableHighlight> */}
       </View>
+      </View>
+    
     </View>
   );
 }

@@ -94,7 +94,7 @@ export default function Scanner({ navigation }) {
               ) {
                 console.log("Profile is Complete");
                 setProfileDetailsComplete(true);
-                requestPermission();
+                
               } else {
                 console.log("Getting Profile false");
                 setProfileDetailsComplete(false);
@@ -109,7 +109,7 @@ export default function Scanner({ navigation }) {
             console.error("Error retrieving details:", error);
           }
         };
-       
+        requestPermission();
         retrieveProfile(); 
       return () => {
 
@@ -251,7 +251,7 @@ export default function Scanner({ navigation }) {
                     height: 300,
                     width: 300,
                   }}
-                  barcodeScannerSettings={{ barCodeTypes: ["qr"] }}
+                  barcodeScannerSettings={{ barCodeTypes: ["qr"]}}
                   onBarcodeScanned={handleCodeScanned}
                   onPointerCancel={() => setIsScanning(false)}
                 />

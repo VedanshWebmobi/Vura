@@ -50,7 +50,7 @@ import CountdownTimer from "../common/CountDownTimer";
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [enableResend, setEnableResend] = useState(false);
     const [isOTPWrong, setIsOTPWrong] = useState(false);
-    const [second, setSecond] = useState(10);
+    const [second, setSecond] = useState(30);
     const [alertType, setAlertType] = useState("");
   
     useEffect(() =>{
@@ -66,7 +66,7 @@ import CountdownTimer from "../common/CountDownTimer";
       }
     };
     const restartTimer =()=>{
-        setSecond(10);
+        setSecond(30);
     }
     const handleOtpTimer = () =>{
         setEnableResend(true);
@@ -149,6 +149,7 @@ import CountdownTimer from "../common/CountDownTimer";
   
     const verifyOTP_API = () => {
       if (validateNumber() && ValidationOTP()) {
+        setIsOTPWrong(false);
         var loginFormData = new FormData();
         loginFormData.append("mobileNo", number);
         loginFormData.append("otp", otp);
@@ -188,8 +189,9 @@ import CountdownTimer from "../common/CountDownTimer";
                 //  navigation.dispatch(StackActions.replace("Home"));
               }
             } else {
+              setIsOTPWrong(true);
               setIconColor("red");
-              setShowAlert(true);
+            //  setShowAlert(true);
               setAlertTitle("Error");
               setAlertMessage(response);
               setShowOtp(true);
@@ -248,7 +250,7 @@ import CountdownTimer from "../common/CountDownTimer";
           country,
           street,
           pincode,
-          gender,dateOfBirth
+          gender,dateOfBirth,document
         } = response;
   
         // Check for "null" and "undefined" strings and treat them as empty strings
@@ -299,7 +301,8 @@ import CountdownTimer from "../common/CountDownTimer";
           street:formattedStreet,
           pincode:formattedPincode,
           gender:gender,
-          dateOfBirth:dateOfBirth
+          dateOfBirth:dateOfBirth,
+          document:document
         });
       } catch (error) {
         console.error("Error fetching or storing profile data:", error);

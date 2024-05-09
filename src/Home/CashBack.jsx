@@ -35,6 +35,7 @@ export default function CashBack({ navigation }) {
           style={{
             height: SCREEN_HEIGHT,
             width: SCREEN_WIDTH,
+           zIndex:0
           }}
           minScale={0.5}
           maxScale={3}

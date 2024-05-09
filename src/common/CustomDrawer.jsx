@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonAlert from "./CommonAlert";
 import CommonHeaderNew from "./CommonHeader_new";
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function CustomDrawer({ navigation }) {
   const [showUpdate, setShowUpdate] = useState(false);
@@ -76,51 +77,58 @@ export default function CustomDrawer({ navigation }) {
   }, []);
 
   useEffect(() => {
-    const retrieveProfile = async () => {
-      try {
-        const storedDetails = await Preference.getPreference("profile");
-        console.log("StoreDetails", storedDetails);
-        if (storedDetails) {
-          setProfileDetails(storedDetails);
-          const {
-            name,
-            image,
-            address,
-            aadharCardNo,
-            panCardNo,
-            accountHolderName,
-            accountNumber,
-            bankName,
-            ifscCode,
-          } = storedDetails;
-          setName(name);
-          setprofile(image);
-          console.log("Profile details retrieved:", {
-            address,
-          });
-
-          if (
-            image &&
-            address &&
-            aadharCardNo &&
-            panCardNo &&
-            accountHolderName &&
-            accountNumber &&
-            bankName &&
-            ifscCode
-          ) {
-            console.log("Profile is Complete");
-            setProfileDetailsComplete(true);
-          } else {
-            setProfileDetailsComplete(false);
+    const unsubscribe = navigation.addListener('focus', () => {
+    
+      const retrieveProfile = async () => {
+        try {
+          const storedDetails = await Preference.getPreference("profile");
+          console.log("StoreDetails", storedDetails);
+          if (storedDetails) {
+            setProfileDetails(storedDetails);
+            const {
+              name,
+              image,
+              address,
+              aadharCardNo,
+              panCardNo,
+              accountHolderName,
+              accountNumber,
+              bankName,
+              ifscCode,
+            } = storedDetails;
+           
+            setName(name);
+            setprofile(image);
+            console.log("Profile details retrieved:", {
+              address,image
+            });
+  
+            if (
+              image &&
+              address &&
+              aadharCardNo &&
+              panCardNo &&
+              accountHolderName &&
+              accountNumber &&
+              bankName &&
+              ifscCode
+            ) {
+              console.log("Profile is Complete");
+              setProfileDetailsComplete(true);
+            } else {
+              setProfileDetailsComplete(false);
+            }
           }
+  
+        } catch (error) {
+          console.error("Error retrieving details:", error);
         }
+      };
+      retrieveProfile();
+    });
 
-      } catch (error) {
-        console.error("Error retrieving details:", error);
-      }
-    };
-    retrieveProfile();
+    return unsubscribe;
+  
   }, [navigation]);
 
   const renderItem = (item, index) => {
@@ -151,24 +159,29 @@ export default function CustomDrawer({ navigation }) {
     };
 
     const isDisabled = item === "Catalogues" || item === "FAQ's"; // Disable all except Home and Log Out
-
-    useEffect(() => {
-      const retrieveProfile = async () => {
-        try {
-          const storedDetails = await Preference.getPreference("profile");
-           
-          if (storedDetails) {
-            const { image, name } = storedDetails;
-
-            setprofile(image);
-            setName(name);
-          }
-        } catch (error) {
-          console.error("Error retrieving bank details:", error);
-        }
-      };
-      retrieveProfile();
-    }, []);
+    // useFocusEffect(
+    //   React.useCallback(() => {
+       
+    //     const retrieveProfile = async () => {
+    //       try {
+    //         const storedDetails = await Preference.getPreference("profile");
+             
+    //         if (storedDetails) {
+    //           const { image, name } = storedDetails;
+  
+    //           setprofile(image);
+    //           setName(name);
+    //         }
+    //       } catch (error) {
+    //         console.error("Error retrieving bank details:", error);
+    //       }
+    //     };
+    //     retrieveProfile();
+  
+    //     return () => {};
+      
+    //   }, [navigation]));
+ 
 
     return (
       <View key={index}>
@@ -236,7 +249,7 @@ export default function CustomDrawer({ navigation }) {
       <View style={{ justifyContent: "flex-start", gap: 20, padding:10 }}>
         <View style={{flexDirection:'row' }}>
           <Image
-            source={profile ? { uri: profile } : icon.PROFILE_PIC}
+            source={profile.length > 0 ? { uri: profile } : icon.PROFILE_PIC}
             style={{ width: 80, height: 80, borderRadius: 40, borderWidth:2, borderColor:colors.YELLOW }}
           />
           <View style={{flex:1, paddingStart:20, paddingEnd:10, paddingTop:2,}}>

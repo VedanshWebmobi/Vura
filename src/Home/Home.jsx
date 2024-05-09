@@ -30,7 +30,7 @@ export default function Home({ navigation }) {
     icon.IMAGE3,
     icon.IMAGE4,
     icon.IMAGE5,
-    icon.IMAGE6,
+   
   ];
 
   useEffect(() => {
@@ -161,6 +161,7 @@ useFocusEffect(React.useCallback(()=>{
         autoplay={true}
         circleLoop={true}
         autoplayInterval={4000}
+        resizeMode={'cover'}
       />
 
       {/* <View style={{ flex: 1, margin: 20 }}>

@@ -288,7 +288,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                         console.log(item.productImages)
                       }
                       <Image
-                        source={{ uri:item.productImages ?  item.productImages[0].productImg : "" }}
+                        source={{ uri:(item.productImages.length > 0) ?  item.productImages[0].productImg : "" }}
                         style={{ height: 150, width: 100, resizeMode: "contain" }}
                       />
                     </View>

@@ -27,6 +27,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
     const [showView, setSHowView] = useState(false);
 
     const [screen, setScreen] = useState("");
+    const [aadharNo, setAadharNo] = useState("");
     const rotation = useRef(new Animated.Value(0)).current;
     const scale = useRef(new Animated.Value(1)).current;
     const stretchValue = useRef(new Animated.Value(1)).current;
@@ -38,11 +39,16 @@ import CommonHeaderNew from "../common/CommonHeader_new";
          console.log(token);
          console.log(StoreDetail); 
         if (token) {
-           if(StoreDetail){
-            setScreen("PersonalDetails");
+           if(StoreDetail && (StoreDetail.aadharCardNo.length == 0 || StoreDetail.document.length == 0)){
+            setAadharNo(StoreDetail.aadharCardNo);
+            setScreen("AddAdhar");
+           }
+           else if(StoreDetail == null){
+            setScreen("AddAdhar");
            }
            else{
-            setScreen("AddAdhar");
+            setAadharNo(StoreDetail.aadharCardNo);
+            setScreen("PersonalDetails");
            }
           
         } else {
@@ -112,7 +118,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
               setSHowView(true);
                setTimeout(() =>{
                    setSHowView(false);
-                    navigation.navigate(screen);
+                    navigation.navigate(screen,{aadharNo : aadharNo});
                   // handleNext()
                },450);
           //  rotateImage(rotation);

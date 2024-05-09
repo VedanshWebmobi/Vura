@@ -29,7 +29,7 @@ onHandleBackPress}){
         <View style={{backgroundColor:header_color, 
         height:60, width:'100%',
         justifyContent:'center', 
-        alignItems:'center'}}>
+        alignItems:'center', zIndex:1}}>
            {
             (showBack && header_title) ? 
             <Text style={{
