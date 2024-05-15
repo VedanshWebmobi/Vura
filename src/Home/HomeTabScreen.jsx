@@ -78,7 +78,7 @@ export default function HomeTabScreen({navigation}){
         <Tabs.Screen name="PRODUCTS" component={ProductTabs} 
           options={{
             tabBarIcon : ({ focused, color, size }) =>(
-              <Image source={require('../../assets/box.png')} style={{height:20, width:20, resizeMode:'contain'}} tintColor={focused ? colors.BLACK : '#fff'}/>
+              <Image source={focused ? require('../../assets/box_select.png') : require('../../assets/box.png')} style={{height:20, width:20, resizeMode:'contain'}} />
             )
           }}
         />
@@ -88,8 +88,8 @@ export default function HomeTabScreen({navigation}){
             {
                 console.log(size);
                  return(
-                    <Image source={require('../../assets/ticket_discount.png')} style={{height:20, width:20, resizeMode:'contain'}} tintColor={focused ? colors.BLACK : '#fff'}/>
-                 )  ; 
+                    <Image source={focused ? require('../../assets/ticket_discount_select.png') : require('../../assets/ticket_discount.png')} style={{height:20, width:20, resizeMode:'contain'}} />
+                 ); 
             } 
           }}
           
@@ -99,7 +99,8 @@ export default function HomeTabScreen({navigation}){
             tabBarIcon : ({ focused, color, size }) =>
             {
                 console.log(focused);
-                 return(<Image source={require('../../assets/scan_barcode.png')} style={{height:20, width:20, resizeMode:'contain'}} tintColor={focused ? colors.BLACK : '#fff'}/>); 
+                 return(<Image source={focused ? require('../../assets/scan_barcode_select.png') : require('../../assets/scan_barcode.png')} style={{height:20, width:20, resizeMode:'contain'}} />);
+                //  require('../../assets/scan_barcode.png')  
             }
           }}
           />

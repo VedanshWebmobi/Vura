@@ -27,7 +27,7 @@ export default function Home({ navigation }) {
   const images = [
     icon.IMAGE1,
     icon.IMAGE2,
-    icon.IMAGE3,
+   // icon.IMAGE3,
     icon.IMAGE4,
     icon.IMAGE5,
    

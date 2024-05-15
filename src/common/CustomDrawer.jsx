@@ -264,7 +264,7 @@ export default function CustomDrawer({ navigation }) {
               if(profileDetails.length == 0){
                 navigation.navigate("AddAdhar")  
               }
-              else if(profileDetails.aadharCardNo == "")
+              else if(profileDetails.aadharCardNo == "" || profileDetails.aadharCardNo == null)
               {
                 navigation.navigate("AddAdhar")  
               }
@@ -315,6 +315,30 @@ export default function CustomDrawer({ navigation }) {
          {/* {menuItems.map((item, index) => (
           <View key={index}>{renderItem(item, index)}</View>
         ))}  */}
+        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
+         
+           navigation.navigate("Notification");
+      
+        }}>
+        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
+          <Image style={{height:20, width:20, resizeMode:'contain'}} 
+          source={require('../../assets/notification_new.png')} tintColor={"#fff"}/>
+          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>NOTIFICATIONS</Text>
+        </View>
+        </TouchableOpacity>
+        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
+        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
+        
+           navigation.navigate("Offers");
+      
+        }}>
+        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
+          <Image style={{height:20, width:20, resizeMode:'contain'}} 
+          source={require('../../assets/discount_shape.png')}/>
+          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>OFFERS</Text>
+        </View>
+        </TouchableOpacity>
+        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
         <TouchableOpacity activeOpacity={0.8} onPress={()=>{
            if (!profileDetailsComplete) {
            // setShowAlert(true);

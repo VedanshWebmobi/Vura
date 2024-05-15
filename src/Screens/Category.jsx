@@ -162,7 +162,7 @@ export default function Category({ navigation }) {
       />
       <View style={{flex:1}}>
       <View style={{height:(SCREEN_DIMENSIONS.height/5), alignItems:'center', justifyContent:'center', alignContent:'center',}}>
-        <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
+        <Text style={{width:56, height:11, backgroundColor:colors.YELLOW,borderRadius:2}}/>
       </View>
 
       <View

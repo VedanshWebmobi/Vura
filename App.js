@@ -40,11 +40,15 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import CustomDrawer from "./src/common/CustomDrawer";
 import Wallet from "./src/Home/Wallet";
 import ProductDetail from "./src/Home/ProductDetail";
+import Notification from "./src/Home/Notification";
+
 
 import * as Preference from "./src/StoreData/Preference";
 import { ExpoSecureKey } from "./src/constants";
 import CreateProfileScreen from "./src/Screens/CreateProfileScreen";
 import HomeTabScreen from "./src/Home/HomeTabScreen";
+import WithdrawAmount from "./src/Home/WithdrawAmount";
+import QRCodeScanner_new from "./src/Home/Qr_CodeScann";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -151,6 +155,9 @@ export default function App() {
             <Stack.Screen name="Help" component={HelpAndSupport} />
             <Stack.Screen name="HomeTab" component={HomeTabScreen} />
             <Stack.Screen name="CompleteProfile" component={CompleteProfileScreen} />
+            <Stack.Screen name="Withdraw" component={WithdrawAmount} />
+            <Stack.Screen name="QRScanner" component={QRCodeScanner_new} />
+            <Stack.Screen name="Notification" component={Notification} />
 
           </Stack.Navigator>
         </NavigationContainer>

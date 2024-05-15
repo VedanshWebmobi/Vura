@@ -250,7 +250,7 @@ import CountdownTimer from "../common/CountDownTimer";
           country,
           street,
           pincode,
-          gender,dateOfBirth,document
+          gender,dateOfBirth,document,bank_verify
         } = response;
   
         // Check for "null" and "undefined" strings and treat them as empty strings
@@ -302,7 +302,8 @@ import CountdownTimer from "../common/CountDownTimer";
           pincode:formattedPincode,
           gender:gender,
           dateOfBirth:dateOfBirth,
-          document:document
+          document:document,
+          bank_verify,bank_verify
         });
       } catch (error) {
         console.error("Error fetching or storing profile data:", error);
@@ -360,7 +361,7 @@ import CountdownTimer from "../common/CountDownTimer";
           <View>
              <Ionicons name="arrow-back" size={24} color="white" style={{position:'absolute',marginTop:20}} onPress={()=>{}} /> 
           <View style={{height:(SCREEN_DIMENSIONS.height/5), alignItems:'center', justifyContent:'center', alignContent:'center',}}>
-          <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
+          <Text style={{width:56, height:11, backgroundColor:colors.YELLOW,borderRadius:2}}/>
           </View>
             <View style={[stylesCommon.logoViewStyle]}>
            
@@ -441,7 +442,7 @@ import CountdownTimer from "../common/CountDownTimer";
             }}
           >
         <View style={{height:(SCREEN_DIMENSIONS.height/5),  alignItems:'center', justifyContent:'center', alignContent:'center',}}>     
-          <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
+          <Text style={{width:56, height:11, backgroundColor:colors.YELLOW,borderRadius:2}}/>
           </View>
             <View style={{ alignItems: "center" }}>
               <Text style={[stylesCommon.welcomeText,{color:"#fff"}]}>

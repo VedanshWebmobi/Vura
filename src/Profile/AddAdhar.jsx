@@ -161,7 +161,7 @@ export default function AddAdhar({ navigation }) {
 
         if (storedDetails) {
           const { aadharCardNo } = storedDetails;
-          if (aadharCardNo !== "") {
+          if (aadharCardNo !== "" && aadharCardNo != null) {
             setAadharNumber(aadharCardNo);
           }
         }

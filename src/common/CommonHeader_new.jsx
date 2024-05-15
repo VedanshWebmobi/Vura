@@ -80,18 +80,34 @@ onHandleBackPress}){
             }
             {
               !showBack && 
+              <View style={{position:"absolute", alignItems:"center",
+              flexDirection:'row',
+              height:60,
+              end:0,
+              justifyContent:"center"}}> 
+                 <TouchableOpacity 
+              activeOpacity={0.8}
+              onPress={() => {navigation.navigate("Notification")}}
+              style={{
+                height:60,
+               padding:10,
+                alignItems:"center",justifyContent:"center"
+               }}>
+                <Image source={require('../../assets/notification.png')} 
+                style={{height:30, width:30, resizeMode:'contain'}}/> 
+          </TouchableOpacity> 
               <TouchableOpacity 
               activeOpacity={0.8}
               onPress={() => {onWalletPress()}}
-              style={{position:"absolute",
+              style={{
                 height:60,
-                width:60,
-                end:0,
-                alignItems:"center",
-                justifyContent:"center"}}>
+                padding:10,
+                alignItems:"center",justifyContent:"center"
+               }}>
                 <Image source={require('../../assets/wallet_new.png')} 
                 style={{height:24, width:24, resizeMode:'contain'}}/> 
           </TouchableOpacity> 
+          </View>
             }
            
         </View>

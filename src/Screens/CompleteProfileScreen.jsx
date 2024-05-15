@@ -39,8 +39,8 @@ import CommonHeaderNew from "../common/CommonHeader_new";
          console.log(token);
          console.log(StoreDetail); 
         if (token) {
-           if(StoreDetail && (StoreDetail.aadharCardNo.length == 0 || StoreDetail.document.length == 0)){
-            setAadharNo(StoreDetail.aadharCardNo);
+           if(StoreDetail && (StoreDetail.aadharCardNo.length == 0 || StoreDetail.document.length == 0 || StoreDetail.aadharCardNo == null)){
+            setAadharNo(StoreDetail.aadharCardNo == null ? "" : StoreDetail.aadharCardNo);
             setScreen("AddAdhar");
            }
            else if(StoreDetail == null){
@@ -118,7 +118,10 @@ import CommonHeaderNew from "../common/CommonHeader_new";
               setSHowView(true);
                setTimeout(() =>{
                    setSHowView(false);
+                   if(screen.length > 0)
                     navigation.navigate(screen,{aadharNo : aadharNo});
+                    else
+                    navigation.navigate("AddAdhar",{aadharNo : aadharNo});
                   // handleNext()
                },450);
           //  rotateImage(rotation);

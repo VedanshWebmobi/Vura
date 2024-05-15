@@ -185,7 +185,7 @@ export default function ProductDetail({ navigation, route }) {
             }}
           >
             <View style={{ marginBottom: 0 }}>
-              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20 }}>
+              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30 }}>
                 {product_name}
               </Text>
               {/* <View
@@ -233,7 +233,7 @@ export default function ProductDetail({ navigation, route }) {
           <View style={{ marginTop: 0, padding: 15, gap: 10 }}>
             <View style={{ marginBottom: 5 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
               >
                 Product Information
               </Text>
@@ -268,7 +268,7 @@ export default function ProductDetail({ navigation, route }) {
           <View style={{ padding: 15 }}>
             <View style={{ marginBottom: 5 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
               >
                 Characteristics
               </Text>
@@ -277,7 +277,7 @@ export default function ProductDetail({ navigation, route }) {
             <View>
               <Text>
                 <Text
-                  style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}
+                  style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
                 >
                   {characteristics}
                 </Text>
@@ -288,18 +288,18 @@ export default function ProductDetail({ navigation, route }) {
           <View style={{ padding: 15 }}>
             <View style={{ marginBottom: 10 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
               >
                 User Guide
               </Text>
             </View>
             <View style={{ gap: 5 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 16 }}
               >
                 Substrate Preparation
               </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
+              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
                 Adhesive can be applied on even and compact substrates, free of
                 any substances that reduce adherence (grease, bitumen, oil,
                 paint, dust etc.). Concrete should be at least 1 month old.
@@ -313,11 +313,11 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
 
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
               >
                 Application
               </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 13 }}>
+              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
                 Pour VURA FasTile into a container with the precisely measured
                 amount of clean water and stir with a drill and mixer until a
                 homogeneous mass without lumps is obtained. Leave for 5 min. and
@@ -344,7 +344,7 @@ export default function ProductDetail({ navigation, route }) {
               <Text
                 style={{
                   fontFamily: font.GoldPlay_SemiBold,
-                  fontSize: 15,
+                  fontSize: 18,
                 }}
               >
                 Documents & Downloads
@@ -404,7 +404,7 @@ export default function ProductDetail({ navigation, route }) {
                               style={{
                                 fontFamily: font.GoldPlay_SemiBold,
                                 color: "black",
-                                fontSize: 12,
+                                fontSize: 14,
                                 textAlign: "center",
                                 textDecorationLine:'underline'
                               }}

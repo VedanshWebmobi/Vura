@@ -7,6 +7,7 @@ import {
     StatusBar,
     ActivityIndicator,
     TextInput,
+    Alert,
   } from "react-native";
   import React, { useEffect, useMemo, useRef, useState } from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,6 +31,7 @@ import {
     ];
 
 const handleSearchView =()=>{
+ 
     setShowSearch(true);
 }
 
@@ -118,7 +120,7 @@ useEffect(() => {
       }
        {
           show_search && 
-          <View style={{position:'absolute',width:'100%', backgroundColor:colors.YELLOW, height:60,padding:8}}>
+          <View style={{position:'absolute',width:'100%', backgroundColor:colors.YELLOW, height:60,padding:8, zIndex:1}}>
           <View style={{backgroundColor:'#fff', borderRadius:20, alignItems:'center', flexDirection:'row', paddingEnd:10}}>
           <TextInput style={{paddingStart:20, paddingBottom:10, paddingTop:10, paddingEnd:10, flex:1}}
           value={search}

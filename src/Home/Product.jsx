@@ -285,7 +285,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                   >
                     <View style={{}}>
                       {
-                        console.log(item.productImages)
+                       // console.log(item.productImages)
                       }
                       <Image
                         source={{ uri:(item.productImages.length > 0) ?  item.productImages[0].productImg : "" }}
@@ -300,7 +300,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                         marginVertical: 10,
                       }}
                     />
-                    <Text style={{ fontFamily: font.GoldPlay_Medium, paddingTop:20 }}>
+                    <Text style={{ fontFamily: font.GoldPlay_Medium, paddingTop:20, fontSize:16, fontWeight:'500' }}>
                       {item.product_name}
                     </Text>
                   </TouchableOpacity>

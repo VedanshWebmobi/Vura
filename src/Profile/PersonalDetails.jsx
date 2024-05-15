@@ -4,7 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Image,Animated,Dimensions,Easing
+  Image,Animated,Dimensions,Easing, Alert
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import CommonHeader from "../common/CommonHeader";
@@ -23,7 +23,7 @@ import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import ProfileCustomView from "../common/ProfileCustomeView";
-import { ADD_PROFILE, GET_PROFILE } from "../Api/Utils";
+import { ADD_PROFILE, GET_PROFILE, BANK_VERIFICATION } from "../Api/Utils";
 import DatePicker from 'react-native-date-picker'
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
@@ -69,8 +69,10 @@ export default function PersonalDetails({ navigation }) {
   const [pincode, setPincode] = useState("");
   const [country, setCountry] =useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
+  // const [accountNumber, setAccountNumber] = useState("40100123456781");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
+  // const [ifscCode, setIfscCode] = useState("SBIN0021745");
   const [ifscCode, setIfscCode] = useState("");
   const [showView, setSHowView] = useState(false);
   const [image, setImage] = useState("");
@@ -78,6 +80,12 @@ export default function PersonalDetails({ navigation }) {
   const [dob, setDOB] = useState("");
   const [date, setDate] = useState(new Date())
   const [openDate, setOpenDate] = useState(false)
+  const [alertTitle, setAlertTitle] = useState("");
+  const [iconColor, setIconColor] = useState("red");
+  const [bankverify, setBankVerify] = useState("");
+  const [oldAccountNumber, setOldAccountNumber] = useState(accountNumber);
+  const [oldIFSCCode, setOldIFSCCode] = useState(ifscCode);
+  const [oldBankVerify, setOldBankVeryfy] = useState(bankverify);
   
   // current location
   // const [current_flat_house, setCurrentFlatHouse] = useState("");
@@ -135,6 +143,11 @@ export default function PersonalDetails({ navigation }) {
   
   const handleDatePicker = ()=>{
       setOpenDate(true);
+  }
+  const handlePincodeResult =(city, state, country) =>{
+      setCityTown(city);
+      setStateNew(state);
+      setCountry(country);
   }
   const rotation_per =rotateAnim.interpolate({
     inputRange:[0, 1],
@@ -230,7 +243,44 @@ export default function PersonalDetails({ navigation }) {
       // });
     }
   };
+
+ const handleAccountNumber =(text)=>{
+
+    if(oldBankVerify == "1"){
+     if(text != oldAccountNumber){
+        setBankVerify("0")
+      }
+      else{
+        setBankVerify("1")
+      }
+    }
+    }
+    const handleIFSCCode =(text)=>{
+
+      if(oldBankVerify == "1"){
+       if(text != oldIFSCCode){
+          setBankVerify("0")
+        }
+        else{
+          setBankVerify("1")
+        }
+      }
+      }
+ 
+useState(()=>{
+ 
+  if(bankverify == "1")
+    { 
+  if(accountNumber != oldAccountNumber || ifscCode != oldIFSCCode){
+    setBankVerify("0")
+  }
+}
+ 
+},[accountNumber, ifscCode])
+
   const submitProfile = async () => {
+  //  console.log("Bank", typeof(bankverify === "0" ? 0 : 1));
+  //  return;
     console.log("yeh ja raha hia ander.....", profilePhoto);
     setIsLoading(true);
     try {
@@ -239,14 +289,20 @@ export default function PersonalDetails({ navigation }) {
       console.log("Apiiiii callled...", profilePhoto);
       console.log("====================================");
       profileFormData.append("name", name);
+      const position = profilePhoto.indexOf("http");
+      const position1 = profilePhoto.indexOf("https");
+     
       if(image.length > 0){
+       
           profileFormData.append("image", {
           uri: image,
           type: "image/jpeg",
           name: "profile_image.jpg",
         });
       }
-      else  if((!profilePhoto.includes("http") || !profilePhoto.includes("https")) && profilePhoto.length > 0){
+
+      else  if((profilePhoto.indexOf("http") <= -1 && profilePhoto.indexOf("https") <= -1 ) && profilePhoto.length > 0){
+        Alert.alert(position.toString(),position1.toString());
         profileFormData.append("image", {
           uri: profilePhoto,
           type: "image/jpeg",
@@ -284,7 +340,8 @@ export default function PersonalDetails({ navigation }) {
       profileFormData.append("current_pincode", sameAddress? pincode : "" );
       profileFormData.append("current_country", sameAddress ? country : "");
       profileFormData.append("gender",gender);
-      profileFormData.append("dateOfBirth",dob);
+      profileFormData.append("dateOfBirth",moment(date).format("YYYY-MM-DD"));
+      profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
 
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);
@@ -317,6 +374,47 @@ export default function PersonalDetails({ navigation }) {
       setIsLoading(true);
     }
   };
+
+  const VerifyBankDetails = async() =>{
+    setIsLoading(true);
+    try{
+      const requestOptions = {
+        headers: {
+          Accept: "application/json",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+        params: {
+          ifsc_code: ifscCode, // Pass the current page as a query parameter
+          account_no: accountNumber, // You may need to adjust this based on your API's pagination settings
+        },
+      };
+      // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
+      const response = await axiosCallAPI("post",BANK_VERIFICATION,"",requestOptions, true, navigation);
+      if(response.data.bank_verify){
+            setIconColor("green")
+            setAlertTitle("SUCCESS!")
+            setErrorMessage(response.message)
+            setVisible(true)
+            setBankVerify("1");
+            
+      }
+      else{
+        setIconColor("red")
+        setAlertTitle("Error")
+        setErrorMessage(response.message)
+        setVisible(true)
+        setBankVerify("0");
+      }
+      console.log("Bank Verification", response);
+
+    }catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching or storing profile data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const getProfile = async () => {
     setIsLoading(true);
     try {
@@ -358,7 +456,7 @@ export default function PersonalDetails({ navigation }) {
         current_state,
         current_street,
         country,
-        street, pincode,gender,dateOfBirth,document
+        street, pincode,gender,dateOfBirth,document,bank_verify
       } = response;
 
       // Check for "null" and "undefined" strings and treat them as empty strings
@@ -411,7 +509,8 @@ export default function PersonalDetails({ navigation }) {
         pincode:formattedPincode,
         gender:gender,
         dateOfBirth:dateOfBirth,
-        document:document
+        document:document,
+        bank_verify:bank_verify
       });
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
@@ -553,7 +652,7 @@ export default function PersonalDetails({ navigation }) {
             current_pincode,
             current_state,
             current_street,
-            street,pincode,gender,dateOfBirth } =
+            street,pincode,gender,dateOfBirth,bank_verify } =
             storedDetails;
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
@@ -564,7 +663,8 @@ export default function PersonalDetails({ navigation }) {
           console.log("Yeh raha ", name, mobileNo, address, panCardNo);
 
           setGender(gender);
-          setDOB(dateOfBirth);
+          setDate(moment(dateOfBirth).toDate());
+          setDOB(moment(dateOfBirth).format("DD/MM/YYYY"));
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
@@ -580,7 +680,11 @@ export default function PersonalDetails({ navigation }) {
           setCountry(country || "");
           setAccountHolderName(accountHolderName || "");
           setAccountNumber(accountNumber || "");
+          setOldAccountNumber(accountNumber || "");
+          setOldIFSCCode(ifscCode || "");
           setBankName(bankName || "");
+          setBankVerify(bank_verify);
+          setOldBankVeryfy(bank_verify);
           setIfscCode(ifscCode || "");
 
           if(address == current_address){
@@ -678,8 +782,9 @@ export default function PersonalDetails({ navigation }) {
         hideModal={hideModal} // Pass function to hide the modal
         handleOkPress={() => setVisible(false)} // Pass function to handle Ok button press
         //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
-        title="Error" // Pass title text
+        title={alertTitle} // Pass title text
         iconName="error"
+        iconColor={iconColor}
         bodyText={errorMessage} // Pass body text
         // cancelButton={true} // Pass whether Cancel button should be displayed
       />
@@ -779,6 +884,7 @@ export default function PersonalDetails({ navigation }) {
                 item_label={"Full Name:"}
                 item_place_holder={'Enter your Full Name'}
                 item_return_key_type={'next'}
+                item_input={'only_alphabet'}
                 />
                    <ProfileCustomView 
                 item_value={gender} 
@@ -833,10 +939,20 @@ export default function PersonalDetails({ navigation }) {
                 item_value={area_street} 
                 item_setValue={setAreaStreet} 
                 item_Ref={AreaRef}
-                item_Ref_next={CityRef}
+                item_Ref_next={PinRef}
                 item_label={"Area/Street:"}
                 item_place_holder={'Enter your Area/Street'}
                 item_return_key_type={'next'}
+                />
+                     <ProfileCustomView 
+                item_value={pincode} 
+                item_setValue={setPincode} 
+                item_Ref={PinRef}
+                item_Ref_next={CityRef}
+                item_label={"Pin Code:"}
+                item_place_holder={'Enter your Pin Code'}
+                item_return_key_type={'next'}
+                item_handle_pincode_result={handlePincodeResult}
                 />
                  <ProfileCustomView 
                 item_value={city_town} 
@@ -856,15 +972,7 @@ export default function PersonalDetails({ navigation }) {
                 item_place_holder={'Enter your State'}
                 item_return_key_type={'next'}
                 />
-                 <ProfileCustomView 
-                item_value={pincode} 
-                item_setValue={setPincode} 
-                item_Ref={PinRef}
-                item_Ref_next={CountryRef}
-                item_label={"Pin Code:"}
-                item_place_holder={'Enter your Pin Code'}
-                item_return_key_type={'next'}
-                />
+            
               <ProfileCustomView 
                 item_value={country} 
                 item_setValue={setCountry} 
@@ -922,9 +1030,12 @@ export default function PersonalDetails({ navigation }) {
             <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
                 <Image source={require('../../assets/bank.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
                 <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"BANK DETAILS"}</Text>
+                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10,marginStart:10, color: bankverify == "1" ? "#059669" : "#000000",   }]}>{bankverify === "1" ? "Verified" : "Not Verify"}</Text>
+                
+                
                 <TouchableOpacity activeOpacity={0.5} onPress={()=>{ setRotatedBank(!rotated_bank)}}>
                   {
-                    rotated_bank ? <Text style={{fontFamily:font.GoldPlay_SemiBold, padding:10,textDecorationLine:"underline", fontSize:12}} >ADD</Text> : <Fontisto name="close" color={colors.BLACK} size={20}/>
+                    rotated_bank ? <Text style={{fontFamily:font.GoldPlay_SemiBold, padding:10,textDecorationLine:"underline", fontSize:12}} >{oldBankVerify === "1" ? "EDIT" : "ADD"}</Text> : <Fontisto name="close" color={colors.BLACK} size={20}/>
                   }
                 </TouchableOpacity>
             </View>
@@ -951,6 +1062,7 @@ export default function PersonalDetails({ navigation }) {
                       item_return_key_type={'next'}
                       item_is_bank = {true}
                       item_input ={'numeric'}
+                      item_handle_account_number={handleAccountNumber}
                       />
                        <ProfileCustomView 
                       item_value={bankName} 
@@ -970,7 +1082,19 @@ export default function PersonalDetails({ navigation }) {
                       item_place_holder={'Enter IFSC Code'}
                       item_return_key_type={'done'}
                       item_is_bank = {true}
+                      item_handle_ifsc_code={handleIFSCCode}
                       />
+                      {
+                         bankverify == "0" && 
+                         <View style={{marginTop:20,alignItems:"center"}}>
+                         <TouchableOpacity style={{padding:10, alignSelf:"center", backgroundColor:"#000", borderRadius:25}} onPress={()=>VerifyBankDetails()}>
+                         <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold,textAlign:"center", fontSize:14, paddingStart:20, paddingEnd:20}}>Verify Bank Details</Text>
+                       </TouchableOpacity>
+                       {/* <Text style={{fontSize:11, marginTop:20,fontFamily:font.GoldPlay_SemiBold, color:'#000'}}>If you've received a message about a deduction of 1 rupee from your bank account, it's likely related to a verification process. </Text> */}
+                       </View>
+                      }
+                   
+
               </View>
             }
             </View>
@@ -1427,7 +1551,7 @@ export default function PersonalDetails({ navigation }) {
         onConfirm={(date) => {
           setOpenDate(false)
           setDate(date)
-          setDOB(moment(date).format("YYYY-MM-DD"))
+          setDOB(moment(date).format("DD/MM/YYYY"))
         }}
         onCancel={() => {
           setOpenDate(false)

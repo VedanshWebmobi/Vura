@@ -10,7 +10,9 @@ import {
   import { colors, font } from "../constants";
   import DropDownPicker from "react-native-dropdown-picker";
   import React, { useEffect, useMemo, useRef, useState } from "react";
-  
+  import { axiosCallAPI } from "../Api/Axios";
+  import axios from "axios";
+  import { POSTAL_CODE } from "../Api/Utils";
 
   export default function ProfileCustomView (
     {navigation, 
@@ -25,9 +27,49 @@ import {
         item_input,
         item_is_gender,
         item_is_dob,
-        item_dob_press
+        item_dob_press, 
+        item_handle_pincode_result,
+        item_handle_account_number,
+        item_handle_ifsc_code
     }){
       const [open, setOpen] = useState(false);  
+      const onInputChange = value => {
+        // const { value } = e.target;
+        // console.log('Input value: ', value);
+     
+        const re = /^[a-zA-Z ]*$/;
+        if (value === "" || re.test(value)) {
+          item_setValue(value);
+        }
+      }
+
+      const GetDetailsFromPincode = async(pincode)=>{
+        const requestOptions = {
+          headers: {
+            Accept: "application/json",
+          },
+          
+        };
+        axios.get(POSTAL_CODE+pincode, requestOptions).then((response) =>{
+          
+              if(response.data[0].Status === "Success"){
+                console.log("Success",response.data);
+               console.log("City",response.data[0].PostOffice[0].Block); 
+               item_handle_pincode_result(response.data[0].PostOffice[0].Block,
+                response.data[0].PostOffice[0].State,
+                response.data[0].PostOffice[0].Country)
+              }
+              else if(response.data[0].Status === "Error"){
+                item_handle_pincode_result("",
+                  "",
+                  "")
+              }
+        }).catch((error) => {
+          console.log("Error",error.response.data);
+        })
+       
+      }
+
     
     return (
         <View style={{flex:1}}>
@@ -50,8 +92,16 @@ import {
                   returnKeyType={item_return_key_type}
                   placeholder={item_place_holder}
                   placeholderTextColor={"#999999"}
-                
-                  onChangeText={(text) => item_setValue(text)}
+              
+                  onChangeText={(text) =>{
+                    if(item_handle_account_number)
+                    {
+                    item_handle_account_number(text)
+                    }
+                    if(item_handle_ifsc_code){
+                      item_handle_ifsc_code(text)
+                    }
+                     item_setValue(text)}}
                   cursorColor="white"
                   maxLength={32}
                   onSubmitEditing={()=> {item_Ref_next ? item_Ref_next.current.focus() : null }}
@@ -135,8 +185,20 @@ import {
                   returnKeyType={item_return_key_type}
                   placeholder={item_place_holder}
                   placeholderTextColor={"#999999"}
-                
-                  onChangeText={(text) => item_setValue(text)}
+                  onChangeText={(text) => {
+                    if(item_input === "only_alphabet"){
+                        onInputChange(text);
+                    }
+                    else if(item_label === "Pin Code:"){
+                      if(text.length >= 6){
+                         GetDetailsFromPincode(text); 
+                      }
+                      item_setValue(text)
+                    }
+                    else{
+                    item_setValue(text)
+                    }
+                  }}
                   cursorColor="white"
                   maxLength={32}
                   onSubmitEditing={()=> {item_Ref_next ? item_Ref_next.current.focus() : null }}

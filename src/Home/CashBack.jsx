@@ -1,4 +1,4 @@
-import { SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet, Text, View, Image,ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ImageZoom } from "@likashefqet/react-native-image-zoom";
 import CommonHeader from "../common/CommonHeader";
@@ -29,13 +29,15 @@ export default function CashBack({ navigation }) {
       <StatusBar backgroundColor={statusColor} />
       <CommonHeaderNew header_title={"CASH BACKS"} header_color={colors.YELLOW} navigation={navigation}/>
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
+      <ScrollView>
       <View style={{ flex: 1 , paddingBottom:100}}>
-        <ImageZoom
+
+        {/* <ImageZoom
           source={icon.CASHBACK_CHART}
           style={{
             height: SCREEN_HEIGHT,
             width: SCREEN_WIDTH,
-           zIndex:0
+           zIndex:0, resizeMode:'stretch'
           }}
           minScale={0.5}
           maxScale={3}
@@ -47,8 +49,14 @@ export default function CashBack({ navigation }) {
           onPanEnd={() => console.log("Pan gesture ended")}
           onResetAnimationEnd={() => console.log("Reset animation ended")}
           resizeMode="contain"
-        />
+        /> */}
+        <Image source={icon.CASHBACK_CHART}   style={{
+            height: SCREEN_HEIGHT,
+            width: SCREEN_WIDTH,
+           zIndex:0, resizeMode:'stretch'
+          }}/>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

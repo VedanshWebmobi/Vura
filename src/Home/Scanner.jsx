@@ -9,8 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  NativeModule,
+  NativeModules
 } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera/next";
+// import { CameraView, useCameraPermissions } from "expo-camera/next";
 import CommonHeader from "../common/CommonHeader";
 import stylesCommon from "../Themes/stylesCommon";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -30,10 +32,11 @@ import CompleteProfileScreen from "../Screens/CompleteProfileScreen";
 
 
 export default function Scanner({ navigation }) {
+
   const height = useHeaderHeight();
   const [scannedData, setScannedData] = useState(null);
   const [qrCode, setQrCode] = useState("");
-  const [permission, requestPermission] = useCameraPermissions();
+  // const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [title, setTitle] = useState("");
@@ -45,7 +48,8 @@ export default function Scanner({ navigation }) {
   const handleCodeScanned = (data) => {
     console.log("Bhai le tera data", data.data);
     //setScannedData(data.data);
-    setQrCode(data.data);
+    sendCoupon(data.data);
+   // setQrCode(data.data);
     setIsScanning(false);
   };
 
@@ -109,7 +113,7 @@ export default function Scanner({ navigation }) {
             console.error("Error retrieving details:", error);
           }
         };
-        requestPermission();
+      //  requestPermission();
         retrieveProfile(); 
       return () => {
 
@@ -126,10 +130,11 @@ export default function Scanner({ navigation }) {
         setIsButtonVisible(false);
       }
     },[qrCode])
-  const sendCoupon = async () => {
+  const sendCoupon = async (QR_CODE) => {
     var couponFormData = new FormData();
 
-    couponFormData.append("coupon_code", qrCode);
+    // couponFormData.append("coupon_code", qrCode);
+    couponFormData.append("coupon_code", QR_CODE);
 
     let requestOptions = {
       headers: {
@@ -149,7 +154,7 @@ export default function Scanner({ navigation }) {
     ).then((response) => {
       if (response && response.status) {
         setIconColor("green");
-        setTitle("Success");
+        setTitle("SUCCESSFULLY SCANNED!");
         setShowAlert(true);
         setErrorMessage(response.message);
         setQrCode("");
@@ -174,12 +179,14 @@ export default function Scanner({ navigation }) {
     });
   };
 
-  if (!permission?.granted) {
-    return null;
-  }
+  // if (!permission?.granted) {
+  //   return null;
+  // }
 
   const handleScan = () => {
-    setIsScanning(true);
+    //setIsScanning(true);
+   navigation.navigate("QRScanner");
+  
   };
 
   const verifyCoupon = () => {
@@ -189,7 +196,7 @@ export default function Scanner({ navigation }) {
 
   const handleSubmit = () => {
     if (verifyCoupon()) {
-      sendCoupon();
+      sendCoupon(qrCode);
     } else {
       console.log("Yeh yaha pe aarha hai ");
       setIconColor("red");
@@ -204,6 +211,15 @@ export default function Scanner({ navigation }) {
       // });
     }
   };
+  const handleNextScreen = () =>{
+    setShowAlert(false);
+    if(title === "Error"){
+      
+    }
+    else{
+        navigation.navigate("Wallet");
+    }
+  }
 
   return (
     
@@ -224,8 +240,8 @@ export default function Scanner({ navigation }) {
   
           <CommonAlert
             visible={showAlert} // Pass visibility state to the CommonAlert component
-            hideModal={() => setShowAlert(false)} // Pass function to hide the modal
-            handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
+            hideModal={() => handleNextScreen()} // Pass function to hide the modal
+            handleOkPress={() => handleNextScreen()} // Pass function to handle Ok button press
             //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
             title={title} // Pass title text
             iconName="error"
@@ -246,7 +262,7 @@ export default function Scanner({ navigation }) {
                   alignItems: "center",
                 }}
               >
-                <CameraView
+                {/* <CameraView
                   style={{
                     height: 300,
                     width: 300,
@@ -254,7 +270,7 @@ export default function Scanner({ navigation }) {
                   barcodeScannerSettings={{ barCodeTypes: ["qr"]}}
                   onBarcodeScanned={handleCodeScanned}
                   onPointerCancel={() => setIsScanning(false)}
-                />
+                /> */}
               </View>
             ) : (
               <View style={{ alignItems: "center", gap:20 }}>
@@ -348,6 +364,7 @@ export default function Scanner({ navigation }) {
                       value={qrCode}
                       placeholder="GESGR-3134-FEWG"
                       keyboardType="default"
+                      maxLength={20}
                       placeholderTextColor={colors.GREY}
                     />
                   </View>

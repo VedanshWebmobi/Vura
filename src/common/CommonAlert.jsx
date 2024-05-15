@@ -15,6 +15,7 @@ export default function ({
   handleOkPress,
   handleCancelPress,
   cancelButton,
+  bodyTextSize
 }) {
   //   const [visible, setVisible] = React.useState(false);
 
@@ -24,8 +25,8 @@ export default function ({
   const containerStyle = {
     backgroundColor: "#fff",
     padding: 20,
-    margin: 30,
-    height: SCREEN_HEIGHT / 2.5,
+    margin: 30, 
+    height: SCREEN_HEIGHT / 2.4,
     borderRadius: 20,
   };
 
@@ -51,7 +52,7 @@ export default function ({
               color={
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
-            /> :<Image style={{height:100, width:100}}
+            /> :<Image style={{height:100, width:100, marginTop:-20}}
             source ={require('../../assets/success.gif')} /> }
             {/* <Icon
               name={"error"}
@@ -60,14 +61,14 @@ export default function ({
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
             /> */}
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:title === "Error" ? 1 : -30 }}>
+            <Text style={{color:title === "Error" ? "#000000" : "#059669",  fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:title === "Error" ? 1 : -30, textAlign:'center' }}>
               {title}
             </Text>
             <Text
               style={{
                 marginTop: 10,
                 fontFamily: font.GoldPlay_SemiBold,
-                fontSize: 18,
+                fontSize:bodyTextSize ? bodyTextSize : 16,
                 textAlign: "center",
               }}
             >
