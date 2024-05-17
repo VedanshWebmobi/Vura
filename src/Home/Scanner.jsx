@@ -394,7 +394,7 @@ export default function Scanner({ navigation }) {
                        { color: "black", fontSize: 15, textDecorationLine:'underline' },
                      ]}
                    >
-                     CONFORM
+                     CONFIRM
                    </Text>
                  </View>
                </TouchableOpacity>

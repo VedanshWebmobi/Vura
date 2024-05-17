@@ -28,24 +28,25 @@ export const axiosCallAPI = (
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
-        console.log("Bhai yeh hai dekhle ab", response.data.status);
+        console.log("Bhai yeh hai dekhle ab", response.data);
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
+
               // showMessage(
               //   `${response.data.message}`,
               //   "Success ",
               //   ALERT_TYPE.SUCCESS
               // );
-              console.log(response.data.message);
+              console.log(response.message);
             return response.data;
           }
         } else {
-          errors = response.data.errors;
+         // errors = response.data;
           // Object.keys(errors).map(function (key, index) {
           //   showMessage(`${errors[key]}`, "Error");
           // });
-          return errors;
+          return response.data;
         }
       })
       .catch((error) => {

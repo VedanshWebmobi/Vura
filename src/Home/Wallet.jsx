@@ -5,7 +5,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  StatusBar,Animated,Easing, Dimensions
+  StatusBar,Animated,Easing, Dimensions, Alert
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,6 +21,8 @@ import moment from "moment";
 import { useFocusEffect } from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
 import { ScrollView } from "react-native-gesture-handler";
+import WalletWithdrawList from "./WalletWithdrawList";
+import CouponList from "./CouponList";
 
 export default function Wallet({ navigation }) {
   const [data, setData] = useState([
@@ -39,6 +41,9 @@ export default function Wallet({ navigation }) {
   const [totalAmount, setTotalAmount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [currentPageCoupon, setCurrentPageCoupon] = useState(1);
+  const [totalPagesCoupon, setTotalPagesCoupon] = useState(1);
+
   const [loader, setloader] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
@@ -91,14 +96,30 @@ export default function Wallet({ navigation }) {
       scale_value.setValue(1);
     });
   };
+  useEffect(() =>{
+    if(walletData.length > 0)
+    {
+    fetchWalletData();
+    }
+  },[currentPage])
+  useEffect(() =>{
+    if(couponData.length > 0)
+    {
+    fetchCouponData();
+    }
+  },[currentPageCoupon])
 
   useFocusEffect(
     React.useCallback(() => {
+    //  Alert.alert("Load More");
         fetchWalletData();
-        fetchCouponData();
-    }, [currentPage])
+    }, [])
   );
-
+  useFocusEffect(
+    React.useCallback(() => {
+      //  fetchCouponData();
+    }, [])
+  );
 
   // useEffect(() => {
 
@@ -106,15 +127,26 @@ export default function Wallet({ navigation }) {
   // }, [currentPage]);
 
   const LoadMoreData =() =>{
+   
       if(walletData.length > 0){
+       
         if(currentPage < totalPages){
           setCurrentPage(currentPage +1);
+         
         }
       }
   }
+  const LoadMoreDataCoupon =() =>{
+    if(couponData.length > 0){
+      if(currentPageCoupon < totalPagesCoupon){
+       
+        setCurrentPageCoupon(currentPageCoupon +1);
+      }
+    }
+}
 
   function MyTabBar({ state, descriptors, navigation, position }) {
-      const [selectedPosition, setSelectedPosition] = useState(0);
+    
     return (
       <View style={{borderRadius:25, flexDirection: 'row', backgroundColor:'#CCCCCC', height:50, alignItems:"center", justifyContent:"center", padding:8,  }}>
         {state.routes.map((route, index) => {
@@ -189,7 +221,7 @@ export default function Wallet({ navigation }) {
               showsVerticalScrollIndicator={false}
               onEndReached={LoadMoreData}
               onEndReachedThreshold={0.1}
-              ListFooterComponent={renderFooter}
+              ListFooterComponent={renderFooter("wallet")}
               ListEmptyComponent={renderEmptyComponent}
             /> 
     </View>)
@@ -201,17 +233,18 @@ export default function Wallet({ navigation }) {
                 renderItem={renderCouponItem}
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator={false}
-                onEndReached={LoadMoreData}
+                onEndReached={LoadMoreDataCoupon}
                 onEndReachedThreshold={0.1}
-                ListFooterComponent={renderFooter}
+                ListFooterComponent={renderFooter("coupon")}
                 ListEmptyComponent={renderEmptyComponent}
               />  
       </View>)
   }
 
   const fetchCouponData = async () => {
-    setloader(true);
-    if (currentPage > totalPages) {
+   
+ 
+    if (currentPageCoupon > totalPagesCoupon) {
       return;
     }
    // setIsLoading(true);
@@ -222,10 +255,11 @@ export default function Wallet({ navigation }) {
           Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
         },
         params: {
-          page: currentPage, // Pass the current page as a query parameter
-          per_page: 100, // You may need to adjust this based on your API's pagination settings
+          page: currentPageCoupon, // Pass the current page as a query parameter
+          per_page: 10, // You may need to adjust this based on your API's pagination settings
         },
       };
+      console.log("Coupon Request", requestOptions);
 
       const response = await axiosCallAPI(
         "get",
@@ -240,13 +274,13 @@ export default function Wallet({ navigation }) {
 
        setCouponData([...couponData, ...newData]);
       
-      // setTotalPages(response.pages);
+       setTotalPagesCoupon(response.pages);
      // setCurrentPage(currentPage + 1);
     } catch (error) {
       console.error("Error fetching wallet data:", error);
     } finally {
      // setIsLoading(false);
-      setloader(false);
+   
     }
   };
 
@@ -265,7 +299,7 @@ export default function Wallet({ navigation }) {
         },
         params: {
           page: currentPage, // Pass the current page as a query parameter
-          per_page: 100, // You may need to adjust this based on your API's pagination settings
+          per_page: 10, // You may need to adjust this based on your API's pagination settings
         },
       };
 
@@ -277,17 +311,17 @@ export default function Wallet({ navigation }) {
         true,
         navigation
       );
-      console.log("WithDrawal History",response);
+      console.log("WithDrawal History",response.transaction_log.result);
        const newData = response.transaction_log.result;
 
-       setWalletData([...walletData, ...newData]);
+    //   setWalletData([...walletData, ...newData]);
        if(response.client_data)
        {
        setwalletAmount(response.client_data.available_balance);
        setTotalAmount(response.client_data.received_amount);
        setWithdrawalAmount(response.client_data.withdrawal_amount);
        }
-      // setTotalPages(response.pages);
+     //  setTotalPages(response.transaction_log.pages);
      // setCurrentPage(currentPage + 1);
     } catch (error) {
       console.error("Error fetching wallet data:", error);
@@ -378,11 +412,11 @@ export default function Wallet({ navigation }) {
       </Text>
     </View>
   );
-  const renderFooter = () => {
+  const renderFooter = (type) => {
     
       return (
         <View >
-          {
+          { type === "wallet" ?
             (currentPage < totalPages && walletData.length > 0) &&   
             <Progress.CircleSnail
             size={50}
@@ -390,12 +424,18 @@ export default function Wallet({ navigation }) {
             color={"black"}
             style={{ alignItems: "center" }}
           />
+          :
+          (currentPageCoupon < totalPagesCoupon && couponData.length > 0) &&   
+          <Progress.CircleSnail
+          size={50}
+          indeterminate={true}
+          color={"black"}
+          style={{ alignItems: "center" }}
+        />
           }
       
         </View>
       );
-   
-  
   };
 
   return (
@@ -551,8 +591,8 @@ export default function Wallet({ navigation }) {
             <Tab.Navigator  tabBar={props => <MyTabBar {...props} />}
             swipeEnabled ={false}
           >
-            <Tab.Screen name="WITHDRAW" component={HomeScreen} />
-      <Tab.Screen name="COUPON" component={SettingsScreen} />
+            <Tab.Screen name="WITHDRAW" component={WalletWithdrawList} />
+      <Tab.Screen name="COUPON" component={CouponList} />
             </Tab.Navigator>
             {/* <FlatList
               data={walletData}

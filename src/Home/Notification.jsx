@@ -31,7 +31,7 @@ export default function Notification({navigation}){
 
     useEffect(() => {
         // Fetch data from your API or from local storage
-               
+            
                 GetNotification()
           
            
@@ -101,14 +101,25 @@ export default function Notification({navigation}){
                 },
                 params: {
                   page: currentPage, // Pass the current page as a query parameter
-                  per_page: 100, // You may need to adjust this based on your API's pagination settings
+                  per_page: 10, // You may need to adjust this based on your API's pagination settings
                 },
               };
               const response = await axiosCallAPI('get',NOTIFICATION, "", requestOptions, true, navigation);
-           //   console.log("Notification response =>",response);
+              setTotalPages(response.pages);
+             
+              if(response.result.length > 0){
+                  const newData = response.result;
+                  if(refreshing)
+                  {
+                    setData(newData);
+                  }
+                  else
+                     setData([...data, ...newData])   
+              }
+              console.log("Notification response =>",response);
             //   setData([{"title" : "Hello", "message" : "Message","id" : 1},
             //   {"title" : "Hello", "message" : "Message", "id" :2}]);
-            setData(response.result);
+           // setData(response.result);
             setIsLoading(false);
             setTimeout(() => {setRefreshing(false)},1000)
         }
@@ -153,8 +164,50 @@ export default function Notification({navigation}){
                     return tempArray;
                 })
       }
-
-
+      const LoadMoreData =() =>{
+        if(data.length > 0){
+          if(currentPage < totalPages){
+            setCurrentPage(currentPage +1);
+          }
+        }
+    }
+    const renderEmptyComponent = () => (
+      !isFirstTime &&  
+      <View
+        style={{
+         
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: font.GoldPlay_Regular,
+            fontSize: 18,
+            color: "black",
+          }}
+        >
+          No Notification data found
+        </Text>
+      </View>
+    );
+    const renderFooter = () => {
+    
+      return (
+        <View >
+          {
+            (currentPage < totalPages && data.length > 0) &&   
+            <Progress.CircleSnail
+            size={50}
+            indeterminate={true}
+            color={"black"}
+            style={{ alignItems: "center" }}
+          />
+          }
+      
+        </View>
+      );
+  };
     const handleRefresh = () => {
         if(currentPage == 1){
             GetNotification();
@@ -171,8 +224,8 @@ export default function Notification({navigation}){
         <CommonHeaderNew navigation={navigation} showBack={true} header_title="NOTIFICATIONS" header_color={colors.YELLOW}/>
         <View style={{  flex:1}}>
         <FlatList
-  ItemSeparatorComponent={
-    Platform.OS !== 'android' &&
+          ItemSeparatorComponent={
+             Platform.OS !== 'android' &&
     (({highlighted}) => (
       <View
         style={[style.separator, highlighted && {marginLeft: 0}]}
@@ -186,6 +239,10 @@ export default function Notification({navigation}){
     />
   }
   data={data}
+  onEndReached={LoadMoreData}
+  onEndReachedThreshold={0.1}
+  ListFooterComponent={renderFooter}
+  ListEmptyComponent={renderEmptyComponent}
   renderItem={({item, index, separators}) => (
     item.is_read === "1" ?
     <Card style={{margin:10, padding:16, backgroundColor:"#f2f2f2"}} onPress={()=>{

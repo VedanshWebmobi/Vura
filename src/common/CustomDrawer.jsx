@@ -251,6 +251,7 @@ export default function CustomDrawer({ navigation }) {
           <Image
             source={profile.length > 0 ? { uri: profile } : icon.PROFILE_PIC}
             style={{ width: 80, height: 80, borderRadius: 40, borderWidth:2, borderColor:colors.YELLOW }}
+            onError={() => setprofile("")}
           />
           <View style={{flex:1, paddingStart:20, paddingEnd:10, paddingTop:2,}}>
             <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold, fontSize:20}}>{name.length > 0 ? name : "Unknown" }</Text>

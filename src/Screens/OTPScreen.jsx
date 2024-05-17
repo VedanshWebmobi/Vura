@@ -277,6 +277,7 @@ import CountdownTimer from "../common/CountDownTimer";
         const formattedCurrentPincode = current_pincode === "null" ? "" : current_pincode;
         const formattedCurrentState = current_state === "null" ? "" : current_state;
         const formattedCurrentStreet = current_street === "null" ? "" : current_street;
+        const formattedDateOfBirth = dateOfBirth === "null" ? "" : dateOfBirth;
         // Store non-setive profile data in AsyncStorage
         await Preference.storePreference("profile", {
           name: formattedName,
@@ -301,9 +302,9 @@ import CountdownTimer from "../common/CountDownTimer";
           street:formattedStreet,
           pincode:formattedPincode,
           gender:gender,
-          dateOfBirth:dateOfBirth,
+          dateOfBirth:formattedDateOfBirth,
           document:document,
-          bank_verify,bank_verify
+          bank_verify:bank_verify
         });
       } catch (error) {
         console.error("Error fetching or storing profile data:", error);

@@ -13,7 +13,7 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { axiosCallAPI } from "../Api/Axios";
-import { TextInput, Button, Checkbox, Modal, Portal, Card } from "react-native-paper";
+import { TextInput, Button, Checkbox, Modal, Portal, Card, Icon } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import * as Preference from "../StoreData/Preference";
@@ -86,6 +86,7 @@ export default function PersonalDetails({ navigation }) {
   const [oldAccountNumber, setOldAccountNumber] = useState(accountNumber);
   const [oldIFSCCode, setOldIFSCCode] = useState(ifscCode);
   const [oldBankVerify, setOldBankVeryfy] = useState(bankverify);
+  const [onImageError, setIsImageError] = useState(false);
   
   // current location
   // const [current_flat_house, setCurrentFlatHouse] = useState("");
@@ -483,6 +484,7 @@ useState(()=>{
       const formattedCurrentStreet = current_street === "null" ? "" : current_street;
       const formattedStreet = street === "null" ? "":street;
       const formattedPincode = pincode === "null" ? "" : pincode;
+      const formattedDateOfBirth = dateOfBirth === "null" ? "" : dateOfBirth;
 
       // Store non-setive profile data in AsyncStorage
       await Preference.storePreference("profile", {
@@ -508,7 +510,7 @@ useState(()=>{
         street:formattedStreet,
         pincode:formattedPincode,
         gender:gender,
-        dateOfBirth:dateOfBirth,
+        dateOfBirth:formattedDateOfBirth,
         document:document,
         bank_verify:bank_verify
       });
@@ -660,11 +662,20 @@ useState(()=>{
             mobileNo
           );
 
-          console.log("Yeh raha ", name, mobileNo, address, panCardNo);
+          console.log("Yeh raha ", name, mobileNo, address, panCardNo, dateOfBirth);
 
           setGender(gender);
-          setDate(moment(dateOfBirth).toDate());
-          setDOB(moment(dateOfBirth).format("DD/MM/YYYY"));
+          if(dateOfBirth == null || dateOfBirth.length <= 0)
+           {
+             setDate(new Date())
+             setDOB("");
+           } 
+           else{
+            setDate(moment(dateOfBirth).toDate());
+            setDOB(moment(dateOfBirth).format("DD/MM/YYYY"));
+           }
+          
+          
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
@@ -808,7 +819,14 @@ useState(()=>{
             }}
           >
               <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
-            <Image source={image.length > 0 ?  { uri:image } : (profilePhoto && profilePhoto.length > 0) ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}}/>
+            { 
+              onImageError ? 
+              <Image source={icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}} />
+              :
+              <Image source={image.length > 0 ?  { uri:image } : (profilePhoto && profilePhoto.length > 0) ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}} 
+              onError ={() => setIsImageError(true)}/>
+            }    
+           
             <TouchableOpacity style={{position:'absolute', bottom:0, right:5}} onPress={()=>setShowCameraModel(true)}>
             <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
             </TouchableOpacity>

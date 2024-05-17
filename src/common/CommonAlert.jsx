@@ -1,10 +1,11 @@
-import { StyleSheet, Text, TouchableHighlight, View, Image } from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View, Image, Modal} from "react-native";
 import React from "react";
-import { TextInput, Button, Checkbox, Modal, Portal } from "react-native-paper";
+import { TextInput, Button, Checkbox,  Portal, PaperProvider, } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { colors, font, icon } from "../constants";
 import { SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import Icon from "@expo/vector-icons/MaterialIcons";
+
 
 export default function ({
   visible,
@@ -26,24 +27,28 @@ export default function ({
     backgroundColor: "#fff",
     padding: 20,
     margin: 30, 
-    height: SCREEN_HEIGHT / 2.4,
+    height: SCREEN_HEIGHT / 2.1,
     borderRadius: 20,
   };
-
+  //  height: SCREEN_HEIGHT / 2.4,
+//<View  style={styles.container}>
   return (
-    <View>
-      <Portal>
+      
+     
         <Modal
           visible={visible}
           onDismiss={hideModal}
-          contentContainerStyle={containerStyle}
+          transparent={true}
+          //contentContainerStyle={containerStyle}
         >
+            <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
           <View
             style={{
               alignItems: "center",
               gap: 10,
               //backgroundColor: "grey",
-              flex: 1,
+            
             }}
           >
             { title === "Error" ? <Icon
@@ -68,7 +73,7 @@ export default function ({
               style={{
                 marginTop: 10,
                 fontFamily: font.GoldPlay_SemiBold,
-                fontSize:bodyTextSize ? bodyTextSize : 16,
+                fontSize:bodyTextSize ? bodyTextSize : 15,
                 textAlign: "center",
               }}
             >
@@ -76,7 +81,7 @@ export default function ({
             </Text>
           </View>
           <View
-            style={{ flexDirection: "row", justifyContent: "center", gap: 50 }}
+            style={{ flexDirection: "row", justifyContent: "center", gap: 50 , marginTop:30}}
           >
             <TouchableHighlight
               style={{
@@ -132,10 +137,31 @@ export default function ({
               </TouchableHighlight>
             )}
           </View>
+          </View>
+          </View>
         </Modal>
-      </Portal>
-    </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  
+  
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding:20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width:'100%'
+  },
+});

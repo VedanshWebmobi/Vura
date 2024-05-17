@@ -117,7 +117,7 @@ return unsubscribe;
 
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
-        // console.log("Response from server:", response);
+         console.log("Response from server:", response);
         if (response && response.status) {
           setIconColor("green");
           setShowAlert(true);
@@ -128,7 +128,8 @@ return unsubscribe;
           setIconColor("red");
           setShowAlert(true);
           setAlertTitle("Error");
-          setAlertMessage(response.error[0]);
+          setAlertMessage(response.message);
+          // setAlertMessage(response.error[0]);
          // setShowOtp(true);
           console.error("Invalid response data:", response);
         }
@@ -297,12 +298,23 @@ return unsubscribe;
           visible={showAlert} // Pass visibility state to the CommonAlert component
           hideModal={() => {
             setShowAlert(false)
+            if(alertTitle === "Error")
+            {
+
+            }
+            else{
             navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
+            }
           }} // Pass function to hide the modal
           handleOkPress={() =>{
          
             setShowAlert(false)
+            if(alertTitle === "Error"){
+
+            }
+            else{
             navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
+            }
           } } // Pass function to handle Ok button press
           //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
           title={alertTitle} // Pass title text

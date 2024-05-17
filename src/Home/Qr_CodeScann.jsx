@@ -124,8 +124,18 @@ export default function QRCodeScanner_new({navigation}) {
       navigation
     ).then((response) => {
       if (response && response.status) {
+
+        if(response.message.includes("Please Contact Your Salesperson."))
+        {
+         
+          setTitle("CONGRATULATIONS!");
+         
+        }
+        else
+        {
+          setTitle("SUCCESSFULLY SCANNED!");
+        }
         setIconColor("green");
-        setTitle("SUCCESSFULLY SCANNED!");
         setShowAlert(true);
         setErrorMessage(response.message);
         setQrCode("");
