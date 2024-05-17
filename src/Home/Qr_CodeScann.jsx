@@ -125,7 +125,7 @@ export default function QRCodeScanner_new({navigation}) {
     ).then((response) => {
       if (response && response.status) {
 
-        if(response.message.includes("Please Contact Your Salesperson."))
+        if(response.message.includes("Please Contact Our Nearest Salesperson."))
         {
          
           setTitle("CONGRATULATIONS!");
@@ -149,7 +149,7 @@ export default function QRCodeScanner_new({navigation}) {
         setIconColor("red");
         setTitle("Error");
         setShowAlert(true);
-        setErrorMessage(response[0]);
+        setErrorMessage(response.message);
         // Dialog.show({
         //   type: ALERT_TYPE.DANGER,
         //   title: "Error",

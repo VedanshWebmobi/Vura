@@ -145,10 +145,10 @@ const WithDrawalAmount = async() =>{
               Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
             },
             params: {
-              amount: amount, 
+              amount: parseFloat(amount.toString().replace(',','')), 
             },
           };
-         
+        
         const response = await axiosCallAPI("post",WITHDRAW,"",requestOptions,true, navigation);
         console.log("Withdrawal Response", response);
 
@@ -309,7 +309,8 @@ const WithDrawalAmount = async() =>{
               setSHowView(true);
                setTimeout(() =>{
                    setSHowView(false);
-                   const amountInt = parseFloat(amount);
+                   const amountInt = parseFloat(amount.toString().replace(',',''));
+                 //   Alert.alert(amountInt.toString());
                    if(amountInt >= 500 && amountInt <= 1000){
                        if(bankverify === "1")
                        {

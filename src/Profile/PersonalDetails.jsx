@@ -79,10 +79,11 @@ export default function PersonalDetails({ navigation }) {
   const [gender, setGender] = useState("");
   const [dob, setDOB] = useState("");
   const [date, setDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(null);
   const [openDate, setOpenDate] = useState(false)
   const [alertTitle, setAlertTitle] = useState("");
   const [iconColor, setIconColor] = useState("red");
-  const [bankverify, setBankVerify] = useState("");
+  const [bankverify, setBankVerify] = useState("0");
   const [oldAccountNumber, setOldAccountNumber] = useState(accountNumber);
   const [oldIFSCCode, setOldIFSCCode] = useState(ifscCode);
   const [oldBankVerify, setOldBankVeryfy] = useState(bankverify);
@@ -303,7 +304,7 @@ useState(()=>{
       }
 
       else  if((profilePhoto.indexOf("http") <= -1 && profilePhoto.indexOf("https") <= -1 ) && profilePhoto.length > 0){
-        Alert.alert(position.toString(),position1.toString());
+       // Alert.alert(position.toString(),position1.toString());
         profileFormData.append("image", {
           uri: profilePhoto,
           type: "image/jpeg",
@@ -341,7 +342,9 @@ useState(()=>{
       profileFormData.append("current_pincode", sameAddress? pincode : "" );
       profileFormData.append("current_country", sameAddress ? country : "");
       profileFormData.append("gender",gender);
-      profileFormData.append("dateOfBirth",moment(date).format("YYYY-MM-DD"));
+    
+      profileFormData.append("dateOfBirth",selectedDate != null ? moment(selectedDate).format("YYYY-MM-DD") : "");
+      
       profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
 
       console.log("====================================");
@@ -526,6 +529,8 @@ useState(()=>{
 
   const validation = () => {
     if (name.trim() === "") {
+      setAlertTitle("Error")
+      setIconColor("red")
       setErrorMessage("ENTER A VALID NAME");
       setVisible(true);
       return;
@@ -672,6 +677,7 @@ useState(()=>{
            } 
            else{
             setDate(moment(dateOfBirth).toDate());
+            setSelectedDate(moment(dateOfBirth).toDate());
             setDOB(moment(dateOfBirth).format("DD/MM/YYYY"));
            }
           
@@ -891,7 +897,7 @@ useState(()=>{
                 item_setValue={setPanNo} 
                 item_Ref={PanRef}
                 item_Ref_next={NameRef}
-                item_label={"PAN N:"}
+                item_label={"PAN NO:"}
                 item_place_holder={'Enter your Pan Card Number'}
                 item_return_key_type={'next'}
                 />
@@ -1569,6 +1575,7 @@ useState(()=>{
         onConfirm={(date) => {
           setOpenDate(false)
           setDate(date)
+          setSelectedDate(date);
           setDOB(moment(date).format("DD/MM/YYYY"))
         }}
         onCancel={() => {

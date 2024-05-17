@@ -275,8 +275,9 @@ export default function Scanner({ navigation }) {
             ) : (
               <View style={{ alignItems: "center", gap:20 }}>
                 <View style={{ gap: 25, alignItems: "center" }}>
+                  <TouchableOpacity onPress={handleScan}>
                   <Image source={require('../../assets/scan_fram.png')} style={{ height:120, width: 120 }} />
-  
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleScan}
                     style={{ backgroundColor: "transparent", borderRadius: 15 }}

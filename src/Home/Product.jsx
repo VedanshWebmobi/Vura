@@ -300,7 +300,10 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                         marginVertical: 10,
                       }}
                     />
-                    <Text style={{ fontFamily: font.GoldPlay_Medium, paddingTop:20, fontSize:16, fontWeight:'500' }}>
+                    <Text  style={{ fontFamily: font.GoldPlay_Medium, 
+                        height:45,
+                       fontSize:16, fontWeight:'500', textAlign:'center' }}
+                       numberOfLines={2}>
                       {item.product_name}
                     </Text>
                   </TouchableOpacity>

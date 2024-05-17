@@ -28,6 +28,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
 
     const [screen, setScreen] = useState("");
     const [aadharNo, setAadharNo] = useState("");
+    const [profilePhoto, setProfilePhoto] = useState("");
     const rotation = useRef(new Animated.Value(0)).current;
     const scale = useRef(new Animated.Value(1)).current;
     const stretchValue = useRef(new Animated.Value(1)).current;
@@ -41,6 +42,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
         if (token) {
            if(StoreDetail && (StoreDetail.aadharCardNo.length == 0 || StoreDetail.document.length == 0 || StoreDetail.aadharCardNo == null)){
             setAadharNo(StoreDetail.aadharCardNo == null ? "" : StoreDetail.aadharCardNo);
+            setProfilePhoto(StoreDetail.image);
             setScreen("AddAdhar");
            }
            else if(StoreDetail == null){
@@ -119,7 +121,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
                setTimeout(() =>{
                    setSHowView(false);
                    if(screen.length > 0)
-                    navigation.navigate(screen,{aadharNo : aadharNo});
+                    navigation.navigate(screen,{aadharNo : aadharNo, profilePhoto:profilePhoto});
                     else
                     navigation.navigate("AddAdhar",{aadharNo : aadharNo});
                   // handleNext()

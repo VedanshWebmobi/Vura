@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View, Image, Modal} from "react-native";
+import { StyleSheet, Text, TouchableHighlight, View, Image, Modal, Alert, TouchableWithoutFeedback} from "react-native";
 import React from "react";
 import { TextInput, Button, Checkbox,  Portal, PaperProvider, } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -34,14 +34,17 @@ export default function ({
 //<View  style={styles.container}>
   return (
       
-     
+    
         <Modal
           visible={visible}
           onDismiss={hideModal}
           transparent={true}
+          onRequestClose={handleOkPress}
           //contentContainerStyle={containerStyle}
         >
-            <View style={styles.modalContainer}>
+          <TouchableWithoutFeedback onPress={handleOkPress}>
+            <View style={styles.modalContainer} >
+            <TouchableWithoutFeedback >
             <View style={styles.modalContent}>
           <View
             style={{
@@ -72,6 +75,7 @@ export default function ({
             <Text
               style={{
                 marginTop: 10,
+                marginBottom:30,
                 fontFamily: font.GoldPlay_SemiBold,
                 fontSize:bodyTextSize ? bodyTextSize : 15,
                 textAlign: "center",
@@ -80,8 +84,8 @@ export default function ({
               {bodyText}
             </Text>
           </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "center", gap: 50 , marginTop:30}}
+          {/* <View
+            style={{ flexDirection: "row", justifyContent: "center",  marginTop:30, marginBottom:30}}
           >
             <TouchableHighlight
               style={{
@@ -136,10 +140,13 @@ export default function ({
                 </Text>
               </TouchableHighlight>
             )}
+          </View> */}
           </View>
+          </TouchableWithoutFeedback>
           </View>
-          </View>
+          </TouchableWithoutFeedback>
         </Modal>
+       
   );
 }
 
@@ -163,5 +170,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width:'100%'
+  },
+  modalContent_new: {
+    backgroundColor: 'yellow',
+    padding: 20,
+    borderRadius: 10,
+   
   },
 });

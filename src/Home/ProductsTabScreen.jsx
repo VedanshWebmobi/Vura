@@ -7,7 +7,7 @@ import {
     StatusBar,
     ActivityIndicator,
     TextInput,
-    Alert,
+    Alert,TouchableOpacity,Animated,ScrollView
   } from "react-native";
   import React, { useEffect, useMemo, useRef, useState } from "react";
   import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import {
   import { axiosCallAPI } from "../Api/Axios";
   import { PRODUCTS, PRODUCT_CATEGORY } from "../Api/Utils";
   import { Fontisto } from '@expo/vector-icons';
+  import MyTabBar from "../common/MyCustomTab";
 
 
   export default function ProductTabs({navigation}){
@@ -82,7 +83,71 @@ useEffect(() => {
 
   fetchProductCategory();
 }, []);
+function MyTabBar1({ state, descriptors, navigation, position }) {
+  return (
+    <View style={{height:50,backgroundColor:"#000000", }}>
+    <ScrollView  horizontal style={{ }} contentContainerStyle={{ flexDirection: 'row',
+    alignItems: 'center',}}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
 
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name, route.params);
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        const inputRange = state.routes.map((_, i) => i);
+        const opacity = position.interpolate({
+          inputRange,
+          outputRange: inputRange.map(i => (i === index ? 1 : 0)),
+        });
+
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={{paddingStart:10, paddingEnd:10, alignItems:"center"}}
+          >
+            <Animated.Text style={{ color:"#fff", fontFamily:font.GoldPlay_SemiBold, textTransform:'uppercase' }}>
+              {label}
+            </Animated.Text>
+          {
+             isFocused &&    <View style={{height:3, backgroundColor:colors.YELLOW, width:10, borderRadius:10}}/>
+          }  
+        
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
+    </View>
+  );
+}
 
     return(
         <SafeAreaView style={{flex:1}}>
@@ -97,17 +162,17 @@ useEffect(() => {
       />
       {
         categories.length > 0 ? 
-        <Tab.Navigator 
+        <Tab.Navigator  tabBar={props => <MyTabBar {...props} />}
         screenOptions={{
-            tabBarLabelStyle: { fontSize: 12, fontFamily:font.GoldPlay_SemiBold },
-            tabBarItemStyle:{width:130},
-           tabBarIndicatorStyle:{backgroundColor:colors.YELLOW},
-         tabBarActiveTintColor:colors.YELLOW,
-         tabBarInactiveTintColor:"#999999",
+        //     tabBarLabelStyle: { fontSize: 12, fontFamily:font.GoldPlay_SemiBold },
+        //     tabBarItemStyle:{width:100},
+        //    tabBarIndicatorStyle:{backgroundColor:colors.YELLOW},
+        //  tabBarActiveTintColor:colors.YELLOW,
+        //  tabBarInactiveTintColor:"#999999",
             scrollEnabled:true,
-            tabBarStyle: { backgroundColor: 'black' },
-              tabBarScrollEnabled:true,
-               tabBarAllowFontScaling:true
+             tabBarStyle: { backgroundColor: 'black' },
+               tabBarScrollEnabled:true,
+            //    tabBarAllowFontScaling:true
           }}
         >
         { 

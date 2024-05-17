@@ -72,8 +72,7 @@ export default function HomeTabScreen({navigation}){
         );
 
   
-          console.log("Bhai yeh method mai yeh mil raha", response);
-          return;
+         
         //  Extract relevant data from the API response
         const {
           name,

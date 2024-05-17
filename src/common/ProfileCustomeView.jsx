@@ -113,9 +113,9 @@ import {
                <DropDownPicker
                 open={open}
                 value={item_value}
-                items={[{label: 'Male', value: 'male'},
-                {label: 'Female', value: 'female'},
-                {label: 'Other', value: 'other'},
+                items={[{label: 'Male', value: 'Male'},
+                {label: 'Female', value: 'Female'},
+                {label: 'Other', value: 'Other'},
               ]}
               dropDownContainerStyle={{
                 backgroundColor: "#fff",
