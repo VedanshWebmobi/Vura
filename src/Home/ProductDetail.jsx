@@ -354,15 +354,16 @@ export default function ProductDetail({ navigation, route }) {
             <SimpleGrid
               data={productDocuments}
               maxItemsPerRow={2}
-              renderItem={(item, index) => {
-                console.log("yeh hai bhai ", item.item.productDocName);
+              renderItem={({item, index}) => {
+                console.log("yeh hai bhai ", index);
                 return (
                   <View style={{}} key={index}>
                     <View
                       style={{
                         justifyContent: "space-around",
                         alignItems: "center",
-                        flexDirection: "row",
+                        marginTop:10
+                       
                         // backgroundColor: "red",
                       }}
                     >
@@ -370,15 +371,17 @@ export default function ProductDetail({ navigation, route }) {
                         key={index}
                         onPress={() =>
                           downloadFile(
-                            item.item.productDocument,
-                            item.item.productDocName
+                            item.productDocument,
+                            item.productDocName
                           )
                         }
+                       
                       >
                         <View
                           style={{
                             gap: 5,
                             alignItems: "center",
+                           
                           }}
                         >
                           <Image
@@ -396,21 +399,31 @@ export default function ProductDetail({ navigation, route }) {
                               //backgroundColor: "red",
                               // width: SCREEN_WIDTH / 2,
                               padding: 5,
-                              paddingHorizontal: 40,
+                              marginTop:5,
                               borderRadius: 5,
                             }}
                           >
-                            <Text
-                              style={{
-                                fontFamily: font.GoldPlay_SemiBold,
-                                color: "black",
-                                fontSize: 14,
-                                textAlign: "center",
-                                textDecorationLine:'underline'
-                              }}
-                            >
-                              {item.item.productDocName}
-                            </Text>
+                            {
+                              console.log(index)
+                            }
+                          
+                             <Text
+                             style={{
+                               fontFamily: font.GoldPlay_SemiBold,
+                               color: "black",
+                               fontSize: 14,
+                               textAlign: "center",
+                               textDecorationLine:'underline',
+                               height:40,
+
+                             }}
+                             numberOfLines={2}
+                           >
+                             {item.productDocName}
+                           </Text>
+                        
+                           
+                  
                           </View>
                         </View>
                       </TouchableOpacity>

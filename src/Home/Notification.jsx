@@ -36,6 +36,16 @@ export default function Notification({navigation}){
           
            
       }, [currentPage]);
+      useEffect(() => {
+        // Fetch data from your API or from local storage
+            if(refreshing)
+            {  
+                GetNotification()
+            }
+          
+           
+      }, [ refreshing]);
+
     
       useEffect(() =>{
         const retrievePersonalDetails = async () => {
@@ -210,7 +220,8 @@ export default function Notification({navigation}){
   };
     const handleRefresh = () => {
         if(currentPage == 1){
-            GetNotification();
+          //  GetNotification();
+        
         }
         else{
         setCurrentPage(1);
@@ -245,15 +256,19 @@ export default function Notification({navigation}){
   ListEmptyComponent={renderEmptyComponent}
   renderItem={({item, index, separators}) => (
     item.is_read === "1" ?
-    <Card style={{margin:10, padding:16, backgroundColor:"#f2f2f2"}} onPress={()=>{
+    <Card  
+    mode="contained"
+     style={{margin:10, paddingStart:16, paddingEnd:16, backgroundColor:"#f2f2f2", }} onPress={()=>{
         updateNotificationReadStatus(index)
         handleRedirection(item.type)
     }
+    
         }>
-      <View style={{minHeight:50}}>
+      <View style={{}}>
       <Text style={{fontFamily:font.GoldPlay_SemiBold, fontSize:16, color:colors.BLACK}}>{item.title}</Text>
         <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:14, color:"#333333", marginTop:5}}>{item.notification_text}</Text>
         <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:14, color:"#999999", marginTop:10}}>{moment(item.createdAt).fromNow()}</Text> 
+       <View style={{backgroundColor:"#666666", height:1, marginTop:20}}/> 
       </View>
     </Card>
     :

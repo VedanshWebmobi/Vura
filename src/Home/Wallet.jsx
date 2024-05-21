@@ -477,11 +477,14 @@ export default function Wallet({ navigation }) {
                 fontSize: 14,
               }}
             >
-              Wallet Balance
+              Available Balance
             </Text>
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30, alignItems:'center' }}>
-             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 25 }}> ₹ </Text>{walletAmount ? walletAmount : 0}
+            <View  style={{flexDirection:'row', alignItems:"center"}}>
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30, alignItems:'center', textAlign:'center' }}>
+            {walletAmount ? walletAmount : 0}
             </Text>
+            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 18, color:"#000000", textAlign:'center' }}> Points</Text>
+            </View>
             {
                (parseFloat(walletAmount) >= 500) ?
                <TouchableOpacity
@@ -519,7 +522,7 @@ export default function Wallet({ navigation }) {
                  >
                    
                    <View style={{width:0, }}></View>
-                   <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>WITHDRAW</Animated.Text>
+                   <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>REDEEM</Animated.Text>
                   
                  </Animated.View>
                  </View> 
@@ -532,12 +535,12 @@ export default function Wallet({ navigation }) {
              >
                
                <View style={{width:0, }}></View>
-               <Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#999999',alignSelf:"center",  alignContent:"center", }]}>WITHDRAW</Text>
+               <Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#999999',alignSelf:"center",  alignContent:"center", }]}>REDEEM</Text>
               
              </View>
 
             }
-             <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit of withdrawals: Minimum 500, maximum 1000 in 24 hours.</Text>   
+             <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit for Redeem: Minimum 500 Points, maximum 1000 Points in 24 hours</Text>   
               <View style={{height:1, backgroundColor:colors.YELLOW, width:'100%'}} />  
               <View style={{flexDirection:'row', marginTop:20, marginBottom:15}}>
                 <View style={{alignItems:"center", flex:1}}>
@@ -548,7 +551,7 @@ export default function Wallet({ navigation }) {
                 fontSize: 12,
               }}
             >
-              Fund Received
+              Received Points
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 20, alignItems:'center', marginTop:2 }}>
              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}> ₹ </Text>{totalAmount ? totalAmount : 0}
@@ -563,7 +566,7 @@ export default function Wallet({ navigation }) {
                 fontSize: 12,
               }}
             >
-              Fund Withdraw
+             Redeem Points
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 20, alignItems:'center', marginTop:2 }}>
              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}> ₹ </Text>{withdrawalAmount}
@@ -591,7 +594,7 @@ export default function Wallet({ navigation }) {
             <Tab.Navigator  tabBar={props => <MyTabBar {...props} />}
             swipeEnabled ={false}
           >
-            <Tab.Screen name="WITHDRAW" component={WalletWithdrawList} />
+            <Tab.Screen name="REDEEM" component={WalletWithdrawList} />
       <Tab.Screen name="COUPON" component={CouponList} />
             </Tab.Navigator>
             {/* <FlatList

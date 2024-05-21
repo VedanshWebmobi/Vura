@@ -13,7 +13,7 @@ import {
     BackHandler,
     Dimensions,Keyboard
   } from "react-native";
-  import React, { useEffect, useState } from "react";
+  import React, { useEffect, useState, useRef } from "react";
   import { ExpoSecureKey, colors, font, icon } from "../constants";
   import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
   import { SafeAreaView } from "react-native-safe-area-context";
@@ -33,6 +33,7 @@ import {
   import { TouchableHighlight } from "react-native-gesture-handler";
   import { Ionicons } from '@expo/vector-icons';
 import CountdownTimer from "../common/CountDownTimer";
+import { useSmsUserConsent } from '@eabdullazyanov/react-native-sms-user-consent';
   
   export default function OTPScreen({ navigation, route }) {
     const height = useHeaderHeight();
@@ -52,7 +53,17 @@ import CountdownTimer from "../common/CountDownTimer";
     const [isOTPWrong, setIsOTPWrong] = useState(false);
     const [second, setSecond] = useState(30);
     const [alertType, setAlertType] = useState("");
-  
+    const retrievedCode = useSmsUserConsent();
+    const OTPViewRef = useRef();
+
+    useEffect(() => {
+     // console.log(retrievedCode);
+      if (retrievedCode){ setOtp(retrievedCode);
+      
+      OTPViewRef.current.setValue(retrievedCode)
+      }
+    }, [retrievedCode]);
+
     useEffect(() =>{
         console.log("Route", route);
         setNumber(route.params.n_phone);
@@ -466,6 +477,10 @@ import CountdownTimer from "../common/CountDownTimer";
             </View>
             <View style={{ marginHorizontal: 10 }}>
               <OtpInput
+              textInputProps={{
+                textContentType:'oneTimeCode'
+              }}
+              ref={OTPViewRef}
                 numberOfDigits={6}
                 onTextChange={(text) =>{ 
                     if(text.length != 6){

@@ -93,15 +93,19 @@ import {
         
             <View
               style={{
-               flexDirection:"row",justifyContent:"space-between", alignItems:"center"
+               flexDirection:"row",justifyContent:"space-between", alignItems:"center",
               }}
             > 
-               <View style={{ flexDirection:"row", justifyContent:"center"}}>
-                  <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14 }}>
-                  ₹{item.amount}
+               <View style={{ flexDirection:"row", justifyContent:"center",flex:1, alignItems:"center"}}>
+               <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 14, color:"#666666" }}>
+              {"Points  "}
+            </Text>
+                  <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14, minWidth:35 }}>
+                 
+                  {item.amount}
                   </Text>
-                  <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14, marginStart:10 }}>
-                {item.product_name}
+                  <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14, marginStart:10, flex:1 }}>
+                  {item.product_name}
               </Text>
                 </View>
            

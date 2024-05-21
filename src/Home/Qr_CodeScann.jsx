@@ -197,7 +197,7 @@ export default function QRCodeScanner_new({navigation}) {
         cameraStyle={{height:'100%'}}
         bottomContent={
           <TouchableOpacity style={{backgroundColor:'#00000050', width:"100%", alignItems:'center', padding:20}}>
-            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold}}>Barcode Scanner Stared</Text>
+            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold}}>Barcode Scanner Started</Text>
           </TouchableOpacity>
         }
         topContent={

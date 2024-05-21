@@ -106,11 +106,11 @@ const renderItem = ({ item,index }) => (
         }}
       > 
          <View style={{ flexDirection:"row", justifyContent:"center"}}>
-            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 12 }}>
-              {"Amount: "}
+            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 14, color:"#666666" }}>
+              {"Points "}
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14 }}>
-          ₹{item.withdrawal_amount}
+          {item.withdrawal_amount}
         </Text>
           </View>
      

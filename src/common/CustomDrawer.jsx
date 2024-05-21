@@ -249,12 +249,12 @@ export default function CustomDrawer({ navigation }) {
       <View style={{ justifyContent: "flex-start", gap: 20, padding:10 }}>
         <View style={{flexDirection:'row' }}>
           <Image
-            source={profile.length > 0 ? { uri: profile } : icon.PROFILE_PIC}
+            source={( profile?.length > 0) ? { uri: profile } : icon.PROFILE_PIC}
             style={{ width: 80, height: 80, borderRadius: 40, borderWidth:2, borderColor:colors.YELLOW }}
             onError={() => setprofile("")}
           />
           <View style={{flex:1, paddingStart:20, paddingEnd:10, paddingTop:2,}}>
-            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold, fontSize:20}}>{name.length > 0 ? name : "Unknown" }</Text>
+            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold, fontSize:20}}>{name?.length > 0 ? name : "Unknown" }</Text>
             <View style={{flexDirection:'row', marginTop:10, alignItems:"center",  }}>
               <Image source={require('../../assets/image_.png')} style={{height:20, width:20, resizeMode:'contain'}}/>
               <Text style={{color:'#fff',fontFamily:font.GoldPlay_Medium, fontSize:14, marginStart:10}}>Artisan</Text>

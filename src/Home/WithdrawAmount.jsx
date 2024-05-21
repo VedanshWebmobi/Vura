@@ -260,13 +260,16 @@ const WithDrawalAmount = async() =>{
                 fontSize: 14,
               }}
             >
-              Wallet Balance
+              Available Balance
             </Text>
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30, alignItems:'center' }}>
-             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 25 }}> ₹ </Text>{walletAmount ? walletAmount : 0}
+            <View  style={{flexDirection:'row', alignItems:"center"}}>
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30, alignItems:'center', textAlign:'center' }}>
+            {walletAmount ? walletAmount : 0}
             </Text>
-            <View style={{flexDirection:'row', alignItems:'center', marginTop:20}}>
-            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 25 }}> ₹ </Text>
+            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 18, color:"#000000", textAlign:'center' }}> Points</Text>
+            </View>
+            <View style={{flexDirection:'column', alignItems:'center', marginTop:20}}>
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}> Points </Text>
             <TextInput 
             style={
                 {borderRadius:10, 
@@ -274,6 +277,7 @@ const WithDrawalAmount = async() =>{
                     height:45,
                     width:130,
                     fontSize:20,
+                    marginTop:10,
                     textAlign:'center',
                     
                     backgroundColor:'#fff', fontFamily:font.GoldPlay_Regular, color:colors.BLACK}}
@@ -298,7 +302,7 @@ const WithDrawalAmount = async() =>{
                }}>
                 <Image source={withdrawAll ?require('../../assets/checkbox_selected.png') : require('../../assets/checkbox_unselected.png')} 
                 style={{height:15, width:15,marginTop:0, resizeMode:'contain'}}/>
-                <Text style={{fontSize:14, marginStart:10, fontFamily:withdrawAll? font.GoldPlay_SemiBold : font.GoldPlay_Regular}}>Withdraw All</Text>
+                <Text style={{fontSize:14, marginStart:10, fontFamily:withdrawAll? font.GoldPlay_SemiBold : font.GoldPlay_Regular}}>Redeem All</Text>
                 </TouchableOpacity> 
                 <TouchableOpacity
           activeOpacity={1}
@@ -360,12 +364,12 @@ const WithDrawalAmount = async() =>{
             >
               
               <View style={{width:0, }}></View>
-              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>WITHDRAW</Animated.Text>
+              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>REDEEM</Animated.Text>
              
             </Animated.View>
             </View> 
           </TouchableOpacity>
-          <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit of withdrawals: Minimum 500, maximum 1000 in 24 hours.</Text>   
+          <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit for Redeem: Minimum 500 Points, maximum 1000 Points in 24 hours</Text>   
           </View>
         </View>  
         </SafeAreaView>
