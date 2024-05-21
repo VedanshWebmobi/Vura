@@ -145,7 +145,7 @@ const WithDrawalAmount = async() =>{
               Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
             },
             params: {
-              amount: parseFloat(amount.toString().replace(',','')), 
+              amount: amount.toString().replace(',',''), 
             },
           };
         
@@ -269,7 +269,7 @@ const WithDrawalAmount = async() =>{
             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 18, color:"#000000", textAlign:'center' }}> Points</Text>
             </View>
             <View style={{flexDirection:'column', alignItems:'center', marginTop:20}}>
-            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}> Points </Text>
+            <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}>Redeem Points</Text>
             <TextInput 
             style={
                 {borderRadius:10, 
@@ -290,7 +290,7 @@ const WithDrawalAmount = async() =>{
                     }
                     />
             </View>
-            <TouchableOpacity activeOpacity={0.6} style={{flexDirection:'row', alignItems:'center',marginTop:10, height:30, }} onPress={() =>{
+            {/* <TouchableOpacity activeOpacity={0.6} style={{flexDirection:'row', alignItems:'center',marginTop:10, height:30, }} onPress={() =>{
                 
                 setWithdrawAll(!withdrawAll);
                 if(parseFloat(walletAmount) > 1000){
@@ -303,7 +303,7 @@ const WithDrawalAmount = async() =>{
                 <Image source={withdrawAll ?require('../../assets/checkbox_selected.png') : require('../../assets/checkbox_unselected.png')} 
                 style={{height:15, width:15,marginTop:0, resizeMode:'contain'}}/>
                 <Text style={{fontSize:14, marginStart:10, fontFamily:withdrawAll? font.GoldPlay_SemiBold : font.GoldPlay_Regular}}>Redeem All</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>  */}
                 <TouchableOpacity
           activeOpacity={1}
             onPress={() => {
@@ -315,7 +315,7 @@ const WithDrawalAmount = async() =>{
                    setSHowView(false);
                    const amountInt = parseFloat(amount.toString().replace(',',''));
                  //   Alert.alert(amountInt.toString());
-                   if(amountInt >= 500 && amountInt <= 1000){
+                   if(amountInt >= 300 && amountInt <= 1000){
                        if(bankverify === "1")
                        {
                          WithDrawalAmount();
@@ -333,7 +333,7 @@ const WithDrawalAmount = async() =>{
                    }
                    else{
                     setAlertTitle("Error")
-                    setAlertMessage("Please enter amount between 500 to 1000.")
+                    setAlertMessage("Please enter amount between 300 to 1000.")
                     setIconColor("red")
                     setShowAlert(true);
                    }
@@ -369,7 +369,7 @@ const WithDrawalAmount = async() =>{
             </Animated.View>
             </View> 
           </TouchableOpacity>
-          <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit for Redeem: Minimum 500 Points, maximum 1000 Points in 24 hours</Text>   
+          <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Redemption Limit:{"\n"}Between 300 To 1000 Points In 24 Hours</Text>   
           </View>
         </View>  
         </SafeAreaView>

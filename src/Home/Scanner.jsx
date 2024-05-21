@@ -168,7 +168,16 @@ export default function Scanner({ navigation }) {
         setIconColor("red");
         setTitle("Error");
         setShowAlert(true);
+        if(response.message.length > 0)
+        {
         setErrorMessage(response.message);
+        }
+        else if(response.errors.length > 0){
+          setErrorMessage(response.errors[0]);
+        }
+        else{
+          setErrorMessage("Something went wrong.");
+        }
         // Dialog.show({
         //   type: ALERT_TYPE.DANGER,
         //   title: "Error",

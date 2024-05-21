@@ -540,7 +540,7 @@ export default function Wallet({ navigation }) {
              </View>
 
             }
-             <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Limit for Redeem: Minimum 500 Points, maximum 1000 Points in 24 hours</Text>   
+             <Text style={{fontFamily:font.GoldPlay_Medium, fontSize:13, padding:10,color:colors.BLACK, textAlign:'center'}}>Redemption Limit:{"\n"}Between 300 To 1000 Points In 24 Hours</Text>   
               <View style={{height:1, backgroundColor:colors.YELLOW, width:'100%'}} />  
               <View style={{flexDirection:'row', marginTop:20, marginBottom:15}}>
                 <View style={{alignItems:"center", flex:1}}>
@@ -554,7 +554,7 @@ export default function Wallet({ navigation }) {
               Received Points
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 20, alignItems:'center', marginTop:2 }}>
-             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}> ₹ </Text>{totalAmount ? totalAmount : 0}
+             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}></Text>{totalAmount ? totalAmount : 0}
             </Text>
                 </View>
                 <View style={{width:1,  backgroundColor:colors.YELLOW}} />
@@ -569,7 +569,7 @@ export default function Wallet({ navigation }) {
              Redeem Points
             </Text>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 20, alignItems:'center', marginTop:2 }}>
-             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}> ₹ </Text>{withdrawalAmount}
+             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 15 }}></Text>{withdrawalAmount}
             </Text>
                 </View>
               </View>
