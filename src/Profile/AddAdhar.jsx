@@ -203,7 +203,7 @@ export default function AddAdhar({ navigation }) {
   };
 
   return (
-    <View style={[stylesCommon.yellowbg,{backgroundColor:'#f2f2f2'}]}>
+    <View style={{backgroundColor:'#f2f2f2', flex:1}}>
       <StatusBar backgroundColor={colors.YELLOW} />
       <Portal>
         <Modal
@@ -269,8 +269,9 @@ export default function AddAdhar({ navigation }) {
       navigation ={navigation}
       />
       {/* <CommonHeader navigation={navigation} showBack /> */}
-      
-      <View style={{ alignItems: "center", flex: 4,  }}>
+   
+       <ScrollView style={{}}>
+      <View style={{ alignItems: "center", }}>
            <View style={{ margin:10, alignItems:"center", justifyContent:'center'}}>
             <Image source={require('../../assets/aadhaar_logo.png')} style={{height:120, width:120, resizeMode:'contain'}}/>
             {/* <Image source={require('../../assets/button_.png')} style={{height:35, width:35, resizeMode:'contain', position:'absolute', bottom:0, right:5}}/>   */}
@@ -279,7 +280,7 @@ export default function AddAdhar({ navigation }) {
           style={{
             fontFamily: font.GoldPlay_SemiBold,
             fontSize: 16,
-            marginTop: 20,
+            marginTop: 0,
             color: colors.BLACK,
           }}
         >
@@ -305,7 +306,7 @@ export default function AddAdhar({ navigation }) {
               placeholderTextColor={colors.LIGHT_GREY}
               contentStyle={{
                 fontFamily: font.GoldPlay_Medium,
-                fontSize: 25,
+                fontSize: 20,
                 textAlign:'center',
                 backgroundColor:'#fff',
                 borderRadius: 15,
@@ -374,7 +375,7 @@ export default function AddAdhar({ navigation }) {
             }
             //underlayColor={colors.YELLOW}
             style={{ borderRadius: 30, 
-              marginTop:30
+              marginTop:30, marginBottom:30
               }}
           >
             <View style={{}}>
@@ -399,7 +400,7 @@ export default function AddAdhar({ navigation }) {
           <View
           style={{  borderRadius: 30,
             borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
-            backgroundColor: "#cccccc", flexDirection:'row', marginTop:30}}
+            backgroundColor: "#cccccc", flexDirection:'row', marginTop:30, marginBottom:30}}
         >
           
           <View style={{width:0, }}></View>
@@ -409,12 +410,13 @@ export default function AddAdhar({ navigation }) {
         }
       
       </View>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
+      </ScrollView>     
+   
+       <View style={{height:'10%', justifyContent: "center", alignItems: "center",  }}>
       <View style={{position:"absolute", bottom:30}}>
             <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
       </View>
-      </View>
-    
+      </View>    
     </View>
   );
 }

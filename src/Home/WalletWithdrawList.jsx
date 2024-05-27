@@ -20,7 +20,7 @@ import {
   import moment from "moment";
   import { useFocusEffect } from '@react-navigation/native';
 
-  export default function WalletWithdrawList({navigation}){
+  export default function WalletWithdrawList({navigation, refresh}){
     const [walletData, setWalletData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -28,19 +28,17 @@ import {
   useEffect(() =>{
    // if(walletData.length > 0)
   //  {
-   
+    console.log("Refresh", refresh);
+  
     fetchWalletData();
     //}
   },[currentPage])
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //       if(walletData.length == 0)
-  //       {
-  //       fetchWalletData();
-  //       }
-  //   }, [])
-  // );
+  useFocusEffect(
+    React.useCallback(() => {
+        setCurrentPage(1);
+    }, [])
+  );
   const LoadMoreData =() =>{
    
     if(walletData.length > 0){
@@ -80,8 +78,13 @@ const fetchWalletData = async () => {
     );
     console.log("WithDrawal History",response.transaction_log.result);
      const newData = response.transaction_log.result;
-
+      if(currentPage != 1)
+      {
      setWalletData([...walletData, ...newData]);
+      }
+      else{
+        setWalletData(newData);
+      }
     //  if(response.client_data)
     //  {
     //  setwalletAmount(response.client_data.available_balance);

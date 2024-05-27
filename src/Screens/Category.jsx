@@ -125,10 +125,11 @@ export default function Category({ navigation }) {
             />}
             <Text
               style={{
+                flex:1,
                 // color: "white",
                 fontFamily: (selectedItem === item) ?font.GoldPlay_SemiBold  :font.GoldPlay_Medium,
                // color: selectedItem === item ? "black" : "white",
-               color:"#000000"
+               color:"#000000", fontSize:14
               }}
             >
               {item}

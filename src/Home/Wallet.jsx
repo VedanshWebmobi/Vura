@@ -24,7 +24,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import WalletWithdrawList from "./WalletWithdrawList";
 import CouponList from "./CouponList";
 
-export default function Wallet({ navigation }) {
+export default function Wallet({ navigation, route }) {
   const [data, setData] = useState([
     { id: 1, title: "Product Name 1", money: 100, redeemDate: "2024-03-15" },
     { id: 2, title: "Product Name 2", money: 200, redeemDate: "2024-03-16" },
@@ -51,6 +51,7 @@ export default function Wallet({ navigation }) {
   const scale = useRef(new Animated.Value(1)).current;
   const stretchValue = useRef(new Animated.Value(1)).current;
   const Tab = createMaterialTopTabNavigator();
+  const { params } = route;
   const interpolatedStretchAnimation = stretchValue.interpolate({
     inputRange: [1, 2],
     outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
@@ -111,9 +112,12 @@ export default function Wallet({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-    //  Alert.alert("Load More");
+      if (params && params.refresh) {
+        // Perform your refresh logic here
+        console.log('ScreenA refreshed');
+      }
         fetchWalletData();
-    }, [])
+    }, [params])
   );
   useFocusEffect(
     React.useCallback(() => {
@@ -486,14 +490,14 @@ export default function Wallet({ navigation }) {
             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 18, color:"#000000", textAlign:'center' }}> Points</Text>
             </View>
             {
-               (parseFloat(walletAmount) >= 500) ?
+               (parseFloat(walletAmount) >= 300) ?
                <TouchableOpacity
                activeOpacity={1}
                  onPress={() => {
                    setSHowView(true);
                     setTimeout(() =>{
                         setSHowView(false);
-                      if(walletAmount >= 500)  
+                      if(walletAmount >= 300)  
                       {
                        navigation.navigate("Withdraw",{walletAmount:walletAmount});
                       }
@@ -594,7 +598,7 @@ export default function Wallet({ navigation }) {
             <Tab.Navigator  tabBar={props => <MyTabBar {...props} />}
             swipeEnabled ={false}
           >
-            <Tab.Screen name="REDEEM" component={WalletWithdrawList} />
+            <Tab.Screen name="REDEEM"  children={() => <WalletWithdrawList  refresh={params && params.refresh} />} />
       <Tab.Screen name="COUPON" component={CouponList} />
             </Tab.Navigator>
             {/* <FlatList

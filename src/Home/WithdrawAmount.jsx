@@ -19,6 +19,8 @@ import {
   import CommonAlert from "../common/CommonAlert";
   import NumericInput from "@wwdrew/react-native-numeric-textinput";
   import * as Preference from "../StoreData/Preference";
+  import { StackActions } from "@react-navigation/native";
+
   export default function WithdrawAmount({navigation}){
     const route = useRoute();
     const {walletAmount} = route.params;
@@ -213,13 +215,15 @@ const WithDrawalAmount = async() =>{
                     
                 }
                 else{
-                    navigation.goBack();
+                 
+                  //  navigation.goBack();
+                  navigation.navigate("Wallet",{refresh:true})
                 }
             }} // Pass function to hide the modal
             handleOkPress={() => {
                 setIsLoading(false)
                 setShowAlert(false)
-             //   Alert.alert(alertTitle);
+           
                 if(alertTitle === 'Error' ){
                     if(bankverify === "0"){
                       
@@ -227,7 +231,9 @@ const WithDrawalAmount = async() =>{
                     }
                 }
                 else{
-                    navigation.goBack();
+              
+                  //  navigation.goBack();
+                  navigation.navigate("Wallet",{refresh:true})
                 }
                 
             }} // Pass function to handle Ok button press
@@ -314,7 +320,7 @@ const WithDrawalAmount = async() =>{
                setTimeout(() =>{
                    setSHowView(false);
                    const amountInt = parseFloat(amount.toString().replace(',',''));
-                 //   Alert.alert(amountInt.toString());
+             
                    if(amountInt >= 300 && amountInt <= 1000){
                        if(bankverify === "1")
                        {

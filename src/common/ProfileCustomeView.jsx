@@ -120,6 +120,7 @@ import {
               dropDownContainerStyle={{
                 backgroundColor: "#fff",
                 width:'73%',
+            
                 borderWidth:0
 
               }}
@@ -135,7 +136,7 @@ import {
                   borderWidth:0,   
                   height: 50,
                   width:'73%',
-                 
+                 backgroundColor:"#ffffff00"
                 }}
                 
               />

@@ -304,7 +304,7 @@ useState(()=>{
       }
 
       else  if((profilePhoto.indexOf("http") <= -1 && profilePhoto.indexOf("https") <= -1 ) && profilePhoto.length > 0){
-       // Alert.alert(position.toString(),position1.toString());
+    
         profileFormData.append("image", {
           uri: profilePhoto,
           type: "image/jpeg",
@@ -874,7 +874,7 @@ useState(()=>{
   
                       contentStyle={{
                         fontFamily: font.GoldPlay_Medium,
-                     
+                        fontSize:16,
                         borderColor:colors.YELLOW,
                         textAlign:'center'
                       }}
