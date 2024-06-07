@@ -35,6 +35,8 @@ export default function ProductDetail({ navigation, route }) {
     productCode,
     productDocuments,
     characteristics,
+    description,
+    usageGuide
   } = route.params;
 
   console.log("Chars", characteristics);
@@ -188,6 +190,9 @@ export default function ProductDetail({ navigation, route }) {
               <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30 }}>
                 {product_name}
               </Text>
+              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20, color:"#666666", marginTop:10 }}>
+                {description}
+              </Text>
               {/* <View
                 style={{
                   flexDirection: "row",
@@ -285,6 +290,9 @@ export default function ProductDetail({ navigation, route }) {
             </View>
           </View>
           <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
+         {
+           usageGuide.length > 0 && 
+            <View>
           <View style={{ padding: 15 }}>
             <View style={{ marginBottom: 10 }}>
               <Text
@@ -295,11 +303,11 @@ export default function ProductDetail({ navigation, route }) {
             </View>
             <View style={{ gap: 5 }}>
               <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 16 }}
+                style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
               >
-                Substrate Preparation
+                {usageGuide}
               </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
+              {/* <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
                 Adhesive can be applied on even and compact substrates, free of
                 any substances that reduce adherence (grease, bitumen, oil,
                 paint, dust etc.). Concrete should be at least 1 month old.
@@ -335,10 +343,12 @@ export default function ProductDetail({ navigation, route }) {
                 24 hrs. Expansion joints, joints at the corners of walls and
                 floor and around sanitary equipment shall be filled with
                 sealants or shall be treated with appropriate treatment.
-              </Text>
+              </Text> */}
             </View>
           </View>
           <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
+          </View>
+                }
           <View>
             <View style={{ padding: 15 }}>
               <Text

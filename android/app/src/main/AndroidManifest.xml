@@ -27,7 +27,7 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="com.example.vura"/>
+        <data android:scheme="com.vura.crms"/>
         <data android:scheme="exp+vura"/>
       </intent-filter>
     </activity>

@@ -22,7 +22,7 @@
         "foregroundImage": "./assets/adaptiveIcon.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.example.vura"
+      "package": "com.vura.crms"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -23,7 +23,7 @@ import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import ProfileCustomView from "../common/ProfileCustomeView";
-import { ADD_PROFILE, GET_PROFILE, BANK_VERIFICATION } from "../Api/Utils";
+import { ADD_PROFILE, GET_PROFILE, BANK_VERIFICATION, DELETE_ACCOUNT } from "../Api/Utils";
 import DatePicker from 'react-native-date-picker'
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
@@ -60,6 +60,9 @@ export default function PersonalDetails({ navigation }) {
   const rotation = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const stretchValue = useRef(new Animated.Value(1)).current;
+  // seleteButton
+  const scale_delete = useRef(new Animated.Value(1)).current;
+  const stretchValue_delete = useRef(new Animated.Value(1)).current;
 
  // new state 
   const [flat_house, setFlatHouse] = useState("");
@@ -75,6 +78,7 @@ export default function PersonalDetails({ navigation }) {
   // const [ifscCode, setIfscCode] = useState("SBIN0021745");
   const [ifscCode, setIfscCode] = useState("");
   const [showView, setSHowView] = useState(false);
+  const [showView_delete, setSHowViewDelete] = useState(false);
   const [image, setImage] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDOB] = useState("");
@@ -88,6 +92,7 @@ export default function PersonalDetails({ navigation }) {
   const [oldIFSCCode, setOldIFSCCode] = useState(ifscCode);
   const [oldBankVerify, setOldBankVeryfy] = useState(bankverify);
   const [onImageError, setIsImageError] = useState(false);
+  const [isDeleteAccountRequest, setDeleteAccountRequest] = useState(false);
   
   // current location
   // const [current_flat_house, setCurrentFlatHouse] = useState("");
@@ -179,11 +184,42 @@ export default function PersonalDetails({ navigation }) {
     });
     setRotatedAddress(!rotated_address);
   }
+  const Logout = () => {
+   
+    // Clear user data or perform any necessary logout actions
+    // Reset the navigation stack to navigate to the "LoginScreen"
+    navigation.reset({
+      //  index: 0, // Reset to the first screen in the stack
+      //routes: [{ name: "Category" }], // Set the route to navigate to
+       routes: [{ name: "PreLogin" }], // Set the route to navigate to
+    });
+  };
+  const HandleDeleteAccount = () =>{
+    Alert.alert("Delete Account", "Are you sure you want to permanently remove this account?",[
+      {
+        text:'Cancel',
+        onPress: () => {
+          setDeleteAccountRequest(false);
+        },
+      },
+      {
+        text: 'Delete',
+        onPress: () =>{ 
+          delete_Account();
+        }
+      }
+    ])
+  }
 
   const interpolatedStretchAnimation = stretchValue.interpolate({
     inputRange: [1, 2],
     outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
   });
+  const interpolatedStretchAnimation_delete = stretchValue_delete.interpolate({
+    inputRange: [1, 2],
+    outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
+  });
+
   const stretch = (stretch_Value) => {
     Animated.sequence([
       Animated.timing(stretch_Value, {
@@ -279,6 +315,55 @@ useState(()=>{
 }
  
 },[accountNumber, ifscCode])
+
+  const delete_Account = async () => {
+    setDeleteAccountRequest(true);
+    setIsLoading(true);
+    try{
+      let requestOptions = {
+        headers: {
+          Accept: "application/json",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
+      const response = await axiosCallAPI(
+        "post",
+        DELETE_ACCOUNT,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+      setIsLoading(false);
+      //{"data": {}, "errors": {}, "message": "Artisan deleted successfully.", "status": true}
+        if(response.status){
+          Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
+          Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
+          Preference.deleteItem(ExpoSecureKey.TOKEN);
+          Preference.clearPreferences();
+
+          setIconColor("green")
+          setAlertTitle("SUCCESS!")
+          setErrorMessage(response.message)
+          setVisible(true)
+        }
+        else{
+          setDeleteAccountRequest(false)
+          setIconColor("red")
+          setAlertTitle("Error")
+          setErrorMessage(response.message)
+          setVisible(true)
+        }
+        console.log(response);
+    }
+    catch (error) {
+      setIsLoading(false);
+      setDeleteAccountRequest(false)
+      console.error("Error fetching or storing profile data:", error);
+    }
+   
+
+  }
 
   const submitProfile = async () => {
   //  console.log("Bank", typeof(bankverify === "0" ? 0 : 1));
@@ -797,7 +882,13 @@ useState(()=>{
       <CommonAlert
         visible={visible} // Pass visibility state to the CommonAlert component
         hideModal={hideModal} // Pass function to hide the modal
-        handleOkPress={() => setVisible(false)} // Pass function to handle Ok button press
+        handleOkPress={() => {
+          setVisible(false)
+          if(isDeleteAccountRequest){
+            Logout();
+          }
+          }
+        } // Pass function to handle Ok button press
         //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
         title={alertTitle} // Pass title text
         iconName="error"
@@ -1157,6 +1248,44 @@ useState(()=>{
               
               <View style={{width:0, }}></View>
               <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
+             
+            </Animated.View>
+            </View> 
+          </TouchableOpacity> 
+          <TouchableOpacity
+          activeOpacity={1}
+            onPress={() => {
+              setSHowViewDelete(true);
+               setTimeout(() =>{
+                   setSHowViewDelete(false);
+                   HandleDeleteAccount();
+                 //  handleNext()
+               },450);
+           // rotateImage(rotation);
+            stretch(stretchValue_delete);
+            scaleText(scale_delete);
+              //handleOnPress("Products")
+            }
+            }
+            //underlayColor={colors.YELLOW}
+            style={{ borderRadius: 30, 
+              marginTop:20
+              }}
+          >
+            <View style={{}}>
+            {
+                  showView_delete &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation_delete}],
+                   width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
+              }
+            
+            <Animated.View
+              style={{transform:[{scaleX:interpolatedStretchAnimation_delete}],  borderRadius: 30,
+                borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
+                backgroundColor: colors.ERROR_RED, flexDirection:'row',}}
+            >
+              
+              <View style={{width:0, }}></View>
+              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale:scale_delete}]}]}>DELETE ACCOUNT</Animated.Text>
              
             </Animated.View>
             </View> 

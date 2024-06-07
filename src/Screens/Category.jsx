@@ -19,12 +19,12 @@ import { Ionicons } from '@expo/vector-icons';
 export default function Category({ navigation }) {
   const data = [
     // "I Am An Employee",
-    "I Am A Market Operator",
-    "I Am A Distributer",
-    "I Am A Dealer",
-    "I Am A Retailer",
-    "I Am A Contractor",
-    "I Am An Architecht",
+    // "I Am A Market Operator",
+    // "I Am A Distributer",
+    // "I Am A Dealer",
+    // "I Am A Retailer",
+    // "I Am A Contractor",
+    // "I Am An Architecht",
     "I Am An Artisan",
     
   ];
