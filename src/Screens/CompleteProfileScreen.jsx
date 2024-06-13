@@ -12,9 +12,10 @@ import {
     ScrollView,
     BackHandler,
     Button,
+    SafeAreaView,
     Dimensions,Animated,Easing
   } from "react-native";
-  import { SafeAreaView } from "react-native-safe-area-context";
+  
   import { ExpoSecureKey, colors, font, icon } from "../constants";
   import React, { useEffect, useState, useRef } from "react";
   import * as Preference from "../StoreData/Preference";

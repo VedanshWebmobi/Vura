@@ -6,14 +6,16 @@ import {
     TouchableOpacity,
     StatusBar,
     BackHandler,
-    Dimensions,Animated,Easing
+    Dimensions,Animated,Easing,SafeAreaView
   } from "react-native";
-  import { SafeAreaView } from "react-native-safe-area-context";
+ 
   import CommonHeaderNew from "../common/CommonHeader_new";
 import { colors, font } from "../constants";
   export default function HelpAndSupport({navigation}){
 
     return(
+        <>
+        <SafeAreaView  style={{flex : 0, backgroundColor:colors.YELLOW}} />
         <SafeAreaView style={{ flex: 1, backgroundColor:'#fff' }}>
         <StatusBar backgroundColor={colors.YELLOW} />
         <CommonHeaderNew 
@@ -49,5 +51,6 @@ import { colors, font } from "../constants";
                 </TouchableOpacity>   
         </View>
         </SafeAreaView>
+        </>
     );
   }

@@ -25,7 +25,7 @@ import PhoneInput from "react-native-international-phone-number";
 
 import axios from "axios";
 
-import { GET_PROFILE, LOGIN, VERIFY_OTP } from "../Api/Utils";
+import { GET_PROFILE, LOGIN, VERIFY_OTP,POSTAL_CODE } from "../Api/Utils";
 import { StackActions } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -52,7 +52,7 @@ export default function Login({ navigation }) {
 useEffect(() =>{
   const unsubscribe = navigation.addListener('focus', () => {
     console.log("Phone Number",number);
-  
+   // GetDetailsFromPincode("388540");
 
 });
 
@@ -284,6 +284,29 @@ return unsubscribe;
     setNumber(phoneNumber);
   }
 
+  const GetDetailsFromPincode = async(pincode)=>{
+    const requestOptions = {
+      headers: {
+        Accept: "application/json",
+      },
+      
+    };
+    axios.get(POSTAL_CODE+pincode, requestOptions).then((response) =>{
+      
+          if(response.data[0].Status === "Success"){
+            console.log("Success",response.data);
+           console.log("City",response.data[0].PostOffice[0].Block); 
+         
+          }
+          else if(response.data[0].Status === "Error"){
+           
+          }
+    }).catch((error) => {
+      console.log("Error",error.response.data);
+    })
+   
+  }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: colors.BLACK }}
@@ -366,6 +389,7 @@ return unsubscribe;
         onChangePhoneNumber={handleInputValue}
         selectedCountry={selectedCountry}
         onChangeSelectedCountry={handleSelectedCountry}
+        returnKeyType={'done'}
       />
       </View> 
           <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular,fontSize:12, marginTop:10}}>By Clicking Send OTP You Will Agree To Our <Text style={{color:'#fff', fontFamily:font.GoldPlay_SemiBold}}>Terms & Conditions</Text></Text>  

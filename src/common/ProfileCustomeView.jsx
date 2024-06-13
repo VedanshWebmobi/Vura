@@ -10,6 +10,7 @@ import {
   import { colors, font } from "../constants";
   import DropDownPicker from "react-native-dropdown-picker";
   import React, { useEffect, useMemo, useRef, useState } from "react";
+
   import { axiosCallAPI } from "../Api/Axios";
   import axios from "axios";
   import { POSTAL_CODE } from "../Api/Utils";
@@ -30,7 +31,8 @@ import {
         item_dob_press, 
         item_handle_pincode_result,
         item_handle_account_number,
-        item_handle_ifsc_code
+        item_handle_ifsc_code,
+        item_all_capital
     }){
       const [open, setOpen] = useState(false);  
       const onInputChange = value => {
@@ -41,6 +43,9 @@ import {
         if (value === "" || re.test(value)) {
           item_setValue(value);
         }
+      }
+      const handleTextChange = (inputText) =>{
+          item_setValue(inputText.toUpperCase());
       }
 
       const GetDetailsFromPincode = async(pincode)=>{
@@ -78,6 +83,7 @@ import {
             <View style={{marginTop:20}}>
             <Text style={{width:'100%', fontFamily:font.GoldPlay_Medium,color:'#999999', fontSize:14}}>{item_label}</Text>
             <TextInput
+                 
                   value={item_value}
                    ref={item_Ref}   
                   inputMode={(item_input == undefined) ? "text" : "numeric"} 
@@ -108,9 +114,10 @@ import {
                 />
           </View>
             : item_is_gender ? 
-            <View style={{flexDirection:"row", alignItems:"center", height:50}}>
+            <View style={{flexDirection:"row", alignItems:"center", height:50, zIndex:1}}>
                <Text style={{width:'27%', fontFamily:font.GoldPlay_Medium,color:'#999999', fontSize:14}}>{item_label}</Text>
                <DropDownPicker
+            listMode="MODAL"
                 open={open}
                 value={item_value}
                 items={[{label: 'Male', value: 'Male'},
@@ -120,23 +127,30 @@ import {
               dropDownContainerStyle={{
                 backgroundColor: "#fff",
                 width:'73%',
-            
+                zIndex:1,
                 borderWidth:0
 
               }}
+             
                 // setItems={setCategories}
                 setOpen={setOpen}
                 setValue={item_setValue}
                 onSelectItem={(value)=>{console.log(value)}}
                 placeholder={item_place_holder}
                 placeholderStyle={{color:"#999999"}}
+                zIndex={2}
+                
                 textStyle={{ fontSize:14,
                   fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, padding:0 }}
+                  modalContentContainerStyle={{
+                    backgroundColor: "#fff",
+                   
+                  }}
                 style={{
                   borderWidth:0,   
                   height: 50,
                   width:'73%',
-                 backgroundColor:"#ffffff00"
+                 backgroundColor:"#ffffff"
                 }}
                 
               />
@@ -144,11 +158,24 @@ import {
             : item_is_dob ?
             <View style={{flexDirection:"row", alignItems:"center", height:50}}>
   <Text style={{width:'30%', fontFamily:font.GoldPlay_Medium,color:'#999999', fontSize:14}}>{item_label}</Text>
-  <TouchableOpacity style={{width:'70%'}} onPress ={()=>item_dob_press()}>
-  <TextInput
+  <TouchableOpacity style={{width:'70%', justifyContent:"center", height:50 }} onPress ={()=>item_dob_press()}>
+   
+  {/* <Text style={{
+     
+    fontSize:14,
+    fontFamily:font.GoldPlay_SemiBold,
+    marginTop:3,
+    color:colors.BLACK,
+    
+  }}
+  placeholder={item_place_holder}>
+  {item_value}
+    </Text> */}
+                <TextInput
                   value={item_value}
                    ref={item_Ref}   
                   inputMode="text"
+                  pointerEvents="none"
                   style={{
                    flex:1, height:50,
                    fontSize:14,
@@ -161,6 +188,8 @@ import {
                   placeholder={item_place_holder}
                   placeholderTextColor={"#999999"}
                   editable={false}
+                  focusable={false}
+                  
                   onChangeText={(text) => item_setValue(text)}
                   cursorColor="white"
                   maxLength={32}
@@ -174,19 +203,22 @@ import {
             <TextInput
                   value={item_value}
                    ref={item_Ref}   
-                  inputMode="text"
+                   inputMode={(item_input == undefined) ? "text" : "numeric"} 
                   style={{
                    flex:1, height:50,
                    fontSize:14,
                    fontFamily:font.GoldPlay_SemiBold,
                    marginTop:3,
-                   color:colors.BLACK
+                   color:colors.BLACK, 
                   
                   }}
                   returnKeyType={item_return_key_type}
                   placeholder={item_place_holder}
                   placeholderTextColor={"#999999"}
+                  autoCapitalize={item_all_capital ? "characters" : "sentences"}
                   onChangeText={(text) => {
+                    console.log(text);  
+
                     if(item_input === "only_alphabet"){
                         onInputChange(text);
                     }
@@ -197,11 +229,14 @@ import {
                       item_setValue(text)
                     }
                     else{
-                    item_setValue(text)
+                      item_setValue(text)
+                    // handleTextChange(text)
+                     
                     }
                   }}
                   cursorColor="white"
-                  maxLength={32}
+                  maxLength={item_label === 'Pin Code:'? 6 : 32}
+
                   onSubmitEditing={()=> {item_Ref_next ? item_Ref_next.current.focus() : null }}
                 />
           </View>

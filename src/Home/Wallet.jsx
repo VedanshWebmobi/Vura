@@ -5,10 +5,10 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
-  StatusBar,Animated,Easing, Dimensions, Alert
+  StatusBar,Animated,Easing, Dimensions, Alert,SafeAreaView
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import CommonHeader from "../common/CommonHeader";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
@@ -443,6 +443,8 @@ export default function Wallet({ navigation, route }) {
   };
 
   return (
+    <>
+    <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW}}/>
     <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'#f2f2f2'}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
       {/* <CommonHeader navigation={navigation} showBack /> */}
@@ -616,5 +618,6 @@ export default function Wallet({ navigation, route }) {
       
       )}
     </SafeAreaView>
+    </>
   );
 }

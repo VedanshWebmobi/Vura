@@ -4,7 +4,9 @@ import {
   View,
   Image,
   TouchableOpacity,
+  SafeAreaView,
   StatusBar,
+  Platform,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import stylesCommon, { SCREEN_WIDTH, SCREEN_HEIGHT } from "../Themes/stylesCommon";
@@ -109,6 +111,7 @@ useFocusEffect(React.useCallback(()=>{
     console.log("Handle wallet pressed");
     if (!profileDetailsComplete) {
       navigation.navigate("CompleteProfile");
+      //navigation.navigate("Wallet");
      // setShowAlert(true);
      // setErrorMessage("Please Complete Your Profile!");
     } else {
@@ -126,6 +129,9 @@ useFocusEffect(React.useCallback(()=>{
   };
 
   return (
+    <>
+     <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+    <SafeAreaView style={{flex:1,backgroundColor: "#fff"}}>
     <View
       style={{
         flex: 1,
@@ -156,7 +162,7 @@ useFocusEffect(React.useCallback(()=>{
 
       <SliderBox
         images={images}
-        sliderBoxHeight={SCREEN_HEIGHT-180}
+        sliderBoxHeight={SCREEN_HEIGHT - (Platform.OS == 'ios'? 220 : 180)}
         activeOpacity={0.5}
         autoplay={true}
         circleLoop={true}
@@ -229,6 +235,8 @@ useFocusEffect(React.useCallback(()=>{
         </View>
       </View> */}
     </View>
+    </SafeAreaView>
+    </>
   );
 }
 

@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  TouchableOpacity,SafeAreaView,
   StatusBar,Keyboard,ScrollView,
   Image,Animated,Easing, Dimensions
 } from "react-native";
@@ -203,6 +203,9 @@ export default function AddAdhar({ navigation }) {
   };
 
   return (
+    <>
+    <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW}} />
+    <SafeAreaView style={{flex:1}}>
     <View style={{backgroundColor:'#f2f2f2', flex:1}}>
       <StatusBar backgroundColor={colors.YELLOW} />
       <Portal>
@@ -300,6 +303,7 @@ export default function AddAdhar({ navigation }) {
                 borderRadius: 15,
                 borderWidth:1
               }}
+              returnKeyType='done'
               keyboardType="numeric"
               style={styles.input}
               placeholder="1234"
@@ -418,6 +422,8 @@ export default function AddAdhar({ navigation }) {
       </View>
       </View>    
     </View>
+    </SafeAreaView>
+    </>
   );
 }
 

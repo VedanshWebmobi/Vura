@@ -4,7 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Image,Animated,Dimensions,Easing, Alert
+  Image,Animated,Dimensions,Easing, Alert, SafeAreaView, Platform, KeyboardAvoidingView
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import CommonHeader from "../common/CommonHeader";
@@ -816,6 +816,12 @@ useState(()=>{
     setname(filteredText);
   };
   return (
+    <>
+    <SafeAreaView style={{flex:0, backgroundColor:colors.YELLOW}}/>
+    <SafeAreaView style={{flex:1}}>
+      <KeyboardAvoidingView style={{flex:1}}
+      behavior ={Platform.OS == 'ios' ? 'padding' : 'height'}
+      >
     <View style={[stylesCommon.yellowbg,{backgroundColor:"#f2f2f2"}]}>
       {/* <CommonHeader navigation={navigation} showBack /> */}
       <Portal>
@@ -885,7 +891,10 @@ useState(()=>{
         handleOkPress={() => {
           setVisible(false)
           if(isDeleteAccountRequest){
-            Logout();
+            setTimeout(() => {
+              Logout();
+            },1000)
+           
           }
           }
         } // Pass function to handle Ok button press
@@ -906,7 +915,9 @@ useState(()=>{
           />
         </View>
       ) : (
-        <ScrollView>
+        <ScrollView 
+        nestedScrollEnabled={true}
+        >
           <View
             style={{
               alignItems: "center",
@@ -928,7 +939,7 @@ useState(()=>{
             <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
             </TouchableOpacity>
           </View>
-          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",zIndex:1}}>
+          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",}}>
           <View style={{}}>
             <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
                 <Image source={require('../../assets/user.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
@@ -991,6 +1002,7 @@ useState(()=>{
                 item_label={"PAN NO:"}
                 item_place_holder={'Enter your Pan Card Number'}
                 item_return_key_type={'next'}
+                item_all_capital= {true}
                 />
               <ProfileCustomView 
                 item_value={name} 
@@ -999,7 +1011,7 @@ useState(()=>{
                 item_label={"Full Name:"}
                 item_place_holder={'Enter your Full Name'}
                 item_return_key_type={'next'}
-                item_input={'only_alphabet'}
+              
                 />
                    <ProfileCustomView 
                 item_value={gender} 
@@ -1027,7 +1039,8 @@ useState(()=>{
             </View>
           </Card>
           <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
-        marginTop:20}}>
+        marginTop:20,}}
+        zIndex={1}>
           <View style={{}}>
             <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
                 <Image source={require('../../assets/location.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
@@ -1063,10 +1076,11 @@ useState(()=>{
                 item_value={pincode} 
                 item_setValue={setPincode} 
                 item_Ref={PinRef}
-                item_Ref_next={CityRef}
+                //item_Ref_next={CityRef}
                 item_label={"Pin Code:"}
                 item_place_holder={'Enter your Pin Code'}
-                item_return_key_type={'next'}
+                item_return_key_type={Platform.OS == 'ios'? 'done' : 'next'}
+                item_input={"numeric"}
                 item_handle_pincode_result={handlePincodeResult}
                 />
                  <ProfileCustomView 
@@ -1140,7 +1154,9 @@ useState(()=>{
             </View>
           </Card>
           <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
-        marginTop:20}}>
+        
+        marginTop:20}}
+        zIndex={0}>
             <View style={{}}>
             <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
                 <Image source={require('../../assets/bank.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
@@ -1174,7 +1190,7 @@ useState(()=>{
                       item_Ref_next={BankNameRef}
                       item_label={"Account Number"}
                       item_place_holder={'Enter Your Bank Account Number'}
-                      item_return_key_type={'next'}
+                      item_return_key_type={Platform.OS == 'ios' ? 'done': 'next'}
                       item_is_bank = {true}
                       item_input ={'numeric'}
                       item_handle_account_number={handleAccountNumber}
@@ -1712,6 +1728,9 @@ useState(()=>{
         }}
       />
     </View>
+    </KeyboardAvoidingView>
+    </SafeAreaView>
+    </>
   );
 }
 

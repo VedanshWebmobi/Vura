@@ -7,10 +7,10 @@ import {
     StatusBar,
     ActivityIndicator,
     TextInput,
-    Alert,TouchableOpacity,Animated,ScrollView
+    Alert,TouchableOpacity,Animated,ScrollView,SafeAreaView
   } from "react-native";
   import React, { useEffect, useMemo, useRef, useState } from "react";
-  import { SafeAreaView } from "react-native-safe-area-context";
+ 
   import Product from "./Product";
   import CommonHeaderNew from "../common/CommonHeader_new";
   import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs'
@@ -150,6 +150,8 @@ function MyTabBar1({ state, descriptors, navigation, position }) {
 }
 
     return(
+      <>
+      <SafeAreaView style={{flex:0, backgroundColor:colors.YELLOW}}/>
         <SafeAreaView style={{flex:1}}>
           <View style={{flex:1}}>
           <StatusBar backgroundColor={colors.YELLOW} />
@@ -207,5 +209,6 @@ function MyTabBar1({ state, descriptors, navigation, position }) {
 
         </View>  
         </SafeAreaView>
+        </>
     );
   }

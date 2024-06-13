@@ -7,6 +7,7 @@ import {
   StatusBar,
   ActivityIndicator,
   Alert,
+  Platform,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import stylesCommon, {
@@ -205,9 +206,9 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
       </Text>
     </View>
   );
-
+ // <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
   return (
-    <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
+      <View style={{flex:1}}>
       <StatusBar backgroundColor={colors.YELLOW} />
       {/* <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/> */}
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
@@ -218,7 +219,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         />
       ) : (
-        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15,paddingBottom:100  }}>
+        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15,paddingBottom: Platform.OS == 'ios'? 60 : 100}}>
           {/* <View
             style={{
               flexDirection: "row",
@@ -322,7 +323,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
           />
         </View>
       )}
-    </SafeAreaView>
+     </View>   
   );
 }
 

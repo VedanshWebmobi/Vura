@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  SafeAreaView,
   NativeModule,
   NativeModules
 } from "react-native";
@@ -18,7 +19,7 @@ import stylesCommon from "../Themes/stylesCommon";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { axiosCallAPI } from "../Api/Axios";
 import { COUPON } from "../Api/Utils";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import { useHeaderHeight } from "@react-navigation/elements";
 
 import { getValueFor, save } from "../StoreData/Preference";
@@ -232,196 +233,199 @@ export default function Scanner({ navigation }) {
 
   return (
     
-     
-      
+     <>
+     <SafeAreaView style={{flex:0, backgroundColor:colors.YELLOW}} />
+      <SafeAreaView style={{flex:1}}>
       <View style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
          <StatusBar backgroundColor={colors.YELLOW} />
       {
-        profileDetailsComplete ? 
-        <KeyboardAvoidingView
-          style={{ backgroundColor: "#f2f2f2" }}
-          behavior={Platform.OS === "ios" ? "padding" : "position"}
-          keyboardVerticalOffset={100}
-          enabled
-        >
-          <CommonHeaderNew header_title={"SCAN QR CODE"} header_color={colors.YELLOW} navigation={navigation} onHandleBackPress={handleBackPress}/>
-          {/* <CommonHeader navigation={navigation} showBack /> */}
-  
-          <CommonAlert
-            visible={showAlert} // Pass visibility state to the CommonAlert component
-            hideModal={() => handleNextScreen()} // Pass function to hide the modal
-            handleOkPress={() => handleNextScreen()} // Pass function to handle Ok button press
-            //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
-            title={title} // Pass title text
-            iconName="error"
-            iconColor={iconColor}
-            bodyText={errorMessage} // Pass body text
-            // cancelButton={true} // Pass whether Cancel button should be displayed
-          />
-          <View
-            style={{
-              marginTop: 50,
-              justifyContent: "center",
-            }}
-          >
-            {isScanning ? (
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {/* <CameraView
-                  style={{
-                    height: 300,
-                    width: 300,
-                  }}
-                  barcodeScannerSettings={{ barCodeTypes: ["qr"]}}
-                  onBarcodeScanned={handleCodeScanned}
-                  onPointerCancel={() => setIsScanning(false)}
-                /> */}
-              </View>
-            ) : (
-              <View style={{ alignItems: "center", gap:20 }}>
-                <View style={{ gap: 25, alignItems: "center" }}>
-                  <TouchableOpacity onPress={handleScan}>
-                  <Image source={require('../../assets/scan_fram.png')} style={{ height:120, width: 120 }} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleScan}
-                    style={{ backgroundColor: "transparent", borderRadius: 15 }}
-                    underlayColor={colors.YELLOW}
-                  >
-            
-                      <Text
-                        style={[
-                          stylesCommon.homeText,
-                          { color: "#000000", fontSize: 15, textDecorationLine:'underline' },
-                        ]}
-                      >
-                        CLICK HERE FOR SCAN
-                      </Text>
-                    
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                
-                  <Text
-                    style={{
-                      fontFamily: font.GoldPlay_SemiBold,
-                      fontSize: 18,
-                      color: colors.BLACK,
-                    }}
-                  >
-                    OR
-                  </Text>
-                 
-                </View>
-  
-                <View
-                  style={{
-                    gap: 45,
-                    alignItems: "center",
-                    width: "90%",
-                  }}
-                >
-                 
-                  <View
-                    style={{
-                      width: "100%",
-                      gap: 15,
-                      alignItems:'center'
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: colors.BLACK,
-                        fontFamily: font.GoldPlay_Medium,
-                        fontSize: 18,
-                      }}
-                    >
-                      Enter Coupon Code
-                    </Text>
-                    <TextInput
-                      style={{
-                        height: 50,
-                        borderWidth: 1,
-                        padding: 10,
-                        borderColor: "black",
-                        borderRadius: 15,
-                        color: "black",
-                        fontFamily: font.GoldPlay_SemiBold,
-                        width:'90%',
-                        textAlign:'center',
-                        backgroundColor:'#fff'
-                      }}
-                      onChangeText={(t) =>{ 
-                        if(t.length >= 20){
-                          setIsButtonVisible(true);
-                        }
-                        else{
-                          setIsButtonVisible(false);
-                        }
-                        setQrCode(t)
-                      } }
-                      value={qrCode}
-                      placeholder="GESGR-3134-FEWG"
-                      keyboardType="default"
-                      maxLength={20}
-                      placeholderTextColor={colors.GREY}
-                    />
-                  </View>
-                </View>
-  
-               {
-                 isButtonVisible && 
-                 <TouchableOpacity
-                 onPress={handleSubmit}
+        !profileDetailsComplete ? 
+        <CompleteProfileScreen navigation={navigation} statusColor={colors.YELLOW}/>
+       :
+       <KeyboardAvoidingView
+       style={{ backgroundColor: "#f2f2f2" }}
+       behavior={Platform.OS === "ios" ? "padding" : "position"}
+       keyboardVerticalOffset={100}
+       enabled
+     >
+       <CommonHeaderNew header_title={"SCAN QR CODE"} header_color={colors.YELLOW} navigation={navigation} onHandleBackPress={handleBackPress}/>
+       {/* <CommonHeader navigation={navigation} showBack /> */}
+
+       <CommonAlert
+         visible={showAlert} // Pass visibility state to the CommonAlert component
+         hideModal={() => handleNextScreen()} // Pass function to hide the modal
+         handleOkPress={() => handleNextScreen()} // Pass function to handle Ok button press
+         //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+         title={title} // Pass title text
+         iconName="error"
+         iconColor={iconColor}
+         bodyText={errorMessage} // Pass body text
+         // cancelButton={true} // Pass whether Cancel button should be displayed
+       />
+       <View
+         style={{
+           marginTop: 50,
+           justifyContent: "center",
+         }}
+       >
+         {isScanning ? (
+           <View
+             style={{
+               justifyContent: "center",
+               alignItems: "center",
+             }}
+           >
+             {/* <CameraView
+               style={{
+                 height: 300,
+                 width: 300,
+               }}
+               barcodeScannerSettings={{ barCodeTypes: ["qr"]}}
+               onBarcodeScanned={handleCodeScanned}
+               onPointerCancel={() => setIsScanning(false)}
+             /> */}
+           </View>
+         ) : (
+           <View style={{ alignItems: "center", gap:20 }}>
+             <View style={{ gap: 25, alignItems: "center" }}>
+               <TouchableOpacity onPress={handleScan}>
+               <Image source={require('../../assets/scan_fram.png')} style={{ height:120, width: 120 }} />
+               </TouchableOpacity>
+               <TouchableOpacity
+                 onPress={handleScan}
                  style={{ backgroundColor: "transparent", borderRadius: 15 }}
-               
+                 underlayColor={colors.YELLOW}
                >
-                 <View
-                   style={[
-                     stylesCommon.homeTextView,
-                     {
-                      borderColor:'#f2f2f2',
-                       width: 140,
-                       height: 40,
-                       borderRadius: 15,
-                     },
-                   ]}
-                 >
+         
                    <Text
                      style={[
                        stylesCommon.homeText,
-                       { color: "black", fontSize: 15, textDecorationLine:'underline' },
+                       { color: "#000000", fontSize: 15, textDecorationLine:'underline' },
                      ]}
                    >
-                     CONFIRM
+                     CLICK HERE FOR SCAN
                    </Text>
-                 </View>
-               </TouchableOpacity>
-               }
                  
-               
+               </TouchableOpacity>
+             </View>
+             <View
+               style={{
+                 flexDirection: "row",
+                 
+                 justifyContent: "center",
+                 alignItems: "center",
+               }}
+             >
+             
+               <Text
+                 style={{
+                   fontFamily: font.GoldPlay_SemiBold,
+                   fontSize: 18,
+                   color: colors.BLACK,
+                 }}
+               >
+                 OR
+               </Text>
+              
+             </View>
+
+             <View
+               style={{
+                 gap: 45,
+                 alignItems: "center",
+                 width: "90%",
+               }}
+             >
+              
+               <View
+                 style={{
+                   width: "100%",
+                   gap: 15,
+                   alignItems:'center'
+                 }}
+               >
+                 <Text
+                   style={{
+                     color: colors.BLACK,
+                     fontFamily: font.GoldPlay_Medium,
+                     fontSize: 18,
+                   }}
+                 >
+                   Enter Coupon Code
+                 </Text>
+                 <TextInput
+                   style={{
+                     height: 50,
+                     borderWidth: 1,
+                     padding: 10,
+                     borderColor: "black",
+                     borderRadius: 15,
+                     color: "black",
+                     fontFamily: font.GoldPlay_SemiBold,
+                     width:'90%',
+                     textAlign:'center',
+                     backgroundColor:'#fff'
+                   }}
+                   returnKeyType='done'
+                   onChangeText={(t) =>{ 
+                     if(t.length >= 20){
+                       setIsButtonVisible(true);
+                     }
+                     else{
+                       setIsButtonVisible(false);
+                     }
+                     setQrCode(t)
+                   } }
+                   value={qrCode}
+                   placeholder="GESGR-3134-FEWG"
+                   keyboardType="default"
+                   maxLength={20}
+                   placeholderTextColor={colors.GREY}
+                 />
+               </View>
+             </View>
+
+            {
+              isButtonVisible && 
+              <TouchableOpacity
+              onPress={handleSubmit}
+              style={{ backgroundColor: "transparent", borderRadius: 15 }}
+            
+            >
+              <View
+                style={[
+                  stylesCommon.homeTextView,
+                  {
+                   borderColor:'#f2f2f2',
+                    width: 140,
+                    height: 40,
+                    borderRadius: 15,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    stylesCommon.homeText,
+                    { color: "black", fontSize: 15, textDecorationLine:'underline' },
+                  ]}
+                >
+                  CONFIRM
+                </Text>
               </View>
-            )}
-          </View>
-        </KeyboardAvoidingView>
-      :
-        
-          <CompleteProfileScreen navigation={navigation} statusColor={colors.YELLOW}/>
-       } 
+            </TouchableOpacity>
+            }
+              
+            
+           </View>
+         )}
+       </View>
+     </KeyboardAvoidingView>
+         
+       }  
      
     </View>
-
+    </SafeAreaView>
+    </>
     
   );
 }

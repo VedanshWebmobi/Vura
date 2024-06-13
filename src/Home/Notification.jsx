@@ -230,6 +230,8 @@ export default function Notification({navigation}){
         // Optionally, you can also refetch data here
       };
     return(
+      <>
+        <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW}}/>
         <SafeAreaView style={[stylesCommon.blackbg,{backgroundColor:"#f2f2f2"}]}>
         <StatusBar backgroundColor={colors.YELLOW} />
         <CommonHeaderNew navigation={navigation} showBack={true} header_title="NOTIFICATIONS" header_color={colors.YELLOW}/>
@@ -239,7 +241,7 @@ export default function Notification({navigation}){
              Platform.OS !== 'android' &&
     (({highlighted}) => (
       <View
-        style={[style.separator, highlighted && {marginLeft: 0}]}
+        style={[highlighted && {marginLeft: 0}]}
       />
     ))
   }
@@ -299,5 +301,6 @@ export default function Notification({navigation}){
         </View>
 
         </SafeAreaView>
+        </>
     );
 }

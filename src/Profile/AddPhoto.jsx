@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  SafeAreaView
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -245,6 +246,9 @@ export default function AddPhoto({ navigation }) {
   };
 
   return (
+    <>
+    <SafeAreaView style={{flex:0, backgroundColor : colors.YELLOW}} />
+    <SafeAreaView  style={{flex:1, backgroundColor: '#fff'}} >
     <View style={[stylesCommon.yellowbg,{backgroundColor:'#fff',  justifyContent:"center", alignItems:"center"}]}>
       <StatusBar backgroundColor={colors.YELLOW} />
 
@@ -416,6 +420,8 @@ export default function AddPhoto({ navigation }) {
             <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
         </View>
     </View>
+    </SafeAreaView>
+    </>
   );
 }
 

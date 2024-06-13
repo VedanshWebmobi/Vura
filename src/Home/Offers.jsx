@@ -11,6 +11,8 @@ import CommonHeaderNew from "../common/CommonHeader_new";
 
 export default function Offers({ navigation }) {
   return (
+    <>
+    <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW, zIndex:1}}  />
     <SafeAreaView style={stylesCommon.blackbg}>
       <StatusBar backgroundColor={colors.YELLOW} />
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
@@ -30,6 +32,7 @@ export default function Offers({ navigation }) {
         resizeMode="contain"
       />
     </SafeAreaView>
+    </>
   );
 }
 

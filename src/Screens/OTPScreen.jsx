@@ -356,7 +356,10 @@ import { useSmsUserConsent } from '@eabdullazyanov/react-native-sms-user-consent
             handleOkPress={() =>{
                 setShowAlert(false);
                 if(alertType === 'OTP_Verified'){
-                  navigation.dispatch(StackActions.replace("Login_Success"));
+                  setTimeout(() => {
+                    navigation.dispatch(StackActions.replace("Login_Success"));
+                  },500)
+                  
                 }
             } } // Pass function to handle Ok button press
             //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
@@ -475,10 +478,11 @@ import { useSmsUserConsent } from '@eabdullazyanov/react-native-sms-user-consent
               </Text>
               </TouchableOpacity>
             </View>
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{  }}>
               <OtpInput
               textInputProps={{
-                textContentType:'oneTimeCode'
+                textContentType:'oneTimeCode',
+                returnKeyType:'done'
               }}
               ref={OTPViewRef}
                 numberOfDigits={6}
@@ -491,17 +495,20 @@ import { useSmsUserConsent } from '@eabdullazyanov/react-native-sms-user-consent
                 onFilled={(text) =>{
                     setOTPFilled(true)
                 }}
+                
                 theme={{
                   containerStyle: {
                    marginTop:50,
+                   
+                 
                   },
-                  inputsContainerStyle: { width: 100 },
+                  inputsContainerStyle: {  },
                   pinCodeContainerStyle: {
                     height: 45,
                     width: 45,
                     borderRadius: 10,
                     borderWidth:2,
-                    backgroundColor:"#333333"
+                    backgroundColor:"#333333",margin:2
                   },
                   focusedPinCodeContainerStyle: {
                     borderColor: "#fff",

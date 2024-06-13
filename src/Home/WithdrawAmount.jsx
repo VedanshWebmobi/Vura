@@ -6,10 +6,10 @@ import {
     FlatList,
     TouchableOpacity,Keyboard,
     TextInput,Dimensions,
-    StatusBar,Animated,Easing, Alert
+    StatusBar,Animated,Easing, Alert,SafeAreaView
   } from "react-native";
   import React, { useEffect, useState, useRef } from "react";
-  import { SafeAreaView } from "react-native-safe-area-context";
+ 
   import CommonHeaderNew from "../common/CommonHeader_new";
   import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
   import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -199,6 +199,8 @@ const WithDrawalAmount = async() =>{
 
 
     return(
+      <>
+        <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW}}/>
         <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'#f2f2f2'}]}>
         <StatusBar backgroundColor={colors.YELLOW} />
         <CommonHeaderNew 
@@ -287,7 +289,8 @@ const WithDrawalAmount = async() =>{
                     textAlign:'center',
                     
                     backgroundColor:'#fff', fontFamily:font.GoldPlay_Regular, color:colors.BLACK}}
-            placeholder={"500.00"}    
+            placeholder={"500.00"}   
+            returnKeyType={'done'} 
             value={numberformat(amount)}
         keyboardType='decimal-pad'
                     onChangeText={(text)=> {
@@ -379,5 +382,6 @@ const WithDrawalAmount = async() =>{
           </View>
         </View>  
         </SafeAreaView>
+        </>
     );
   }

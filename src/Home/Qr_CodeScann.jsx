@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, Image,Animated, Easing } from 'react-native';
+import { Text, View, StyleSheet, Button, TouchableOpacity, Image,Animated, Easing, Platform } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
 import { colors, font,ExpoSecureKey } from '../constants';
@@ -11,6 +11,7 @@ import { getValueFor, save } from "../StoreData/Preference";
 import * as Preference from "../StoreData/Preference";
 import { VolumeManager } from 'react-native-volume-manager';
 import { StackActions } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 var Sound = require('react-native-sound');
 
@@ -29,6 +30,16 @@ export default function QRCodeScanner_new({navigation}) {
   const handleBarCodeScanned = ({ type, data }) => {
    // setScanned(true);
    // setQrData(data);
+   if(Platform.OS == 'ios'){
+    sound.play((success) => {
+      if (success) {
+        console.log('successfully finished playing');
+      } else {
+        console.log('playback failed due to audio decoding errors');
+      }
+    });
+   }
+   else{
     if(isNormal)
     {
     sound.play((success) => {
@@ -39,13 +50,14 @@ export default function QRCodeScanner_new({navigation}) {
       }
     });
   }
+}
    
    sendCoupon(data)
   };
   
   useEffect(() => {
     fadeInOut();
-    var BeepSound = new Sound("beep.ogg",Sound.MAIN_BUNDLE,(error)=>{
+    var BeepSound = new Sound(Platform.OS ? "beep.wav" : "beep.ogg",Sound.MAIN_BUNDLE,(error)=>{
       if (error) {
         console.log('failed to load the sound', error);
         return;
@@ -146,10 +158,22 @@ export default function QRCodeScanner_new({navigation}) {
         //   button: "close",
         // });
       } else {
+        //{"data": null, "errors": ["Coupon code not found"], "message": "", "status": false} 
+        if(response.message.length >0){
+          setErrorMessage(response.message);
+        }
+        else{
+          if(response.errors.length > 0){
+            setErrorMessage(response.errors[0]);
+          }
+          else{
+             setErrorMessage("Something went wrong, Try again.");
+          }
+        }
         setIconColor("red");
         setTitle("Error");
         setShowAlert(true);
-        setErrorMessage(response.message);
+       
         // Dialog.show({
         //   type: ALERT_TYPE.DANGER,
         //   title: "Error",
@@ -161,6 +185,7 @@ export default function QRCodeScanner_new({navigation}) {
   };
 
   return (
+    <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
           <CommonAlert
             visible={showAlert} // Pass visibility state to the CommonAlert component
@@ -191,8 +216,8 @@ export default function QRCodeScanner_new({navigation}) {
       ></Animated.View>
         </View>}
        
-         topViewStyle={{ position:'absolute', top:0}}
-          bottomViewStyle={{ position:'absolute',bottom:0,}}
+         topViewStyle={{ position:'absolute', top:0,zIndex:1}}
+          bottomViewStyle={{ position:'absolute',bottom:0,zIndex:1}}
         // cameraContainerStyle={{height:'100%'}}
         cameraStyle={{height:'100%'}}
         bottomContent={
@@ -202,7 +227,8 @@ export default function QRCodeScanner_new({navigation}) {
         }
         topContent={
        
-          <Fontisto name="close" size={24} color={"#fff"} style={{alignSelf:'flex-end',zIndex:1, padding:20,}} onPress={()=>{navigation.goBack()}}/>
+          <Fontisto name="close" size={24} color={"#fff"} style={{alignSelf:'flex-end',zIndex:1, padding:20,}} 
+          onPress={()=>{navigation.goBack()}}/>
          
       
         }
@@ -213,6 +239,7 @@ export default function QRCodeScanner_new({navigation}) {
       )}
       {qrData && <Text style={styles.qrData}>{qrData}</Text>}
     </View>
+    </SafeAreaView>
   );
 }
 
