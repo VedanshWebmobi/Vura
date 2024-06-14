@@ -916,7 +916,7 @@ useState(()=>{
         </View>
       ) : (
         <ScrollView 
-        nestedScrollEnabled={true}
+      
         >
           <View
             style={{

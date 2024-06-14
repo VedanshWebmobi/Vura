@@ -117,29 +117,33 @@ import {
             <View style={{flexDirection:"row", alignItems:"center", height:50, zIndex:1}}>
                <Text style={{width:'27%', fontFamily:font.GoldPlay_Medium,color:'#999999', fontSize:14}}>{item_label}</Text>
                <DropDownPicker
-            listMode="MODAL"
+            listMode="SCROLLVIEW"
                 open={open}
                 value={item_value}
                 items={[{label: 'Male', value: 'Male'},
                 {label: 'Female', value: 'Female'},
                 {label: 'Other', value: 'Other'},
               ]}
+
+              zIndex={1000}
               dropDownContainerStyle={{
                 backgroundColor: "#fff",
                 width:'73%',
-                zIndex:1,
-                borderWidth:0
-
+                zIndex:1000,
+                borderWidth:0,
+               
               }}
-             
+              dropDownDirection="TOP"
+                scrollViewProps={{
+                  nestedScrollEnabled:true,
+                  automaticallyAdjustContentInsets : true
+                }}
                 // setItems={setCategories}
                 setOpen={setOpen}
                 setValue={item_setValue}
                 onSelectItem={(value)=>{console.log(value)}}
                 placeholder={item_place_holder}
                 placeholderStyle={{color:"#999999"}}
-                zIndex={2}
-                
                 textStyle={{ fontSize:14,
                   fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, padding:0 }}
                   modalContentContainerStyle={{
@@ -246,3 +250,17 @@ import {
       </View>
     );
   }
+  const styles = StyleSheet.create({
+    dropdownContainer:{
+      backgroundColor: "#fff",
+      width:'73%',
+      zIndex:1000,
+      borderWidth:0,
+      position:'absolute',
+      top:0,
+      left:0,right:0
+    },
+    dropdownContainerOpen:{
+      top:60
+    }
+  });
