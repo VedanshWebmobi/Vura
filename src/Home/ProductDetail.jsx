@@ -22,7 +22,7 @@ import Icons from "@expo/vector-icons/FontAwesome5";
 import { Icon } from "react-native-paper";
 import { SimpleGrid } from "react-native-super-grid";
 import * as FileSystem from "expo-file-system";
-import * as Sharing from 'expo-sharing';
+//import * as Sharing from 'expo-sharing';
 
 import CommonHeaderNew from "../common/CommonHeader_new";
 
@@ -106,12 +106,12 @@ export default function ProductDetail({ navigation, route }) {
         saveAndroidFile(uri, fileName);
       }
       else{
-        if (!(await Sharing.isAvailableAsync())) {
-          Alert.alert('Sharing not available on this device');
-          return;
-        }
+        // if (!(await Sharing.isAvailableAsync())) {
+        //   Alert.alert('Sharing not available on this device');
+        //   return;
+        // }
     
-        await Sharing.shareAsync(uri);
+        // await Sharing.shareAsync(uri);
 
       }
       // Optionally, you can use the uri to do something with the downloaded file

@@ -98,7 +98,7 @@ import {
                   returnKeyType={item_return_key_type}
                   placeholder={item_place_holder}
                   placeholderTextColor={"#999999"}
-              
+                  autoCapitalize={item_all_capital ? "characters" : "sentences"}
                   onChangeText={(text) =>{
                     if(item_handle_account_number)
                     {

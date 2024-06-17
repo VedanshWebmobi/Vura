@@ -54,7 +54,7 @@ export default function ({
             
             }}
           >
-            { title === "Error" ? <Icon
+            { (title === "Error" || title === "OPPS!") ? <Icon
               name={"error"}
               size={40}
               color={
@@ -69,7 +69,10 @@ export default function ({
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
             /> */}
-            <Text style={{color:title === "Error" ? "#000000" : "#059669",  fontFamily: font.GoldPlay_SemiBold, fontSize: 25, marginTop:title === "Error" ? 1 : -30, textAlign:'center' }}>
+            <Text style={{
+              color:(title === "Error" ? colors.ERROR_RED : title === "OPPS!" ? colors.ERROR_RED : "#059669"), 
+               fontFamily: font.GoldPlay_SemiBold,
+                fontSize: 25, marginTop: (title === "Error"|| title === "OPPS!" ) ? 1 : -30, textAlign:'center' }}>
               {title}
             </Text>
             <Text

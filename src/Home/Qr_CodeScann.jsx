@@ -75,7 +75,7 @@ export default function QRCodeScanner_new({navigation}) {
 
   const handleNextScreen = () =>{
     setShowAlert(false);
-    if(title === "Error"){
+    if(title === "OPPS!"){
       navigation.goBack();
     }
     else{
@@ -171,7 +171,7 @@ export default function QRCodeScanner_new({navigation}) {
           }
         }
         setIconColor("red");
-        setTitle("Error");
+        setTitle("OPPS!");
         setShowAlert(true);
        
         // Dialog.show({

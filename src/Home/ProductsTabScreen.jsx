@@ -63,6 +63,7 @@ useEffect(() => {
         const categoryData = [];
         categoryData.push({ label: "All",
           value: 0,})
+            
          response.map((category) => (
          categoryData.push( {
           label: category.productCategoryName,

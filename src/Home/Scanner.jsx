@@ -154,21 +154,25 @@ export default function Scanner({ navigation }) {
       navigation
     ).then((response) => {
       if (response && response.status) {
+
+        if(response.message.includes("Please Contact Our Nearest Salesperson."))
+        {
+         
+          setTitle("CONGRATULATIONS!");
+         
+        }
+        else
+        {
+          setTitle("SUCCESSFULLY SCANNED!");
+        }
         setIconColor("green");
-        setTitle("SUCCESSFULLY SCANNED!");
+      
         setShowAlert(true);
         setErrorMessage(response.message);
         setQrCode("");
-        // Dialog.show({
-        //   type: ALERT_TYPE.SUCCESS,
-        //   title: "Success",
-        //   textBody: response.message,
-        //   button: "close",
-        // });
+ 
       } else {
-        setIconColor("red");
-        setTitle("Error");
-        setShowAlert(true);
+       
         if(response.message.length > 0)
         {
         setErrorMessage(response.message);
@@ -177,8 +181,12 @@ export default function Scanner({ navigation }) {
           setErrorMessage(response.errors[0]);
         }
         else{
-          setErrorMessage("Something went wrong.");
+          setErrorMessage("Something went wrong, Try again.");
         }
+        setIconColor("red");
+        setTitle("OPPS!");
+        setShowAlert(true);
+        
         // Dialog.show({
         //   type: ALERT_TYPE.DANGER,
         //   title: "Error",

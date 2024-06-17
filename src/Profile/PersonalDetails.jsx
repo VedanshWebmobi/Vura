@@ -1214,6 +1214,7 @@ useState(()=>{
                       item_return_key_type={'done'}
                       item_is_bank = {true}
                       item_handle_ifsc_code={handleIFSCCode}
+                      item_all_capital= {true}
                       />
                       {
                          bankverify == "0" && 

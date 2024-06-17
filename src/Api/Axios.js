@@ -28,7 +28,7 @@ export const axiosCallAPI = (
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
-        console.log("Bhai yeh hai dekhle ab", response.data);
+       // console.log("Bhai yeh hai dekhle ab", response.data);
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
@@ -83,9 +83,9 @@ export const axiosCallAPI = (
       return axios
         .get(endpoint, headerRequest)
         .then((response) => {
-          console.log("response status in axiox call", response.data.message);
-          console.log("response data in axiox call", response.data);
-          console.log("response data.data in axiox call", response.data.data);
+        //  console.log("response status in axiox call", response.data.message);
+        //  console.log("response data in axiox call", response.data);
+        //  console.log("response data.data in axiox call", response.data.data);
           if (response.data.status) {
             if (response.data.message !== "") {
               if (isShowMessage)

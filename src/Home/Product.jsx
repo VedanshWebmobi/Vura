@@ -47,63 +47,24 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
   const [selectedValue, setSelectedValue] = useState(catID);
   const [isFirstTime, setIsFirstTime] = useState(true);
 
-  useFocusEffect(
-    React.useCallback(() =>{
-     // setSearch("");
-     if(!isFirstTime ){
-   
-  }
-    },[selectedValue,setSearch, search])
-  )
+  useEffect(() =>{
+    console.log("Use effect call out of condition =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
+    if(currentPage > 1){
+      console.log("Use effect call =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
+      fetchProductData(selectedValue);
+    }
+  },[currentPage])
+  // useEffect(() =>{
+  //   if(selectedValue == 0){
+  //     console.log("Product Data length => ",productData.length);
+  //   }
+  // },[productData]);
 
-  useEffect(() => {
-    
-    const fetchProductCategory = async () => {
-      //  setIsLoading(true);
-      //  setError(null);
-
-      try {
-        // const requestOptions = {
-        //   headers: {
-        //     Accept: "application/json",
-        //     Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
-        //   },
-        // };
-
-        const response = await axiosCallAPI(
-          "get",
-          PRODUCT_CATEGORY,
-          "",
-          "",
-          true,
-          navigation
-        );
-
-        if (response !== "") {
-          const categoryData = response.map((category) => ({
-            label: category.productCategoryName,
-            value: category.id,
-          }));
-
-          setCategories(categoryData); // Update categories state
-        } else {
-          console.error("Invalid response structure:", response);
-        }
-      } catch (error) {
-        console.error("Error fetching product category:", error);
-        // setError(error); // Set error state for handling
-      } finally {
-        // setIsLoading(false);
-      }
-    };
-
-   // fetchProductCategory();
-  }, []);
 
   useEffect(() => {
     console.log("After selecting value", currentPage);
-
     console.log("In use effect", currentPage, totalPages);
+    setProductData([]);
     setCurrentPage(1);
     setTotalPages(2);
     const timer = setTimeout(() => {
@@ -111,34 +72,31 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
    },1000);
 
   return () => clearTimeout(timer);
-    
-  
-    
+      
   }, [selectedValue,setSearch, search]);
 
   const fetchProductData = async (selectedValue = 0) => {
-    console.log("====================================");
-    console.log("Api called in product with this value", selectedValue);
-
-    console.log(currentPage);
-    console.log("====================================");
-    if (currentPage > totalPages) {
-      console.log(currentPage, totalPages);
-      console.log("Yaha huin isislye error");
-      return;
+    if(currentPage == 1){
+      setProductData([]);
     }
+    console.log("====================================");
+    console.log("Api called in product with this value => ", selectedValue);
+
+    console.log("Current page => ",currentPage);
+    console.log("====================================");
+    // if (currentPage > totalPages) {
+    //   console.log(currentPage, totalPages);
+    //   console.log("Yaha huin isislye error");
+    //   return;
+    // }
     setIsLoading(true);
     try {
       const requestOptions = {
-        // headers: {
-        //   Accept: "application/json",
-        //   Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
-        // },
         params: {
           search:search,
           categoryId: selectedValue,
           page: currentPage, // Pass the current page as a query parameter
-          per_page: 40, // You may need to adjust this based on your API's pagination settings
+          per_page: 10, // You may need to adjust this based on your API's pagination settings
         },
       };
 
@@ -150,19 +108,31 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
         true,
         navigation
       );
-      console.log(response.result);
+   //   console.log(response.result);
+        setIsFirstTime(false);
       const newData = response.result;
- 
-        setProductData(newData);
+        if(newData.length > 0)
+        {
+          if(productData.length > 0 ){
+            setProductData(value => value.concat(newData));
+           } 
+           else{
+            setProductData(newData);
+           }
+        }
+        else{
+          setProductData(newData);
+        }
         
-      
-      if(response.pages == 0)
-      {
-        setTotalPages(2);
-      }
-      else{
+        
+      // if(response.pages == 0)
+      // {
+      //   setTotalPages(2);
+      // }
+      // else{
+        setIsLoading(false);
       setTotalPages(response.pages);
-      }
+     // }
      // setCurrentPage(currentPage + 1);
     } catch (error) {
       console.error("Error fetching wallet data:", error);
@@ -178,12 +148,16 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
     setSelectedValue(e.value);
   };
   const renderFooter =()=>{
-    return <ActivityIndicator size="large" color={colors.BLACK}/>
+    return currentPage < totalPages ? <ActivityIndicator size="large" color={colors.BLACK}/> : null
   }
 
   const handleLoadMore = () =>{
+    if(currentPage < totalPages && !isLoading && productData.length > 0)
+    {
+      console.log("Calling Load More =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
       setCurrentPage((value) => value+1);
-      fetchProductData(selectedValue);
+    }
+     // fetchProductData(selectedValue);
       
   }
 
@@ -195,7 +169,9 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
         alignItems: "center",
       }}
     >
-      <Text
+      {
+        !isLoading ?  
+        <Text
         style={{
           fontFamily: font.GoldPlay_Regular,
           fontSize: 18,
@@ -204,6 +180,16 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
       >
         No Product Found
       </Text>
+      :
+      <Text
+      style={{
+        fontFamily: font.GoldPlay_Regular,
+        fontSize: 18,
+        color: "black",
+      }}
+    ></Text>
+      }
+     
     </View>
   );
  // <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
@@ -212,7 +198,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
       <StatusBar backgroundColor={colors.YELLOW} />
       {/* <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/> */}
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
-      {isLoading ? (
+      {(isLoading && isFirstTime) ? (
         <ActivityIndicator
           size="large"
           color={colors.YELLOW}
@@ -289,7 +275,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                        // console.log(item.productImages)
                       }
                       <Image
-                        source={{ uri:(item.productImages.length > 0) ?  item.productImages[0].productImg : "" }}
+                        source={{ uri:(item?.productImages?.length > 0) ?  item?.productImages[0]?.productImg : "" }}
                         style={{ height: 150, width: 100, resizeMode: "contain" }}
                       />
                     </View>
@@ -312,12 +298,12 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
               );
             }}
             keyExtractor={(item, index) => item.id}
-         //   ListFooterComponent={renderFooter}
+            ListFooterComponent={renderFooter}
             //numColumns={2}
             maxItemsPerRow={2}
             showsVerticalScrollIndicator={false}
-           // onEndReached={handleLoadMore}
-            //onEndReachedThreshold={0.9}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.1}
             
             // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
           />
