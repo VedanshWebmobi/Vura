@@ -67,6 +67,7 @@ useFocusEffect(React.useCallback(()=>{
           accountNumber,
           bankName,
           ifscCode,
+          bank_verify
         } = storedDetails;
         console.log("Profile details retrieved:", {
           address,
@@ -80,7 +81,8 @@ useFocusEffect(React.useCallback(()=>{
           accountHolderName &&
           accountNumber &&
           bankName &&
-          ifscCode
+          ifscCode && 
+          bank_verify === "1"
         ) {
           console.log("Profile is Complete");
           setProfileDetailsComplete(true);

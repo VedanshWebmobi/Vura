@@ -95,6 +95,7 @@ export default function CustomDrawer({ navigation }) {
               accountNumber,
               bankName,
               ifscCode,
+              bank_verify
             } = storedDetails;
            
             setName(name);
@@ -111,7 +112,8 @@ export default function CustomDrawer({ navigation }) {
               accountHolderName &&
               accountNumber &&
               bankName &&
-              ifscCode
+              ifscCode &&
+              bank_verify === "1"
             ) {
               console.log("Profile is Complete");
               setProfileDetailsComplete(true);

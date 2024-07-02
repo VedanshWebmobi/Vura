@@ -110,7 +110,6 @@ export default function ProductDetail({ navigation, route }) {
         //   Alert.alert('Sharing not available on this device');
         //   return;
         // }
-    
         // await Sharing.shareAsync(uri);
 
       }
