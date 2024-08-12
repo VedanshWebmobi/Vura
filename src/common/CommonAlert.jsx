@@ -1,11 +1,25 @@
-import { StyleSheet, Text, TouchableHighlight, View, Image, Modal, Alert, TouchableWithoutFeedback} from "react-native";
-import React from "react";
-import { TextInput, Button, Checkbox,  Portal, PaperProvider, } from "react-native-paper";
+import {
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  Image,
+  Modal,
+  Alert,
+  TouchableWithoutFeedback,
+} from "react-native";
+import React, { useEffect } from "react";
+import {
+  TextInput,
+  Button,
+  Checkbox,
+  Portal,
+  PaperProvider,
+} from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { colors, font, icon } from "../constants";
 import { SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import Icon from "@expo/vector-icons/MaterialIcons";
-
 
 export default function ({
   visible,
@@ -16,7 +30,7 @@ export default function ({
   handleOkPress,
   handleCancelPress,
   cancelButton,
-  bodyTextSize
+  bodyTextSize,
 }) {
   //   const [visible, setVisible] = React.useState(false);
 
@@ -26,68 +40,93 @@ export default function ({
   const containerStyle = {
     backgroundColor: "#fff",
     padding: 20,
-    margin: 30, 
+    margin: 30,
     height: SCREEN_HEIGHT / 2.1,
     borderRadius: 20,
   };
+  const tempArray = [null];
+  useEffect(() => {
+    // if (visible) {
+    //   console.log("Use Effect CommonAlert");
+    //   const myTime = setTimeout(() => {
+    //     handleOkPress();
+    //   }, 5000);
+    // }
+    // return clearTimeout(myTime);
+  }, [visible]);
   //  height: SCREEN_HEIGHT / 2.4,
-//<View  style={styles.container}>
+  //<View  style={styles.container}>
   return (
-      
-    
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          transparent={true}
-          onRequestClose={handleOkPress}
-          //contentContainerStyle={containerStyle}
-        >
-          <TouchableWithoutFeedback onPress={handleOkPress}>
-            <View style={styles.modalContainer} >
-            <TouchableWithoutFeedback >
+    <Modal
+      visible={visible}
+      onDismiss={hideModal}
+      transparent={true}
+      onRequestClose={handleOkPress}
+      //contentContainerStyle={containerStyle}
+    >
+      <TouchableWithoutFeedback onPress={handleOkPress}>
+        <View style={styles.modalContainer}>
+          <TouchableWithoutFeedback>
             <View style={styles.modalContent}>
-          <View
-            style={{
-              alignItems: "center",
-              gap: 10,
-              //backgroundColor: "grey",
-            
-            }}
-          >
-            { (title === "Error" || title === "OPPS!") ? <Icon
-              name={"error"}
-              size={40}
-              color={
-                iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
-              }
-            /> :<Image style={{height:100, width:100, marginTop:-20}}
-            source ={require('../../assets/success.gif')} /> }
-            {/* <Icon
+              <View
+                style={{
+                  alignItems: "center",
+                  gap: 10,
+                  //backgroundColor: "grey",
+                }}
+              >
+                {title === "Error" || title === "OPPS!" ? (
+                  <Icon
+                    name={"error"}
+                    size={40}
+                    color={
+                      iconColor === "red"
+                        ? colors.ERROR_RED
+                        : colors.SUCCESS_GREEN
+                    }
+                  />
+                ) : (
+                  <Image
+                    style={{ height: 100, width: 100, marginTop: -20 }}
+                    source={require("../../assets/success.gif")}
+                  />
+                )}
+                {/* <Icon
               name={"error"}
               size={40}
               color={
                 iconColor === "red" ? colors.ERROR_RED : colors.SUCCESS_GREEN
               }
             /> */}
-            <Text style={{
-              color:(title === "Error" ? colors.ERROR_RED : title === "OPPS!" ? colors.ERROR_RED : "#059669"), 
-               fontFamily: font.GoldPlay_SemiBold,
-                fontSize: 25, marginTop: (title === "Error"|| title === "OPPS!" ) ? 1 : -30, textAlign:'center' }}>
-              {title}
-            </Text>
-            <Text
-              style={{
-                marginTop: 10,
-                marginBottom:30,
-                fontFamily: font.GoldPlay_SemiBold,
-                fontSize:bodyTextSize ? bodyTextSize : 15,
-                textAlign: "center",
-              }}
-            >
-              {bodyText}
-            </Text>
-          </View>
-          {/* <View
+                <Text
+                  style={{
+                    color:
+                      title === "Error"
+                        ? colors.ERROR_RED
+                        : title === "OPPS!"
+                        ? colors.ERROR_RED
+                        : "#059669",
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: 25,
+                    marginTop: title === "Error" || title === "OPPS!" ? 1 : -30,
+                    textAlign: "center",
+                  }}
+                >
+                  {title}
+                </Text>
+                <Text
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 30,
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: bodyTextSize ? bodyTextSize : 15,
+                    textAlign: "center",
+                  }}
+                >
+                  {bodyText.replace("<br><br>", "\n\n")}
+                </Text>
+              </View>
+              {/* <View
             style={{ flexDirection: "row", justifyContent: "center",  marginTop:30, marginBottom:30}}
           >
             <TouchableHighlight
@@ -144,40 +183,36 @@ export default function ({
               </TouchableHighlight>
             )}
           </View> */}
-          </View>
+            </View>
           </TouchableWithoutFeedback>
-          </View>
-          </TouchableWithoutFeedback>
-        </Modal>
-       
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  
-  
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding:20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width:'100%'
+    width: "100%",
   },
   modalContent_new: {
-    backgroundColor: 'yellow',
+    backgroundColor: "yellow",
     padding: 20,
     borderRadius: 10,
-   
   },
 });

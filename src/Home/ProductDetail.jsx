@@ -8,7 +8,7 @@ import {
   Share,
   Platform,
   StatusBar,
-  Alert
+  Alert,
 } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +22,7 @@ import Icons from "@expo/vector-icons/FontAwesome5";
 import { Icon } from "react-native-paper";
 import { SimpleGrid } from "react-native-super-grid";
 import * as FileSystem from "expo-file-system";
-import * as Sharing from 'expo-sharing';
+// import * as Sharing from 'expo-sharing';
 
 import CommonHeaderNew from "../common/CommonHeader_new";
 
@@ -39,7 +39,7 @@ export default function ProductDetail({ navigation, route }) {
     productDocuments,
     characteristics,
     description,
-    usageGuide
+    usageGuide,
   } = route.params;
 
   console.log("Chars", characteristics);
@@ -89,7 +89,7 @@ export default function ProductDetail({ navigation, route }) {
 
   const downloadFile = async (fileUrl) => {
     const downloadPath = FileSystem.documentDirectory;
-      
+
     let fileName = fileUrl.split("/").pop();
 
     const downloadResumable = FileSystem.createDownloadResumable(
@@ -104,14 +104,12 @@ export default function ProductDetail({ navigation, route }) {
       console.log("File downloaded to:", uri);
       if (Platform.OS === "android") {
         saveAndroidFile(uri, fileName);
-      }
-      else{
-        if (!(await Sharing.isAvailableAsync())) {
-          Alert.alert('Sharing not available on this device');
-          return;
-        }
-        await Sharing.shareAsync(uri);
-
+      } else {
+        // if (!(await Sharing.isAvailableAsync())) {
+        //   Alert.alert('Sharing not available on this device');
+        //   return;
+        // }
+        // await Sharing.shareAsync(uri);
       }
       // Optionally, you can use the uri to do something with the downloaded file
     } catch (error) {
@@ -155,7 +153,7 @@ export default function ProductDetail({ navigation, route }) {
   return (
     <SafeAreaView style={stylesCommon.whitebg}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <CommonHeaderNew navigation={navigation} header_title=" "/>
+      <CommonHeaderNew navigation={navigation} header_title=" " />
       {/* <CommonHeader navigation={navigation} showBack /> */}
       <ScrollView>
         <View style={styles.container}>
@@ -200,10 +198,19 @@ export default function ProductDetail({ navigation, route }) {
             }}
           >
             <View style={{ marginBottom: 0 }}>
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30 }}>
+              <Text
+                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30 }}
+              >
                 {product_name}
               </Text>
-              <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 20, color:"#666666", marginTop:10 }}>
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 20,
+                  color: "#666666",
+                  marginTop: 10,
+                }}
+              >
                 {description}
               </Text>
               {/* <View
@@ -282,7 +289,9 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
             </View>
           </View>
-          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
+          <View
+            style={{ height: 2, backgroundColor: colors.YELLOW, margin: 10 }}
+          />
           <View style={{ padding: 15 }}>
             <View style={{ marginBottom: 5 }}>
               <Text
@@ -302,25 +311,26 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
             </View>
           </View>
-          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
-         {
-           usageGuide.length > 0 && 
+          <View
+            style={{ height: 2, backgroundColor: colors.YELLOW, margin: 10 }}
+          />
+          {usageGuide.length > 0 && (
             <View>
-          <View style={{ padding: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
-              >
-                User Guide
-              </Text>
-            </View>
-            <View style={{ gap: 5 }}>
-              <Text
-                style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
-              >
-                {usageGuide}
-              </Text>
-              {/* <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
+              <View style={{ padding: 15 }}>
+                <View style={{ marginBottom: 10 }}>
+                  <Text
+                    style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
+                  >
+                    User Guide
+                  </Text>
+                </View>
+                <View style={{ gap: 5 }}>
+                  <Text
+                    style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
+                  >
+                    {usageGuide}
+                  </Text>
+                  {/* <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}>
                 Adhesive can be applied on even and compact substrates, free of
                 any substances that reduce adherence (grease, bitumen, oil,
                 paint, dust etc.). Concrete should be at least 1 month old.
@@ -357,11 +367,17 @@ export default function ProductDetail({ navigation, route }) {
                 floor and around sanitary equipment shall be filled with
                 sealants or shall be treated with appropriate treatment.
               </Text> */}
+                </View>
+              </View>
+              <View
+                style={{
+                  height: 2,
+                  backgroundColor: colors.YELLOW,
+                  margin: 10,
+                }}
+              />
             </View>
-          </View>
-          <View style={{height:2, backgroundColor:colors.YELLOW, margin:10}}/>
-          </View>
-                }
+          )}
           <View>
             <View style={{ padding: 15 }}>
               <Text
@@ -377,7 +393,7 @@ export default function ProductDetail({ navigation, route }) {
             <SimpleGrid
               data={productDocuments}
               maxItemsPerRow={2}
-              renderItem={({item, index}) => {
+              renderItem={({ item, index }) => {
                 console.log("yeh hai bhai ", index);
                 return (
                   <View style={{}} key={index}>
@@ -385,8 +401,8 @@ export default function ProductDetail({ navigation, route }) {
                       style={{
                         justifyContent: "space-around",
                         alignItems: "center",
-                        marginTop:10
-                       
+                        marginTop: 10,
+
                         // backgroundColor: "red",
                       }}
                     >
@@ -398,17 +414,15 @@ export default function ProductDetail({ navigation, route }) {
                             item.productDocName
                           )
                         }
-                       
                       >
                         <View
                           style={{
                             gap: 5,
                             alignItems: "center",
-                           
                           }}
                         >
                           <Image
-                            source={require('../../assets/pdf.png')}
+                            source={require("../../assets/pdf.png")}
                             style={{
                               height: 80,
                               width: 80,
@@ -418,35 +432,28 @@ export default function ProductDetail({ navigation, route }) {
                           />
                           <View
                             style={{
-                            
                               //backgroundColor: "red",
                               // width: SCREEN_WIDTH / 2,
                               padding: 5,
-                              marginTop:5,
+                              marginTop: 5,
                               borderRadius: 5,
                             }}
                           >
-                            {
-                              console.log(index)
-                            }
-                          
-                             <Text
-                             style={{
-                               fontFamily: font.GoldPlay_SemiBold,
-                               color: "black",
-                               fontSize: 14,
-                               textAlign: "center",
-                               textDecorationLine:'underline',
-                               height:40,
+                            {console.log(index)}
 
-                             }}
-                             numberOfLines={2}
-                           >
-                             {item.productDocName}
-                           </Text>
-                        
-                           
-                  
+                            <Text
+                              style={{
+                                fontFamily: font.GoldPlay_SemiBold,
+                                color: "black",
+                                fontSize: 14,
+                                textAlign: "center",
+                                textDecorationLine: "underline",
+                                height: 40,
+                              }}
+                              numberOfLines={2}
+                            >
+                              {item.productDocName}
+                            </Text>
                           </View>
                         </View>
                       </TouchableOpacity>
@@ -600,8 +607,6 @@ export default function ProductDetail({ navigation, route }) {
               </TouchableOpacity>
             </View> */}
           </View>
-
-          
         </View>
       </ScrollView>
     </SafeAreaView>

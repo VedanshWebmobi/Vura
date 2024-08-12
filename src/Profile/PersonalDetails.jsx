@@ -4,7 +4,14 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Image,Animated,Dimensions,Easing, Alert, SafeAreaView, Platform, KeyboardAvoidingView
+  Image,
+  Animated,
+  Dimensions,
+  Easing,
+  Alert,
+  SafeAreaView,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import CommonHeader from "../common/CommonHeader";
@@ -13,18 +20,31 @@ import stylesCommon, {
   SCREEN_WIDTH,
 } from "../Themes/stylesCommon";
 import { axiosCallAPI } from "../Api/Axios";
-import { TextInput, Button, Checkbox, Modal, Portal, Card, Icon } from "react-native-paper";
+import {
+  TextInput,
+  Button,
+  Checkbox,
+  Modal,
+  Portal,
+  Card,
+  Icon,
+} from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import * as Preference from "../StoreData/Preference";
 import * as Progress from "react-native-progress";
-import {Fontisto} from "@expo/vector-icons";
+import { Fontisto } from "@expo/vector-icons";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import ProfileCustomView from "../common/ProfileCustomeView";
-import { ADD_PROFILE, GET_PROFILE, BANK_VERIFICATION, DELETE_ACCOUNT } from "../Api/Utils";
-import DatePicker from 'react-native-date-picker'
+import {
+  ADD_PROFILE,
+  GET_PROFILE,
+  BANK_VERIFICATION,
+  DELETE_ACCOUNT,
+} from "../Api/Utils";
+import DatePicker from "react-native-date-picker";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import { StackActions } from "@react-navigation/native";
@@ -32,13 +52,13 @@ import { StackActions } from "@react-navigation/native";
 export default function PersonalDetails({ navigation }) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim_address = useRef(new Animated.Value(0)).current;
-  const SCREEN_DIMENSIONS = Dimensions.get('window');
+  const SCREEN_DIMENSIONS = Dimensions.get("window");
   const [rotated, setRotated] = useState(false);
   const [rotated_address, setRotatedAddress] = useState(true);
-  const [rotated_bank, setRotatedBank] = useState(true)
+  const [rotated_bank, setRotatedBank] = useState(true);
   const inputRefs = useRef([]);
 
-//  ref for focus change
+  //  ref for focus change
   const PanRef = useRef(null);
   const NameRef = useRef(null);
   const FlatRef = useRef(null);
@@ -64,13 +84,13 @@ export default function PersonalDetails({ navigation }) {
   const scale_delete = useRef(new Animated.Value(1)).current;
   const stretchValue_delete = useRef(new Animated.Value(1)).current;
 
- // new state 
+  // new state
   const [flat_house, setFlatHouse] = useState("");
   const [area_street, setAreaStreet] = useState("");
   const [city_town, setCityTown] = useState("");
   const [state_new, setStateNew] = useState("");
   const [pincode, setPincode] = useState("");
-  const [country, setCountry] =useState("");
+  const [country, setCountry] = useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
   // const [accountNumber, setAccountNumber] = useState("40100123456781");
   const [accountNumber, setAccountNumber] = useState("");
@@ -82,9 +102,9 @@ export default function PersonalDetails({ navigation }) {
   const [image, setImage] = useState("");
   const [gender, setGender] = useState("");
   const [dob, setDOB] = useState("");
-  const [date, setDate] = useState(new Date())
+  const [date, setDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
-  const [openDate, setOpenDate] = useState(false)
+  const [openDate, setOpenDate] = useState(false);
   const [alertTitle, setAlertTitle] = useState("");
   const [iconColor, setIconColor] = useState("red");
   const [bankverify, setBankVerify] = useState("0");
@@ -93,13 +113,12 @@ export default function PersonalDetails({ navigation }) {
   const [oldBankVerify, setOldBankVeryfy] = useState(bankverify);
   const [onImageError, setIsImageError] = useState(false);
   const [isDeleteAccountRequest, setDeleteAccountRequest] = useState(false);
-  
+
   // current location
   // const [current_flat_house, setCurrentFlatHouse] = useState("");
   // const [current_area_street, setCurrentAreaStreet] = useState("");
   // const [current_pincode, setCurrentPincode] = useState("");
   // const [current_country, setCurrentCountry] = useState("");
-
 
   const [aadharNumber, setAadharNumber] = useState("");
   const [name, setname] = useState("");
@@ -125,20 +144,27 @@ export default function PersonalDetails({ navigation }) {
     height: SCREEN_HEIGHT / 3,
     borderRadius: 20,
   };
-  const containerStyleNew = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
+  const containerStyleNew = {
+    backgroundColor: "#F2F2F2",
+    padding: 20,
+    borderRadius: 20,
+  };
   const route = useRoute();
   var profilePhoto = "";
   var document = "";
-  if(route.params)
-  {
-     profilePhoto = route.params.profilePhoto;
-     if(profilePhoto && (!profilePhoto.includes("http") || !profilePhoto.includes("https")) && profilePhoto.length > 0){
-       // setImage(profilePhoto)
-     }
-     document = route.params.document;
-  }  
+  if (route.params) {
+    profilePhoto = route.params.profilePhoto;
+    if (
+      profilePhoto &&
+      (!profilePhoto.includes("http") || !profilePhoto.includes("https")) &&
+      profilePhoto.length > 0
+    ) {
+      // setImage(profilePhoto)
+    }
+    document = route.params.document;
+  }
   const { aadharNo } = route.params;
- // setImage(profilePhoto);
+  // setImage(profilePhoto);
   // useEffect(() => {
   //   setAadharNumber(aadharNo);
   // address = route.params.address ? route.params.address : "";
@@ -147,77 +173,76 @@ export default function PersonalDetails({ navigation }) {
   //   route.params.sameAddress !== undefined ? route.params.sameAddress : true;
   // currAddress = route.params.currAddress ? route.params.currAddress : "";
   // }, []);
-  
-  const handleDatePicker = ()=>{
-      setOpenDate(true);
-  }
-  const handlePincodeResult =(city, state, country) =>{
-      setCityTown(city);
-      setStateNew(state);
-      setCountry(country);
-  }
-  const rotation_per =rotateAnim.interpolate({
-    inputRange:[0, 1],
-    outputRange: ['0deg','180deg'] 
-    
+
+  const handleDatePicker = () => {
+    setOpenDate(true);
+  };
+  const handlePincodeResult = (city, state, country) => {
+    setCityTown(city);
+    setStateNew(state);
+    setCountry(country);
+  };
+  const rotation_per = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
   });
-  const rotation_address =rotateAnim_address.interpolate({
-    inputRange:[0, 1],
-    outputRange: ['0deg','180deg'] 
-    
+  const rotation_address = rotateAnim_address.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
   });
-  const HandleAnimation = () =>{
-    Animated.timing(rotateAnim,{
-      toValue:rotated ? 0 : 1,
-      duration:300,
-      useNativeDriver:true,
-    }).start(() => {
-    });
+  const HandleAnimation = () => {
+    Animated.timing(rotateAnim, {
+      toValue: rotated ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {});
     setRotated(!rotated);
-  }
-  const HandleAnimation_Address = () =>{
-    Animated.timing(rotateAnim_address,{
-      toValue:rotated_address ? 0 : 1,
-      duration:300,
-      useNativeDriver:true,
-    }).start(() => {
-    });
+  };
+  const HandleAnimation_Address = () => {
+    Animated.timing(rotateAnim_address, {
+      toValue: rotated_address ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {});
     setRotatedAddress(!rotated_address);
-  }
+  };
   const Logout = () => {
-   
     // Clear user data or perform any necessary logout actions
     // Reset the navigation stack to navigate to the "LoginScreen"
     navigation.reset({
       //  index: 0, // Reset to the first screen in the stack
       //routes: [{ name: "Category" }], // Set the route to navigate to
-       routes: [{ name: "PreLogin" }], // Set the route to navigate to
+      routes: [{ name: "PreLogin" }], // Set the route to navigate to
     });
   };
-  const HandleDeleteAccount = () =>{
-    Alert.alert("Delete Account", "Are you sure you want to permanently remove this account?",[
-      {
-        text:'Cancel',
-        onPress: () => {
-          setDeleteAccountRequest(false);
+  const HandleDeleteAccount = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to permanently remove this account?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+            setDeleteAccountRequest(false);
+          },
         },
-      },
-      {
-        text: 'Delete',
-        onPress: () =>{ 
-          delete_Account();
-        }
-      }
-    ])
-  }
+        {
+          text: "Delete",
+          onPress: () => {
+            delete_Account();
+          },
+        },
+      ]
+    );
+  };
 
   const interpolatedStretchAnimation = stretchValue.interpolate({
     inputRange: [1, 2],
-    outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
+    outputRange: [1, 0.9], // You can adjust the output range to control the stretching size
   });
   const interpolatedStretchAnimation_delete = stretchValue_delete.interpolate({
     inputRange: [1, 2],
-    outputRange: [1, 0.90], // You can adjust the output range to control the stretching size
+    outputRange: [1, 0.9], // You can adjust the output range to control the stretching size
   });
 
   const stretch = (stretch_Value) => {
@@ -233,9 +258,8 @@ export default function PersonalDetails({ navigation }) {
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
         useNativeDriver: true,
-      })
-    ])
-  .start(() => {
+      }),
+    ]).start(() => {
       // Reset the stretch value to 1
       stretch_Value.setValue(1);
     });
@@ -253,9 +277,8 @@ export default function PersonalDetails({ navigation }) {
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
         useNativeDriver: true,
-      })
-    ])
-  .start(() => {
+      }),
+    ]).start(() => {
       // Reset the scale to 1
       scale_value.setValue(1);
     });
@@ -282,44 +305,37 @@ export default function PersonalDetails({ navigation }) {
     }
   };
 
- const handleAccountNumber =(text)=>{
-
-    if(oldBankVerify == "1"){
-     if(text != oldAccountNumber){
-        setBankVerify("0")
-      }
-      else{
-        setBankVerify("1")
+  const handleAccountNumber = (text) => {
+    if (oldBankVerify == "1") {
+      if (text != oldAccountNumber) {
+        setBankVerify("0");
+      } else {
+        setBankVerify("1");
       }
     }
+  };
+  const handleIFSCCode = (text) => {
+    if (oldBankVerify == "1") {
+      if (text != oldIFSCCode) {
+        setBankVerify("0");
+      } else {
+        setBankVerify("1");
+      }
     }
-    const handleIFSCCode =(text)=>{
+  };
 
-      if(oldBankVerify == "1"){
-       if(text != oldIFSCCode){
-          setBankVerify("0")
-        }
-        else{
-          setBankVerify("1")
-        }
+  useState(() => {
+    if (bankverify == "1") {
+      if (accountNumber != oldAccountNumber || ifscCode != oldIFSCCode) {
+        setBankVerify("0");
       }
-      }
- 
-useState(()=>{
- 
-  if(bankverify == "1")
-    { 
-  if(accountNumber != oldAccountNumber || ifscCode != oldIFSCCode){
-    setBankVerify("0")
-  }
-}
- 
-},[accountNumber, ifscCode])
+    }
+  }, [accountNumber, ifscCode]);
 
   const delete_Account = async () => {
     setDeleteAccountRequest(true);
     setIsLoading(true);
-    try{
+    try {
       let requestOptions = {
         headers: {
           Accept: "application/json",
@@ -336,38 +352,34 @@ useState(()=>{
       );
       setIsLoading(false);
       //{"data": {}, "errors": {}, "message": "Artisan deleted successfully.", "status": true}
-        if(response.status){
-          Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
-          Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
-          Preference.deleteItem(ExpoSecureKey.TOKEN);
-          Preference.clearPreferences();
+      if (response.status) {
+        Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
+        Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
+        Preference.deleteItem(ExpoSecureKey.TOKEN);
+        Preference.clearPreferences();
 
-          setIconColor("green")
-          setAlertTitle("SUCCESS!")
-          setErrorMessage(response.message)
-          setVisible(true)
-        }
-        else{
-          setDeleteAccountRequest(false)
-          setIconColor("red")
-          setAlertTitle("Error")
-          setErrorMessage(response.message)
-          setVisible(true)
-        }
-        console.log(response);
-    }
-    catch (error) {
+        setIconColor("green");
+        setAlertTitle("SUCCESS!");
+        setErrorMessage(response.message);
+        setVisible(true);
+      } else {
+        setDeleteAccountRequest(false);
+        setIconColor("red");
+        setAlertTitle("OPPS!");
+        setErrorMessage(response.message);
+        setVisible(true);
+      }
+      console.log(response);
+    } catch (error) {
       setIsLoading(false);
-      setDeleteAccountRequest(false)
+      setDeleteAccountRequest(false);
       console.error("Error fetching or storing profile data:", error);
     }
-   
-
-  }
+  };
 
   const submitProfile = async () => {
-  //  console.log("Bank", typeof(bankverify === "0" ? 0 : 1));
-  //  return;
+    //  console.log("Bank", typeof(bankverify === "0" ? 0 : 1));
+    //  return;
     console.log("yeh ja raha hia ander.....", profilePhoto);
     setIsLoading(true);
     try {
@@ -378,18 +390,18 @@ useState(()=>{
       profileFormData.append("name", name);
       const position = profilePhoto.indexOf("http");
       const position1 = profilePhoto.indexOf("https");
-     
-      if(image.length > 0){
-       
-          profileFormData.append("image", {
+
+      if (image.length > 0) {
+        profileFormData.append("image", {
           uri: image,
           type: "image/jpeg",
           name: "profile_image.jpg",
         });
-      }
-
-      else  if((profilePhoto.indexOf("http") <= -1 && profilePhoto.indexOf("https") <= -1 ) && profilePhoto.length > 0){
-    
+      } else if (
+        profilePhoto.indexOf("http") <= -1 &&
+        profilePhoto.indexOf("https") <= -1 &&
+        profilePhoto.length > 0
+      ) {
         profileFormData.append("image", {
           uri: profilePhoto,
           type: "image/jpeg",
@@ -397,22 +409,21 @@ useState(()=>{
         });
       }
 
-      if(document)
-      {
-      if(document.length > 0){
-        profileFormData.append("document", {
-          uri:document,
-          type: "image/jpeg",
-          name: "aadhar_document.jpg",
-        })
+      if (document) {
+        if (document.length > 0) {
+          profileFormData.append("document", {
+            uri: document,
+            type: "image/jpeg",
+            name: "aadhar_document.jpg",
+          });
+        }
       }
-    }
-   
+
       profileFormData.append("address", flat_house);
-      profileFormData.append("street",area_street);
+      profileFormData.append("street", area_street);
       profileFormData.append("state", state_new);
       profileFormData.append("city", city_town);
-      profileFormData.append("pincode",pincode);
+      profileFormData.append("pincode", pincode);
       profileFormData.append("country", country);
       profileFormData.append("aadharCardNo", aadharNo);
       profileFormData.append("panCardNo", panNo);
@@ -420,17 +431,21 @@ useState(()=>{
       profileFormData.append("accountNumber", accountNumber);
       profileFormData.append("bankName", bankName);
       profileFormData.append("ifscCode", ifscCode);
-      profileFormData.append("current_address", sameAddress ? flat_house : "" );
-      profileFormData.append("current_street", sameAddress ? area_street : "" );
+      profileFormData.append("current_address", sameAddress ? flat_house : "");
+      profileFormData.append("current_street", sameAddress ? area_street : "");
       profileFormData.append("current_city", sameAddress ? city_town : city);
-      profileFormData.append("current_state", sameAddress ? state_new:state);
-      profileFormData.append("current_pincode", sameAddress? pincode : "" );
+      profileFormData.append("current_state", sameAddress ? state_new : state);
+      profileFormData.append("current_pincode", sameAddress ? pincode : "");
       profileFormData.append("current_country", sameAddress ? country : "");
-      profileFormData.append("gender",gender);
-    
-      profileFormData.append("dateOfBirth",selectedDate != null ? moment(selectedDate).format("YYYY-MM-DD") : "");
-      
+      profileFormData.append("gender", gender);
+
+      profileFormData.append(
+        "dateOfBirth",
+        selectedDate != null ? moment(selectedDate).format("YYYY-MM-DD") : ""
+      );
+
       profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
+      // profileFormData.append("bank_verify", 1);
 
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);
@@ -464,9 +479,9 @@ useState(()=>{
     }
   };
 
-  const VerifyBankDetails = async() =>{
+  const VerifyBankDetails = async () => {
     setIsLoading(true);
-    try{
+    try {
       const requestOptions = {
         headers: {
           Accept: "application/json",
@@ -478,31 +493,35 @@ useState(()=>{
         },
       };
       // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
-      const response = await axiosCallAPI("post",BANK_VERIFICATION,"",requestOptions, true, navigation);
-      if(response.data.bank_verify){
-            setIconColor("green")
-            setAlertTitle("SUCCESS!")
-            setErrorMessage(response.message)
-            setVisible(true)
-            setBankVerify("1");
-            
-      }
-      else{
-        setIconColor("red")
-        setAlertTitle("Error")
-        setErrorMessage(response.message)
-        setVisible(true)
+      const response = await axiosCallAPI(
+        "post",
+        BANK_VERIFICATION,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+      if (response.data.bank_verify) {
+        setIconColor("green");
+        setAlertTitle("SUCCESS!");
+        setErrorMessage(response.message);
+        setVisible(true);
+        setBankVerify("1");
+      } else {
+        setIconColor("red");
+        setAlertTitle("OPPS!");
+        setErrorMessage(response.message);
+        setVisible(true);
         setBankVerify("0");
       }
       console.log("Bank Verification", response);
-
-    }catch (error) {
+    } catch (error) {
       setIsLoading(false);
       console.error("Error fetching or storing profile data:", error);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const getProfile = async () => {
     setIsLoading(true);
@@ -545,7 +564,12 @@ useState(()=>{
         current_state,
         current_street,
         country,
-        street, pincode,gender,dateOfBirth,document,bank_verify
+        street,
+        pincode,
+        gender,
+        dateOfBirth,
+        document,
+        bank_verify,
       } = response;
 
       // Check for "null" and "undefined" strings and treat them as empty strings
@@ -564,13 +588,18 @@ useState(()=>{
       const formattedIfscCode = ifscCode === "null" ? "" : ifscCode;
       const formattedImage = image || "";
       const formattedCountry = country === "null" ? "" : country;
-      const formattedCurrentAddress = current_address === "null" ? "" : current_address;
+      const formattedCurrentAddress =
+        current_address === "null" ? "" : current_address;
       const formattedCurrentCity = current_city === "null" ? "" : current_city;
-      const formattedCurrentCountry = current_country === "null" ? "" : current_country;
-      const formattedCurrentPincode = current_pincode === "null" ? "" : current_pincode;
-      const formattedCurrentState = current_state === "null" ? "" : current_state;
-      const formattedCurrentStreet = current_street === "null" ? "" : current_street;
-      const formattedStreet = street === "null" ? "":street;
+      const formattedCurrentCountry =
+        current_country === "null" ? "" : current_country;
+      const formattedCurrentPincode =
+        current_pincode === "null" ? "" : current_pincode;
+      const formattedCurrentState =
+        current_state === "null" ? "" : current_state;
+      const formattedCurrentStreet =
+        current_street === "null" ? "" : current_street;
+      const formattedStreet = street === "null" ? "" : street;
       const formattedPincode = pincode === "null" ? "" : pincode;
       const formattedDateOfBirth = dateOfBirth === "null" ? "" : dateOfBirth;
 
@@ -588,19 +617,19 @@ useState(()=>{
         accountNumber: formattedAccountNumber,
         bankName: formattedBankName,
         ifscCode: formattedIfscCode,
-        country:formattedCountry,
+        country: formattedCountry,
         current_address: formattedCurrentAddress,
-        current_city:formattedCurrentCity,
+        current_city: formattedCurrentCity,
         current_country: formattedCurrentCountry,
-        current_pincode:formattedCurrentPincode,
-        current_state:formattedCurrentState,
-        current_street:formattedCurrentStreet,
-        street:formattedStreet,
-        pincode:formattedPincode,
-        gender:gender,
-        dateOfBirth:formattedDateOfBirth,
-        document:document,
-        bank_verify:bank_verify
+        current_pincode: formattedCurrentPincode,
+        current_state: formattedCurrentState,
+        current_street: formattedCurrentStreet,
+        street: formattedStreet,
+        pincode: formattedPincode,
+        gender: gender,
+        dateOfBirth: formattedDateOfBirth,
+        document: document,
+        bank_verify: bank_verify,
       });
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
@@ -614,8 +643,8 @@ useState(()=>{
 
   const validation = () => {
     if (name.trim() === "") {
-      setAlertTitle("Error")
-      setIconColor("red")
+      setAlertTitle("OPPS!");
+      setIconColor("red");
       setErrorMessage("ENTER A VALID NAME");
       setVisible(true);
       return;
@@ -705,9 +734,8 @@ useState(()=>{
   const saveImage = async (image) => {
     try {
       setImage(image);
-   
+
       hideCameraModal();
-      
     } catch (error) {
       throw error;
     }
@@ -725,7 +753,8 @@ useState(()=>{
         const storedDetails = await Preference.getPreference("profile");
         console.log("My Profile", storedDetails);
         if (storedDetails) {
-          const {    name,
+          const {
+            name,
             image,
             mobileNo,
             address,
@@ -744,29 +773,37 @@ useState(()=>{
             current_pincode,
             current_state,
             current_street,
-            street,pincode,gender,dateOfBirth,bank_verify } =
-            storedDetails;
+            street,
+            pincode,
+            gender,
+            dateOfBirth,
+            bank_verify,
+          } = storedDetails;
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
             name,
             mobileNo
           );
 
-          console.log("Yeh raha ", name, mobileNo, address, panCardNo, dateOfBirth);
+          console.log(
+            "Yeh raha ",
+            name,
+            mobileNo,
+            address,
+            panCardNo,
+            dateOfBirth
+          );
 
           setGender(gender);
-          if(dateOfBirth == null || dateOfBirth.length <= 0)
-           {
-             setDate(new Date())
-             setDOB("");
-           } 
-           else{
+          if (dateOfBirth == null || dateOfBirth.length <= 0) {
+            setDate(new Date());
+            setDOB("");
+          } else {
             setDate(moment(dateOfBirth).toDate());
             setSelectedDate(moment(dateOfBirth).toDate());
             setDOB(moment(dateOfBirth).format("DD/MM/YYYY"));
-           }
-          
-          
+          }
+
           setname(name || "");
           setphoneNo(mobileNo || "");
           setAddress(address || "");
@@ -789,13 +826,11 @@ useState(()=>{
           setOldBankVeryfy(bank_verify);
           setIfscCode(ifscCode || "");
 
-          if(address == current_address){
+          if (address == current_address) {
             setSameAddress(true);
             setstate("");
             setcity("");
-
           }
-
         }
       } catch (error) {
         console.error("Error retrieving personal details:", error);
@@ -808,8 +843,6 @@ useState(()=>{
     retrievePersonalDetails();
   }, []);
 
-
-
   const handleName = (text) => {
     // Filter out non-letter characters
     const filteredText = text.replace(/[^a-zA-Z\s]/g, "");
@@ -817,499 +850,836 @@ useState(()=>{
   };
   return (
     <>
-    <SafeAreaView style={{flex:0, backgroundColor:colors.YELLOW}}/>
-    <SafeAreaView style={{flex:1}}>
-      <KeyboardAvoidingView style={{flex:1}}
-      behavior ={Platform.OS == 'ios' ? 'padding' : 'height'}
-      >
-    <View style={[stylesCommon.yellowbg,{backgroundColor:"#f2f2f2"}]}>
-      {/* <CommonHeader navigation={navigation} showBack /> */}
-      <Portal>
-        <Modal
-          visible={showCameraModel}
-          onDismiss={hideCameraModal}
-          contentContainerStyle={containerStyleNew}
-          style={{ flex: 1, justifyContent: "flex-end" }}
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
         >
-          <View >
-            <Fontisto name="close" size={24} color={"#999999"} style={{alignSelf:'flex-end'}} onPress={()=>hideCameraModal()}/>
-            <Text style={{color:colors.BLACK, fontSize:20, fontFamily:font.GoldPlay_SemiBold, alignSelf:"center", marginBottom:30}}>UPLOAD PHOTO</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              paddingBottom:20
-            }}
-          >
-            <View style={{ alignItems: "center" }}>
-              <Button
-                icon={({ size, color }) => (
-                  <Image
-                    source={require('../../assets/take_from_camera.png')}
-                    style={{
-                      width: 65,
-                      height: 65,
-                      marginStart: 10,
-                      resizeMode:'contain'
-                    }}
-
+          <View style={[stylesCommon.yellowbg, { backgroundColor: "#f2f2f2" }]}>
+            {/* <CommonHeader navigation={navigation} showBack /> */}
+            <Portal>
+              <Modal
+                visible={showCameraModel}
+                onDismiss={hideCameraModal}
+                contentContainerStyle={containerStyleNew}
+                style={{ flex: 1, justifyContent: "flex-end" }}
+              >
+                <View>
+                  <Fontisto
+                    name="close"
+                    size={24}
+                    color={"#999999"}
+                    style={{ alignSelf: "flex-end" }}
+                    onPress={() => hideCameraModal()}
                   />
-                )}
-                onPress={() => uploadImage("camera")}
-              />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize:16, textDecorationLine:'underline' }}>Camera</Text>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Button
-                icon={({ size, color }) => (
-                  <Image
-                    source={require('../../assets/take_from_gallery.png')}
+                  <Text
                     style={{
-                      width: 65,
-                      height: 65,
-                      marginStart: 10,
-                      resizeMode:'contain'
+                      color: colors.BLACK,
+                      fontSize: 20,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      alignSelf: "center",
+                      marginBottom: 30,
                     }}
-                  />
-                )}
-                onPress={() => uploadImage("gallery")}
-              />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold,fontSize:16, textDecorationLine:'underline' }}>
-                Gallery
-              </Text>
-            </View>
-          </View>
-          </View>
-        </Modal>
-      </Portal>
-      <CommonHeaderNew navigation={navigation} header_color={colors.YELLOW} header_title={'CREATE PROFILE'}/>
-
-      <CommonAlert
-        visible={visible} // Pass visibility state to the CommonAlert component
-        hideModal={hideModal} // Pass function to hide the modal
-        handleOkPress={() => {
-          setVisible(false)
-          if(isDeleteAccountRequest){
-            setTimeout(() => {
-              Logout();
-            },1000)
-           
-          }
-          }
-        } // Pass function to handle Ok button press
-        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
-        title={alertTitle} // Pass title text
-        iconName="error"
-        iconColor={iconColor}
-        bodyText={errorMessage} // Pass body text
-        // cancelButton={true} // Pass whether Cancel button should be displayed
-      />
-
-      {isLoading ? (
-        <View style={stylesCommon.loaderViewStyle}>
-          <Progress.CircleSnail
-            size={50}
-            indeterminate={true}
-            color={"black"}
-          />
-        </View>
-      ) : (
-        <ScrollView 
-      
-        >
-          <View
-            style={{
-              alignItems: "center",
-              flex: 1,
-              justifyContent: "center",
-             
-            }}
-          >
-              <View style={{height:100, width:130, margin:20, alignItems:"center", justifyContent:'center'}}>
-            { 
-              onImageError ? 
-              <Image source={icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}} />
-              :
-              <Image source={image.length > 0 ?  { uri:image } : (profilePhoto && profilePhoto.length > 0) ? {uri:profilePhoto} : icon.PROFILE_PIC } style={{height:100, width:100,borderRadius:50, borderWidth:2, borderColor:colors.YELLOW}} 
-              onError ={() => setIsImageError(true)}/>
-            }    
-           
-            <TouchableOpacity style={{position:'absolute', bottom:0, right:5}} onPress={()=>setShowCameraModel(true)}>
-            <Image source={require('../../assets/button_.png')}  style={{height:35, width:35, resizeMode:'contain', }}/>  
-            </TouchableOpacity>
-          </View>
-          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",}}>
-          <View style={{}}>
-            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
-                <Image source={require('../../assets/user.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
-                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"PERSONAL DETAILS"}</Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={()=>{HandleAnimation()}}>
-                <Animated.Image 
-                source={require('../../assets/frame.png')} 
-                style={{height:20,width:20, resizeMode:'contain',transform:[{rotate:rotation_per}]}} />
-                </TouchableOpacity>
-            </View>
-            {
-              !rotated &&   
-              <View>
-              <Text style={[styles.lableText,{marginTop:10}]}>
-                  Aadhar Card Number
-                </Text>
-                <View style={styles.inputRow}>
-                  {[...Array(3)].map((_, index) => (
-                    <TextInput
-                      key={index}
-                      ref={(ref) => (inputRefs.current[index] = ref)}
-                      value={aadharNo.substr(index * 4, 4)}
-                      mode="outlined"
-                      outlineStyle={{
-                        borderColor: colors.YELLOW,
-                        backgroundColor: "transparent",
-                        borderRadius: 15,
-                        
-                      }}
-                      keyboardType="numeric"
-                      style={styles.input}
-                      placeholder="1234"
-                      placeholderTextColor={colors.LIGHT_GREY}
-  
-                      contentStyle={{
-                        fontFamily: font.GoldPlay_Medium,
-                        fontSize:16,
-                        borderColor:colors.YELLOW,
-                        textAlign:'center'
-                      }}
-                      // onChangeText={(text) => {
-                      //   const newAadharNumber =
-                      //     aadharNumber.substr(0, index * 4) +
-                      //     text +
-                      //     aadharNumber.substr((index + 1) * 4);
-                      //   setAadharNumber(newAadharNumber);
-                      // }}
-                      editable={false}
-                      maxLength={4}
-                      cursorColor="white"
-                    />
-                  ))}
-                  
-                </View>
-                <ProfileCustomView 
-                item_value={panNo} 
-                item_setValue={setPanNo} 
-                item_Ref={PanRef}
-                item_Ref_next={NameRef}
-                item_label={"PAN NO:"}
-                item_place_holder={'Enter your Pan Card Number'}
-                item_return_key_type={'next'}
-                item_all_capital= {true}
-                />
-              <ProfileCustomView 
-                item_value={name} 
-                item_setValue={setname} 
-                item_Ref={NameRef}
-                item_label={"Full Name:"}
-                item_place_holder={'Enter your Full Name'}
-                item_return_key_type={'next'}
-              
-                />
-                   <ProfileCustomView 
-                item_value={gender} 
-                item_setValue={setGender} 
-                item_Ref={GenderRef}
-                item_label={"Gender:"}
-                item_place_holder={'Select your gender'}
-                item_return_key_type={'next'}
-                item_is_gender
-                />
-                   <ProfileCustomView 
-                item_value={dob} 
-                item_setValue={setDOB} 
-                item_Ref={DOBRef}
-                item_label={"DOB:"}
-                item_place_holder={'Enter your Date of Birth'}
-                item_return_key_type={'next'}
-                item_is_dob
-                item_dob_press={handleDatePicker}
-                />
-
-                </View>
-            } 
-          
-            </View>
-          </Card>
-          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
-        marginTop:20,}}
-        zIndex={1}>
-          <View style={{}}>
-            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
-                <Image source={require('../../assets/location.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
-                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"ADDRESS"}</Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={()=>{HandleAnimation_Address()}}>
-                <Animated.Image 
-                source={require('../../assets/frame.png')} 
-                style={{height:20,width:20, resizeMode:'contain',transform:[{rotate:rotation_address}]}} />
-                </TouchableOpacity>
-            </View>
-            {
-              !rotated_address &&   
-              <View>
-                <ProfileCustomView 
-                item_value={flat_house} 
-                item_setValue={setFlatHouse} 
-                item_Ref={FlatRef}
-                item_Ref_next={AreaRef}
-                item_label={"Flat/House:"}
-                item_place_holder={'Enter your Flat/House'}
-                item_return_key_type={'next'}
-                />
-              <ProfileCustomView 
-                item_value={area_street} 
-                item_setValue={setAreaStreet} 
-                item_Ref={AreaRef}
-                item_Ref_next={PinRef}
-                item_label={"Area/Street:"}
-                item_place_holder={'Enter your Area/Street'}
-                item_return_key_type={'next'}
-                />
-                     <ProfileCustomView 
-                item_value={pincode} 
-                item_setValue={setPincode} 
-                item_Ref={PinRef}
-                //item_Ref_next={CityRef}
-                item_label={"Pin Code:"}
-                item_place_holder={'Enter your Pin Code'}
-                item_return_key_type={Platform.OS == 'ios'? 'done' : 'next'}
-                item_input={"numeric"}
-                item_handle_pincode_result={handlePincodeResult}
-                />
-                 <ProfileCustomView 
-                item_value={city_town} 
-                item_setValue={setCityTown} 
-                item_Ref={CityRef}
-                item_Ref_next={StateRef}
-                item_label={"City/Town:"}
-                item_place_holder={'Enter your City/Town'}
-                item_return_key_type={'next'}
-                />
-              <ProfileCustomView 
-                item_value={state_new} 
-                item_setValue={setStateNew} 
-                item_Ref={StateRef}
-                item_Ref_next={PinRef}
-                item_label={"State:"}
-                item_place_holder={'Enter your State'}
-                item_return_key_type={'next'}
-                />
-            
-              <ProfileCustomView 
-                item_value={country} 
-                item_setValue={setCountry} 
-                item_Ref={CountryRef}
-                item_label={"Country:"}
-                item_place_holder={'Enter your Country'}
-                item_return_key_type={'next'}
-                />
-               <Text style={[stylesCommon.welcomeText,{fontSize:14, flex:1,marginTop:20}]}>{"CURRENT ADDRESS"}</Text>
-               <TouchableOpacity activeOpacity={0.6} style={{flexDirection:'row', alignItems:'center',marginTop:20 }} onPress={() =>{
-                 setSameAddress(!sameAddress);
-               }}>
-                <Image source={sameAddress ?require('../../assets/checkbox_selected.png') : require('../../assets/checkbox_unselected.png')} 
-                style={{height:15, width:15,marginTop:0, resizeMode:'contain'}}/>
-                <Text style={{fontSize:14, marginStart:10, fontFamily:sameAddress? font.GoldPlay_SemiBold : font.GoldPlay_Regular}}>SAME AS ABOVE ADDRESS</Text>
-                </TouchableOpacity> 
-                {
-                   !sameAddress && 
-                   <View> 
-                    <Text style={{fontSize:14, marginTop:20, fontFamily: font.GoldPlay_Regular, alignSelf:"center"}}>OR</Text>
-                    <TouchableOpacity activeOpacity={0.6} style={{alignSelf:"center", marginTop:30}} onPress={()=>{}}>
-                    <Text style={{fontSize:12, fontFamily: font.GoldPlay_SemiBold, alignSelf:"center", textDecorationLine:"underline"}}>ADD CURRENT ADDRESS</Text>
-                    </TouchableOpacity>
-                    <View style={{marginTop:20, marginBottom:10}}>
-                    <ProfileCustomView 
-                      item_value={city} 
-                      item_setValue={setcity} 
-                      item_Ref={CurrentCity}
-                      item_Ref_next={CurrentState}
-                      item_label={"City/Town:"}
-                      item_place_holder={'Enter your City/Town'}
-                      item_return_key_type={'next'}
+                  >
+                    UPLOAD PHOTO
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-evenly",
+                      paddingBottom: 20,
+                    }}
+                  >
+                    <View style={{ alignItems: "center" }}>
+                      <Button
+                        icon={({ size, color }) => (
+                          <Image
+                            source={require("../../assets/take_from_camera.png")}
+                            style={{
+                              width: 65,
+                              height: 65,
+                              marginStart: 10,
+                              resizeMode: "contain",
+                            }}
+                          />
+                        )}
+                        onPress={() => uploadImage("camera")}
                       />
-                    <ProfileCustomView 
-                      item_value={state} 
-                      item_setValue={setstate} 
-                      item_Ref={CurrentState}
-                      item_label={"State:"}
-                      item_place_holder={'Enter your State'}
-                      item_return_key_type={'done'}
-                      
+                      <Text
+                        style={{
+                          fontFamily: font.GoldPlay_SemiBold,
+                          fontSize: 16,
+                          textDecorationLine: "underline",
+                        }}
+                      >
+                        Camera
+                      </Text>
+                    </View>
+                    <View style={{ alignItems: "center" }}>
+                      <Button
+                        icon={({ size, color }) => (
+                          <Image
+                            source={require("../../assets/take_from_gallery.png")}
+                            style={{
+                              width: 65,
+                              height: 65,
+                              marginStart: 10,
+                              resizeMode: "contain",
+                            }}
+                          />
+                        )}
+                        onPress={() => uploadImage("gallery")}
                       />
+                      <Text
+                        style={{
+                          fontFamily: font.GoldPlay_SemiBold,
+                          fontSize: 16,
+                          textDecorationLine: "underline",
+                        }}
+                      >
+                        Gallery
+                      </Text>
+                    </View>
                   </View>
-                   </View>
-                }
-             
                 </View>
-            } 
-          
-            </View>
-          </Card>
-          <Card style={{width:'90%', padding:16,backgroundColor:"#fff",
-        
-        marginTop:20}}
-        zIndex={0}>
-            <View style={{}}>
-            <View style={{flexDirection:"row", flex:1, alignItems:"center"}}>
-                <Image source={require('../../assets/bank.png')} style={{height:20,width:20, resizeMode:'contain'}}/>
-                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10, flex:1,marginStart:10}]}>{"BANK DETAILS"}</Text>
-                <Text style={[stylesCommon.welcomeText,{fontSize:14, padding:10,marginStart:10, color: bankverify == "1" ? "#059669" : "#000000",   }]}>{bankverify === "1" ? "Verified" : "Not Verify"}</Text>
-                
-                
-                <TouchableOpacity activeOpacity={0.5} onPress={()=>{ setRotatedBank(!rotated_bank)}}>
-                  {
-                    rotated_bank ? <Text style={{fontFamily:font.GoldPlay_SemiBold, padding:10,textDecorationLine:"underline", fontSize:12}} >{oldBankVerify === "1" ? "EDIT" : "ADD"}</Text> : <Fontisto name="close" color={colors.BLACK} size={20}/>
-                  }
-                </TouchableOpacity>
-            </View>
-            {
-              !rotated_bank && 
-               <View style={{marginBottom:10}}>
-                    <ProfileCustomView 
-                      item_value={accountHolderName} 
-                      item_setValue={setAccountHolderName} 
-                      item_Ref={AccHolderNameRef}
-                      item_Ref_next={AccNumberRef}
-                      item_label={"Account Holder's Name"}
-                      item_place_holder={'Enter your Name'}
-                      item_return_key_type={'next'}
-                      item_is_bank = {true}
-                      />
-                    <ProfileCustomView 
-                      item_value={accountNumber} 
-                      item_setValue={setAccountNumber} 
-                      item_Ref={AccNumberRef}
-                      item_Ref_next={BankNameRef}
-                      item_label={"Account Number"}
-                      item_place_holder={'Enter Your Bank Account Number'}
-                      item_return_key_type={Platform.OS == 'ios' ? 'done': 'next'}
-                      item_is_bank = {true}
-                      item_input ={'numeric'}
-                      item_handle_account_number={handleAccountNumber}
-                      />
-                       <ProfileCustomView 
-                      item_value={bankName} 
-                      item_setValue={setBankName} 
-                      item_Ref={BankNameRef}
-                      item_Ref_next={IFSCRef}
-                      item_label={"Bank Name"}
-                      item_place_holder={'Enter Your Bank Name'}
-                      item_return_key_type={'next'}
-                      item_is_bank = {true}
-                      />
-                    <ProfileCustomView 
-                      item_value={ifscCode} 
-                      item_setValue={setIfscCode} 
-                      item_Ref={IFSCRef}
-                      item_label={"IFSC Code"}
-                      item_place_holder={'Enter IFSC Code'}
-                      item_return_key_type={'done'}
-                      item_is_bank = {true}
-                      item_handle_ifsc_code={handleIFSCCode}
-                      item_all_capital= {true}
-                      />
-                      {
-                         bankverify == "0" && 
-                         <View style={{marginTop:20,alignItems:"center"}}>
-                         <TouchableOpacity style={{padding:10, alignSelf:"center", backgroundColor:"#000", borderRadius:25}} onPress={()=>VerifyBankDetails()}>
-                         <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold,textAlign:"center", fontSize:14, paddingStart:20, paddingEnd:20}}>Verify Bank Details</Text>
-                       </TouchableOpacity>
-                       {/* <Text style={{fontSize:11, marginTop:20,fontFamily:font.GoldPlay_SemiBold, color:'#000'}}>If you've received a message about a deduction of 1 rupee from your bank account, it's likely related to a verification process. </Text> */}
-                       </View>
-                      }
-                   
+              </Modal>
+            </Portal>
+            <CommonHeaderNew
+              navigation={navigation}
+              header_color={colors.YELLOW}
+              header_title={"CREATE PROFILE"}
+            />
 
+            <CommonAlert
+              visible={visible} // Pass visibility state to the CommonAlert component
+              hideModal={hideModal} // Pass function to hide the modal
+              handleOkPress={() => {
+                setVisible(false);
+                if (isDeleteAccountRequest) {
+                  setTimeout(() => {
+                    Logout();
+                  }, 1000);
+                }
+              }} // Pass function to handle Ok button press
+              //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+              title={alertTitle} // Pass title text
+              iconName="error"
+              iconColor={iconColor}
+              bodyText={errorMessage} // Pass body text
+              // cancelButton={true} // Pass whether Cancel button should be displayed
+            />
+
+            {isLoading ? (
+              <View style={stylesCommon.loaderViewStyle}>
+                <Progress.CircleSnail
+                  size={50}
+                  indeterminate={true}
+                  color={"black"}
+                />
               </View>
-            }
-            </View>
-        </Card>
+            ) : (
+              <ScrollView>
+                <View
+                  style={{
+                    alignItems: "center",
+                    flex: 1,
+                    justifyContent: "center",
+                  }}
+                >
+                  <View
+                    style={{
+                      height: 100,
+                      width: 130,
+                      margin: 20,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {onImageError ? (
+                      <Image
+                        source={icon.PROFILE_PIC}
+                        style={{
+                          height: 100,
+                          width: 100,
+                          borderRadius: 50,
+                          borderWidth: 2,
+                          borderColor: colors.YELLOW,
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        source={
+                          image.length > 0
+                            ? { uri: image }
+                            : profilePhoto && profilePhoto.length > 0
+                            ? { uri: profilePhoto }
+                            : icon.PROFILE_PIC
+                        }
+                        style={{
+                          height: 100,
+                          width: 100,
+                          borderRadius: 50,
+                          borderWidth: 2,
+                          borderColor: colors.YELLOW,
+                        }}
+                        onError={() => setIsImageError(true)}
+                      />
+                    )}
 
-        <TouchableOpacity
-          activeOpacity={1}
-            onPress={() => {
-              setSHowView(true);
-               setTimeout(() =>{
-                   setSHowView(false);
-                   handleNext()
-               },450);
-           // rotateImage(rotation);
-            stretch(stretchValue);
-            scaleText(scale);
-              //handleOnPress("Products")
-            }
-            }
-            //underlayColor={colors.YELLOW}
-            style={{ borderRadius: 30, 
-              marginTop:50
-              }}
-          >
-            <View style={{}}>
-            {
-                  showView &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation}],
-                   width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
-              }
-            
-            <Animated.View
-              style={{transform:[{scaleX:interpolatedStretchAnimation}],  borderRadius: 30,
-                borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
-                backgroundColor: colors.BLACK, flexDirection:'row',}}
-            >
-              
-              <View style={{width:0, }}></View>
-              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale}]}]}>CONFIRM</Animated.Text>
-             
-            </Animated.View>
-            </View> 
-          </TouchableOpacity> 
-          <TouchableOpacity
-          activeOpacity={1}
-            onPress={() => {
-              setSHowViewDelete(true);
-               setTimeout(() =>{
-                   setSHowViewDelete(false);
-                   HandleDeleteAccount();
-                 //  handleNext()
-               },450);
-           // rotateImage(rotation);
-            stretch(stretchValue_delete);
-            scaleText(scale_delete);
-              //handleOnPress("Products")
-            }
-            }
-            //underlayColor={colors.YELLOW}
-            style={{ borderRadius: 30, 
-              marginTop:20
-              }}
-          >
-            <View style={{}}>
-            {
-                  showView_delete &&   <Animated.View style={{ borderColor: "#ffffff",transform:[{scaleX:interpolatedStretchAnimation_delete}],
-                   width:SCREEN_DIMENSIONS.width-40,height:50,borderRadius: 30,backgroundColor:colors.YELLOW, position:"absolute", marginTop:3,marginStart:2}}></Animated.View>
-              }
-            
-            <Animated.View
-              style={{transform:[{scaleX:interpolatedStretchAnimation_delete}],  borderRadius: 30,
-                borderColor: "#ffffff", width:SCREEN_DIMENSIONS.width-39,height:50,
-                backgroundColor: colors.ERROR_RED, flexDirection:'row',}}
-            >
-              
-              <View style={{width:0, }}></View>
-              <Animated.Text style={[stylesCommon.preButtonLabelStyle,{flex:1,textAlign:'center', color:'#fff',alignSelf:"center",  alignContent:"center", transform:[{scale:scale_delete}]}]}>DELETE ACCOUNT</Animated.Text>
-             
-            </Animated.View>
-            </View> 
-          </TouchableOpacity> 
-             <View style={{height:20}}></View>
+                    <TouchableOpacity
+                      style={{ position: "absolute", bottom: 0, right: 5 }}
+                      onPress={() => setShowCameraModel(true)}
+                    >
+                      <Image
+                        source={require("../../assets/button_.png")}
+                        style={{ height: 35, width: 35, resizeMode: "contain" }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <Card
+                    style={{
+                      width: "90%",
+                      padding: 16,
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    <View style={{}}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flex: 1,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          source={require("../../assets/user.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            resizeMode: "contain",
+                          }}
+                        />
+                        <Text
+                          style={[
+                            stylesCommon.welcomeText,
+                            {
+                              fontSize: 14,
+                              padding: 10,
+                              flex: 1,
+                              marginStart: 10,
+                            },
+                          ]}
+                        >
+                          {"PERSONAL DETAILS"}
+                        </Text>
+                        <TouchableOpacity
+                          activeOpacity={0.5}
+                          onPress={() => {
+                            HandleAnimation();
+                          }}
+                        >
+                          <Animated.Image
+                            source={require("../../assets/frame.png")}
+                            style={{
+                              height: 20,
+                              width: 20,
+                              resizeMode: "contain",
+                              transform: [{ rotate: rotation_per }],
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      {!rotated && (
+                        <View>
+                          <Text style={[styles.lableText, { marginTop: 10 }]}>
+                            Aadhar Card Number
+                          </Text>
+                          <View style={styles.inputRow}>
+                            {[...Array(3)].map((_, index) => (
+                              <TextInput
+                                key={index}
+                                ref={(ref) => (inputRefs.current[index] = ref)}
+                                value={aadharNo.substr(index * 4, 4)}
+                                mode="outlined"
+                                outlineStyle={{
+                                  borderColor: colors.YELLOW,
+                                  backgroundColor: "transparent",
+                                  borderRadius: 15,
+                                }}
+                                keyboardType="numeric"
+                                style={styles.input}
+                                placeholder="1234"
+                                placeholderTextColor={colors.LIGHT_GREY}
+                                contentStyle={{
+                                  fontFamily: font.GoldPlay_Medium,
+                                  fontSize: 16,
+                                  borderColor: colors.YELLOW,
+                                  textAlign: "center",
+                                }}
+                                // onChangeText={(text) => {
+                                //   const newAadharNumber =
+                                //     aadharNumber.substr(0, index * 4) +
+                                //     text +
+                                //     aadharNumber.substr((index + 1) * 4);
+                                //   setAadharNumber(newAadharNumber);
+                                // }}
+                                editable={false}
+                                maxLength={4}
+                                cursorColor="white"
+                              />
+                            ))}
+                          </View>
+                          <ProfileCustomView
+                            item_value={panNo}
+                            item_setValue={setPanNo}
+                            item_Ref={PanRef}
+                            item_Ref_next={NameRef}
+                            item_label={"PAN NO:"}
+                            item_place_holder={"Enter your Pan Card Number"}
+                            item_return_key_type={"next"}
+                            item_all_capital={true}
+                          />
+                          <ProfileCustomView
+                            item_value={name}
+                            item_setValue={setname}
+                            item_Ref={NameRef}
+                            item_label={"Full Name:"}
+                            item_place_holder={"Enter your Full Name"}
+                            item_return_key_type={"next"}
+                          />
+                          <ProfileCustomView
+                            item_value={gender}
+                            item_setValue={setGender}
+                            item_Ref={GenderRef}
+                            item_label={"Gender:"}
+                            item_place_holder={"Select your gender"}
+                            item_return_key_type={"next"}
+                            item_is_gender
+                          />
+                          <ProfileCustomView
+                            item_value={dob}
+                            item_setValue={setDOB}
+                            item_Ref={DOBRef}
+                            item_label={"DOB:"}
+                            item_place_holder={"Enter your Date of Birth"}
+                            item_return_key_type={"next"}
+                            item_is_dob
+                            item_dob_press={handleDatePicker}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  </Card>
+                  <Card
+                    style={{
+                      width: "90%",
+                      padding: 16,
+                      backgroundColor: "#fff",
+                      marginTop: 20,
+                    }}
+                    zIndex={1}
+                  >
+                    <View style={{}}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flex: 1,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          source={require("../../assets/location.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            resizeMode: "contain",
+                          }}
+                        />
+                        <Text
+                          style={[
+                            stylesCommon.welcomeText,
+                            {
+                              fontSize: 14,
+                              padding: 10,
+                              flex: 1,
+                              marginStart: 10,
+                            },
+                          ]}
+                        >
+                          {"ADDRESS"}
+                        </Text>
+                        <TouchableOpacity
+                          activeOpacity={0.5}
+                          onPress={() => {
+                            HandleAnimation_Address();
+                          }}
+                        >
+                          <Animated.Image
+                            source={require("../../assets/frame.png")}
+                            style={{
+                              height: 20,
+                              width: 20,
+                              resizeMode: "contain",
+                              transform: [{ rotate: rotation_address }],
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      {!rotated_address && (
+                        <View>
+                          <ProfileCustomView
+                            item_value={flat_house}
+                            item_setValue={setFlatHouse}
+                            item_Ref={FlatRef}
+                            item_Ref_next={AreaRef}
+                            item_label={"Flat/House:"}
+                            item_place_holder={"Enter your Flat/House"}
+                            item_return_key_type={"next"}
+                          />
+                          <ProfileCustomView
+                            item_value={area_street}
+                            item_setValue={setAreaStreet}
+                            item_Ref={AreaRef}
+                            item_Ref_next={PinRef}
+                            item_label={"Area/Street:"}
+                            item_place_holder={"Enter your Area/Street"}
+                            item_return_key_type={"next"}
+                          />
+                          <ProfileCustomView
+                            item_value={pincode}
+                            item_setValue={setPincode}
+                            item_Ref={PinRef}
+                            //item_Ref_next={CityRef}
+                            item_label={"Pin Code:"}
+                            item_place_holder={"Enter your Pin Code"}
+                            item_return_key_type={
+                              Platform.OS == "ios" ? "done" : "next"
+                            }
+                            item_input={"numeric"}
+                            item_handle_pincode_result={handlePincodeResult}
+                          />
+                          <ProfileCustomView
+                            item_value={city_town}
+                            item_setValue={setCityTown}
+                            item_Ref={CityRef}
+                            item_Ref_next={StateRef}
+                            item_label={"City/Town:"}
+                            item_place_holder={"Enter your City/Town"}
+                            item_return_key_type={"next"}
+                          />
+                          <ProfileCustomView
+                            item_value={state_new}
+                            item_setValue={setStateNew}
+                            item_Ref={StateRef}
+                            item_Ref_next={PinRef}
+                            item_label={"State:"}
+                            item_place_holder={"Enter your State"}
+                            item_return_key_type={"next"}
+                          />
 
-            {/* <View
+                          <ProfileCustomView
+                            item_value={country}
+                            item_setValue={setCountry}
+                            item_Ref={CountryRef}
+                            item_label={"Country:"}
+                            item_place_holder={"Enter your Country"}
+                            item_return_key_type={"next"}
+                          />
+                          <Text
+                            style={[
+                              stylesCommon.welcomeText,
+                              { fontSize: 14, flex: 1, marginTop: 20 },
+                            ]}
+                          >
+                            {"CURRENT ADDRESS"}
+                          </Text>
+                          <TouchableOpacity
+                            activeOpacity={0.6}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              marginTop: 20,
+                            }}
+                            onPress={() => {
+                              setSameAddress(!sameAddress);
+                            }}
+                          >
+                            <Image
+                              source={
+                                sameAddress
+                                  ? require("../../assets/checkbox_selected.png")
+                                  : require("../../assets/checkbox_unselected.png")
+                              }
+                              style={{
+                                height: 15,
+                                width: 15,
+                                marginTop: 0,
+                                resizeMode: "contain",
+                              }}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                marginStart: 10,
+                                fontFamily: sameAddress
+                                  ? font.GoldPlay_SemiBold
+                                  : font.GoldPlay_Regular,
+                              }}
+                            >
+                              SAME AS ABOVE ADDRESS
+                            </Text>
+                          </TouchableOpacity>
+                          {!sameAddress && (
+                            <View>
+                              <Text
+                                style={{
+                                  fontSize: 14,
+                                  marginTop: 20,
+                                  fontFamily: font.GoldPlay_Regular,
+                                  alignSelf: "center",
+                                }}
+                              >
+                                OR
+                              </Text>
+                              <TouchableOpacity
+                                activeOpacity={0.6}
+                                style={{ alignSelf: "center", marginTop: 30 }}
+                                onPress={() => {}}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 12,
+                                    fontFamily: font.GoldPlay_SemiBold,
+                                    alignSelf: "center",
+                                    textDecorationLine: "underline",
+                                  }}
+                                >
+                                  ADD CURRENT ADDRESS
+                                </Text>
+                              </TouchableOpacity>
+                              <View style={{ marginTop: 20, marginBottom: 10 }}>
+                                <ProfileCustomView
+                                  item_value={city}
+                                  item_setValue={setcity}
+                                  item_Ref={CurrentCity}
+                                  item_Ref_next={CurrentState}
+                                  item_label={"City/Town:"}
+                                  item_place_holder={"Enter your City/Town"}
+                                  item_return_key_type={"next"}
+                                />
+                                <ProfileCustomView
+                                  item_value={state}
+                                  item_setValue={setstate}
+                                  item_Ref={CurrentState}
+                                  item_label={"State:"}
+                                  item_place_holder={"Enter your State"}
+                                  item_return_key_type={"done"}
+                                />
+                              </View>
+                            </View>
+                          )}
+                        </View>
+                      )}
+                    </View>
+                  </Card>
+                  <Card
+                    style={{
+                      width: "90%",
+                      padding: 16,
+                      backgroundColor: "#fff",
+
+                      marginTop: 20,
+                    }}
+                    zIndex={0}
+                  >
+                    <View style={{}}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flex: 1,
+                          alignItems: "center",
+                        }}
+                      >
+                        <Image
+                          source={require("../../assets/bank.png")}
+                          style={{
+                            height: 20,
+                            width: 20,
+                            resizeMode: "contain",
+                          }}
+                        />
+                        <Text
+                          style={[
+                            stylesCommon.welcomeText,
+                            {
+                              fontSize: 14,
+                              padding: 10,
+                              flex: 1,
+                              marginStart: 10,
+                            },
+                          ]}
+                        >
+                          {"BANK DETAILS"}
+                        </Text>
+                        <Text
+                          style={[
+                            stylesCommon.welcomeText,
+                            {
+                              fontSize: 14,
+                              padding: 10,
+                              marginStart: 10,
+                              color: bankverify == "1" ? "#059669" : "#000000",
+                            },
+                          ]}
+                        >
+                          {bankverify === "1" ? "Verified" : "Not Verify"}
+                        </Text>
+
+                        <TouchableOpacity
+                          activeOpacity={0.5}
+                          onPress={() => {
+                            setRotatedBank(!rotated_bank);
+                          }}
+                        >
+                          {rotated_bank ? (
+                            <Text
+                              style={{
+                                fontFamily: font.GoldPlay_SemiBold,
+                                padding: 10,
+                                textDecorationLine: "underline",
+                                fontSize: 12,
+                              }}
+                            >
+                              {oldBankVerify === "1" ? "EDIT" : "ADD"}
+                            </Text>
+                          ) : (
+                            <Fontisto
+                              name="close"
+                              color={colors.BLACK}
+                              size={20}
+                            />
+                          )}
+                        </TouchableOpacity>
+                      </View>
+                      {!rotated_bank && (
+                        <View style={{ marginBottom: 10 }}>
+                          <ProfileCustomView
+                            item_value={accountHolderName}
+                            item_setValue={setAccountHolderName}
+                            item_Ref={AccHolderNameRef}
+                            item_Ref_next={AccNumberRef}
+                            item_label={"Account Holder's Name"}
+                            item_place_holder={"Enter your Name"}
+                            item_return_key_type={"next"}
+                            item_is_bank={true}
+                          />
+                          <ProfileCustomView
+                            item_value={accountNumber}
+                            item_setValue={setAccountNumber}
+                            item_Ref={AccNumberRef}
+                            item_Ref_next={BankNameRef}
+                            item_label={"Account Number"}
+                            item_place_holder={"Enter Your Bank Account Number"}
+                            item_return_key_type={
+                              Platform.OS == "ios" ? "done" : "next"
+                            }
+                            item_is_bank={true}
+                            item_input={"numeric"}
+                            item_handle_account_number={handleAccountNumber}
+                          />
+                          <ProfileCustomView
+                            item_value={bankName}
+                            item_setValue={setBankName}
+                            item_Ref={BankNameRef}
+                            item_Ref_next={IFSCRef}
+                            item_label={"Bank Name"}
+                            item_place_holder={"Enter Your Bank Name"}
+                            item_return_key_type={"next"}
+                            item_is_bank={true}
+                          />
+                          <ProfileCustomView
+                            item_value={ifscCode}
+                            item_setValue={setIfscCode}
+                            item_Ref={IFSCRef}
+                            item_label={"IFSC Code"}
+                            item_place_holder={"Enter IFSC Code"}
+                            item_return_key_type={"done"}
+                            item_is_bank={true}
+                            item_handle_ifsc_code={handleIFSCCode}
+                            item_all_capital={true}
+                          />
+                          {bankverify == "0" && (
+                            <View
+                              style={{ marginTop: 20, alignItems: "center" }}
+                            >
+                              <TouchableOpacity
+                                style={{
+                                  padding: 10,
+                                  alignSelf: "center",
+                                  backgroundColor: "#000",
+                                  borderRadius: 25,
+                                }}
+                                onPress={() => VerifyBankDetails()}
+                              >
+                                <Text
+                                  style={{
+                                    color: "#fff",
+                                    fontFamily: font.GoldPlay_SemiBold,
+                                    textAlign: "center",
+                                    fontSize: 14,
+                                    paddingStart: 20,
+                                    paddingEnd: 20,
+                                  }}
+                                >
+                                  Verify Bank Details
+                                </Text>
+                              </TouchableOpacity>
+                              {/* <Text style={{fontSize:11, marginTop:20,fontFamily:font.GoldPlay_SemiBold, color:'#000'}}>If you've received a message about a deduction of 1 rupee from your bank account, it's likely related to a verification process. </Text> */}
+                            </View>
+                          )}
+                        </View>
+                      )}
+                    </View>
+                  </Card>
+
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                      setSHowView(true);
+                      setTimeout(() => {
+                        setSHowView(false);
+                        handleNext();
+                      }, 450);
+                      // rotateImage(rotation);
+                      stretch(stretchValue);
+                      scaleText(scale);
+                      //handleOnPress("Products")
+                    }}
+                    //underlayColor={colors.YELLOW}
+                    style={{ borderRadius: 30, marginTop: 50 }}
+                  >
+                    <View style={{}}>
+                      {showView && (
+                        <Animated.View
+                          style={{
+                            borderColor: "#ffffff",
+                            transform: [
+                              { scaleX: interpolatedStretchAnimation },
+                            ],
+                            width: SCREEN_DIMENSIONS.width - 40,
+                            height: 50,
+                            borderRadius: 30,
+                            backgroundColor: colors.YELLOW,
+                            position: "absolute",
+                            marginTop: 3,
+                            marginStart: 2,
+                          }}
+                        ></Animated.View>
+                      )}
+
+                      <Animated.View
+                        style={{
+                          transform: [{ scaleX: interpolatedStretchAnimation }],
+                          borderRadius: 30,
+                          borderColor: "#ffffff",
+                          width: SCREEN_DIMENSIONS.width - 39,
+                          height: 50,
+                          backgroundColor: colors.BLACK,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <View style={{ width: 0 }}></View>
+                        <Animated.Text
+                          style={[
+                            stylesCommon.preButtonLabelStyle,
+                            {
+                              flex: 1,
+                              textAlign: "center",
+                              color: "#fff",
+                              alignSelf: "center",
+                              alignContent: "center",
+                              transform: [{ scale }],
+                            },
+                          ]}
+                        >
+                          CONFIRM
+                        </Animated.Text>
+                      </Animated.View>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                      setSHowViewDelete(true);
+                      setTimeout(() => {
+                        setSHowViewDelete(false);
+                        HandleDeleteAccount();
+                        //  handleNext()
+                      }, 450);
+                      // rotateImage(rotation);
+                      stretch(stretchValue_delete);
+                      scaleText(scale_delete);
+                      //handleOnPress("Products")
+                    }}
+                    //underlayColor={colors.YELLOW}
+                    style={{ borderRadius: 30, marginTop: 20 }}
+                  >
+                    <View style={{}}>
+                      {showView_delete && (
+                        <Animated.View
+                          style={{
+                            borderColor: "#ffffff",
+                            transform: [
+                              { scaleX: interpolatedStretchAnimation_delete },
+                            ],
+                            width: SCREEN_DIMENSIONS.width - 40,
+                            height: 50,
+                            borderRadius: 30,
+                            backgroundColor: colors.YELLOW,
+                            position: "absolute",
+                            marginTop: 3,
+                            marginStart: 2,
+                          }}
+                        ></Animated.View>
+                      )}
+
+                      <Animated.View
+                        style={{
+                          transform: [
+                            { scaleX: interpolatedStretchAnimation_delete },
+                          ],
+                          borderRadius: 30,
+                          borderColor: "#ffffff",
+                          width: SCREEN_DIMENSIONS.width - 39,
+                          height: 50,
+                          backgroundColor: colors.ERROR_RED,
+                          flexDirection: "row",
+                        }}
+                      >
+                        <View style={{ width: 0 }}></View>
+                        <Animated.Text
+                          style={[
+                            stylesCommon.preButtonLabelStyle,
+                            {
+                              flex: 1,
+                              textAlign: "center",
+                              color: "#fff",
+                              alignSelf: "center",
+                              alignContent: "center",
+                              transform: [{ scale: scale_delete }],
+                            },
+                          ]}
+                        >
+                          DELETE ACCOUNT
+                        </Animated.Text>
+                      </Animated.View>
+                    </View>
+                  </TouchableOpacity>
+                  <View style={{ height: 20 }}></View>
+
+                  {/* <View
               style={{
                 width: "100%",
                 justifyContent: "center",
@@ -1673,8 +2043,8 @@ useState(()=>{
                 </View>
               </View>
             )} */}
-          </View>
-          {/* <View
+                </View>
+                {/* <View
             style={{
               flex: 1,
               justifyContent: "center",
@@ -1710,27 +2080,27 @@ useState(()=>{
               </View>
             </TouchableHighlight>
           </View> */}
-        </ScrollView>
-      )}
-       <DatePicker
-        modal
-        mode="date"
-        open={openDate}
-        date={date}
-        maximumDate={new Date()}
-        onConfirm={(date) => {
-          setOpenDate(false)
-          setDate(date)
-          setSelectedDate(date);
-          setDOB(moment(date).format("DD/MM/YYYY"))
-        }}
-        onCancel={() => {
-          setOpenDate(false)
-        }}
-      />
-    </View>
-    </KeyboardAvoidingView>
-    </SafeAreaView>
+              </ScrollView>
+            )}
+            <DatePicker
+              modal
+              mode="date"
+              open={openDate}
+              date={date}
+              maximumDate={new Date()}
+              onConfirm={(date) => {
+                setOpenDate(false);
+                setDate(date);
+                setSelectedDate(date);
+                setDOB(moment(date).format("DD/MM/YYYY"));
+              }}
+              onCancel={() => {
+                setOpenDate(false);
+              }}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </>
   );
 }
@@ -1744,12 +2114,12 @@ const styles = StyleSheet.create({
   },
   input: {
     marginHorizontal: 5,
-    fontSize:20,
+    fontSize: 20,
     flex: 1,
   },
-  lableText:{
-    color:'#999999',
-    fontFamily:font.GoldPlay_Regular,
-    fontSize:16
-  }
+  lableText: {
+    color: "#999999",
+    fontFamily: font.GoldPlay_Regular,
+    fontSize: 16,
+  },
 });

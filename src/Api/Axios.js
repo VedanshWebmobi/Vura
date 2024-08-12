@@ -28,11 +28,10 @@ export const axiosCallAPI = (
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
-       // console.log("Bhai yeh hai dekhle ab", response.data);
+        // console.log("Bhai yeh hai dekhle ab", response.data);
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
-
               // showMessage(
               //   `${response.data.message}`,
               //   "Success ",
@@ -42,7 +41,7 @@ export const axiosCallAPI = (
             return response.data;
           }
         } else {
-         // errors = response.data;
+          // errors = response.data;
           // Object.keys(errors).map(function (key, index) {
           //   showMessage(`${errors[key]}`, "Error");
           // });
@@ -60,6 +59,7 @@ export const axiosCallAPI = (
       return axios
         .get(endpoint, params, headerRequest)
         .then((response) => {
+          console.log("Get Method response => ", JSON.stringify(response.data));
           if (response.data.status) {
             if (response.data.message !== "") {
               if (isShowMessage)
@@ -83,9 +83,9 @@ export const axiosCallAPI = (
       return axios
         .get(endpoint, headerRequest)
         .then((response) => {
-        //  console.log("response status in axiox call", response.data.message);
-        //  console.log("response data in axiox call", response.data);
-        //  console.log("response data.data in axiox call", response.data.data);
+          //  console.log("response status in axiox call", response.data.message);
+          //  console.log("response data in axiox call", response.data);
+          //  console.log("response data.data in axiox call", response.data.data);
           if (response.data.status) {
             if (response.data.message !== "") {
               if (isShowMessage)
@@ -116,7 +116,7 @@ export const axiosCallAPI = (
   }
 
   function ERROR_HANDLER(error, errors) {
-    console.log("Error aareaya hai bhai", error);
+    console.log("Error aareaya hai bhai", error.response);
 
     if (error.response.status === 400) {
       error = error.response.data.errors;
@@ -124,21 +124,21 @@ export const axiosCallAPI = (
       console.log(error, "sfsfs", errors);
       console.log("====================================");
       Object.keys(errors).map(function (key, index) {
-        showMessage(`${(errors[key], "error")}`);
+        // showMessage(`${(errors[key], "error")}`);
       });
 
       if (error.response.data.message) {
-        showMessage(error.response.data.message, "error");
+        //showMessage(error.response.data.message, "error");
       }
     } else if (error.response.status === 404) {
-      showMessage("API request not found", "error");
+      //showMessage("API request not found", "error");
     } else if (error.response.data === 401) {
-      showMessage(error.message.status);
+      //showMessage(error.message.status);
       Preference.SetData(ExpoSecureKey.IS_LOGIN, "false");
       Preference.SetData(ExpoSecureKey.TOKEN, "");
       navigation.dispatch(StackActions.replace("LoginScreen"));
     } else {
-      showMessage(error.message, "error");
+      //showMessage(error.message, "error");
     }
   }
 };

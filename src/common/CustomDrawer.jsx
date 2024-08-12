@@ -1,4 +1,12 @@
-import { View, Text, TouchableOpacity, Image,  StatusBar,ScrollView, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StatusBar,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import {
   createDrawerNavigator,
@@ -17,7 +25,7 @@ import { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonAlert from "./CommonAlert";
 import CommonHeaderNew from "./CommonHeader_new";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function CustomDrawer({ navigation }) {
   const [showUpdate, setShowUpdate] = useState(false);
@@ -38,11 +46,7 @@ export default function CustomDrawer({ navigation }) {
   //   "FAQ's",
   //   "Log Out",
   // ];
-  const menuItems = [
-    "WALLET HISTORY",
-    "HELP & SUPPORT",
-    "LOGOUT",
-  ];
+  const menuItems = ["WALLET HISTORY", "HELP & SUPPORT", "LOGOUT"];
   const Logout = () => {
     Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
     Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
@@ -53,7 +57,7 @@ export default function CustomDrawer({ navigation }) {
     navigation.reset({
       //  index: 0, // Reset to the first screen in the stack
       //routes: [{ name: "Category" }], // Set the route to navigate to
-       routes: [{ name: "PreLogin" }], // Set the route to navigate to
+      routes: [{ name: "PreLogin" }], // Set the route to navigate to
     });
   };
 
@@ -77,8 +81,7 @@ export default function CustomDrawer({ navigation }) {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-    
+    const unsubscribe = navigation.addListener("focus", () => {
       const retrieveProfile = async () => {
         try {
           const storedDetails = await Preference.getPreference("profile");
@@ -95,15 +98,16 @@ export default function CustomDrawer({ navigation }) {
               accountNumber,
               bankName,
               ifscCode,
-              bank_verify
+              bank_verify,
             } = storedDetails;
-           
+
             setName(name);
             setprofile(image);
             console.log("Profile details retrieved:", {
-              address,image
+              address,
+              image,
             });
-  
+
             if (
               image &&
               address &&
@@ -121,7 +125,6 @@ export default function CustomDrawer({ navigation }) {
               setProfileDetailsComplete(false);
             }
           }
-  
         } catch (error) {
           console.error("Error retrieving details:", error);
         }
@@ -130,7 +133,6 @@ export default function CustomDrawer({ navigation }) {
     });
 
     return unsubscribe;
-  
   }, [navigation]);
 
   const renderItem = (item, index) => {
@@ -163,14 +165,14 @@ export default function CustomDrawer({ navigation }) {
     const isDisabled = item === "Catalogues" || item === "FAQ's"; // Disable all except Home and Log Out
     // useFocusEffect(
     //   React.useCallback(() => {
-       
+
     //     const retrieveProfile = async () => {
     //       try {
     //         const storedDetails = await Preference.getPreference("profile");
-             
+
     //         if (storedDetails) {
     //           const { image, name } = storedDetails;
-  
+
     //           setprofile(image);
     //           setName(name);
     //         }
@@ -179,15 +181,13 @@ export default function CustomDrawer({ navigation }) {
     //       }
     //     };
     //     retrieveProfile();
-  
+
     //     return () => {};
-      
+
     //   }, [navigation]));
- 
 
     return (
       <View key={index}>
-      
         <TouchableOpacity
           style={{ padding: 15 }}
           activeOpacity={0.5}
@@ -235,49 +235,97 @@ export default function CustomDrawer({ navigation }) {
     <SafeAreaView
       style={{ flex: 1, backgroundColor: colors.BLACK, height: SCREEN_HEIGHT }}
     >
-          <StatusBar backgroundColor={"black"} />
-      <CommonHeaderNew navigation={navigation} header_color={colors.BLACK} header_title_color={"#fff"} showBack={true} header_title={" "}/>
+      <StatusBar backgroundColor={"black"} />
+      <CommonHeaderNew
+        navigation={navigation}
+        header_color={colors.BLACK}
+        header_title_color={"#fff"}
+        showBack={true}
+        header_title={" "}
+      />
       {/* <CommonHeader navigation={navigation} screen={"Custom"} showBack /> */}
       <CommonAlert
         visible={showAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => setShowAlert(false)} // Pass function to hide the modal
         handleOkPress={() => setShowAlert(false)} // Pass function to handle Ok button press
         //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
-        title="Error" // Pass title text
+        title="OPPS!" // Pass title text
         iconName="error"
         bodyText={errorMessage} // Pass body text
         // cancelButton={true} // Pass whether Cancel button should be displayed
       />
-      <View style={{ justifyContent: "flex-start", gap: 20, padding:10 }}>
-        <View style={{flexDirection:'row' }}>
+      <View style={{ justifyContent: "flex-start", gap: 20, padding: 10 }}>
+        <View style={{ flexDirection: "row" }}>
           <Image
-            source={( profile?.length > 0) ? { uri: profile } : icon.PROFILE_PIC}
-            style={{ width: 80, height: 80, borderRadius: 40, borderWidth:2, borderColor:colors.YELLOW }}
+            source={profile?.length > 0 ? { uri: profile } : icon.PROFILE_PIC}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 40,
+              borderWidth: 2,
+              borderColor: colors.YELLOW,
+            }}
             onError={() => setprofile("")}
           />
-          <View style={{flex:1, paddingStart:20, paddingEnd:10, paddingTop:2,}}>
-            <Text style={{color:"#fff", fontFamily:font.GoldPlay_SemiBold, fontSize:20}}>{name?.length > 0 ? name : "Unknown" }</Text>
-            <View style={{flexDirection:'row', marginTop:10, alignItems:"center",  }}>
-              <Image source={require('../../assets/image_.png')} style={{height:20, width:20, resizeMode:'contain'}}/>
-              <Text style={{color:'#fff',fontFamily:font.GoldPlay_Medium, fontSize:14, marginStart:10}}>Artisan</Text>
-              </View>
+          <View
+            style={{ flex: 1, paddingStart: 20, paddingEnd: 10, paddingTop: 2 }}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontFamily: font.GoldPlay_SemiBold,
+                fontSize: 20,
+              }}
+            >
+              {name?.length > 0 ? name : "Unknown"}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 10,
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={require("../../assets/image_.png")}
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+              />
+              <Text
+                style={{
+                  color: "#fff",
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 14,
+                  marginStart: 10,
+                }}
+              >
+                Artisan
+              </Text>
+            </View>
           </View>
-        <TouchableOpacity  onPress={() => {
+          <TouchableOpacity
+            onPress={() => {
               console.log("Profile Details", profileDetails);
-              if(profileDetails.length == 0){
-                navigation.navigate("AddAdhar")  
-              }
-              else if(profileDetails.aadharCardNo == "" || profileDetails.aadharCardNo == null)
-              {
-                navigation.navigate("AddAdhar")  
-              }
-              else{
-                navigation.navigate("PersonalDetails",{profilePhoto:profileDetails.image, aadharNo:profileDetails.aadharCardNo});
+              if (profileDetails.length == 0) {
+                navigation.navigate("AddAdhar");
+              } else if (
+                profileDetails.aadharCardNo == "" ||
+                profileDetails.aadharCardNo == null
+              ) {
+                navigation.navigate("AddAdhar");
+              } else {
+                navigation.navigate("PersonalDetails", {
+                  profilePhoto: profileDetails.image,
+                  aadharNo: profileDetails.aadharCardNo,
+                });
               }
               //
-        }}>
-          <Image style={{height:35, width:35}} source={require('../../assets/edit_yellow.png')}/>
-          </TouchableOpacity>  
+            }}
+          >
+            <Image
+              style={{ height: 35, width: 35 }}
+              source={require("../../assets/edit_yellow.png")}
+            />
+          </TouchableOpacity>
         </View>
         {/* <View style={{ alignItems: "center" }}>
           <TouchableHighlight
@@ -310,75 +358,205 @@ export default function CustomDrawer({ navigation }) {
           </TouchableHighlight>
         </View> */}
       </View>
-      <View style={{height:1, 
-        marginTop:20,backgroundColor:colors.YELLOW}}/>
+      <View
+        style={{ height: 1, marginTop: 20, backgroundColor: colors.YELLOW }}
+      />
       <ScrollView style={{ marginTop: 30 }}>
-      <View style={{paddingStart:10, paddingEnd:10}}>
-        
-         {/* {menuItems.map((item, index) => (
+        <View style={{ paddingStart: 10, paddingEnd: 10 }}>
+          {/* {menuItems.map((item, index) => (
           <View key={index}>{renderItem(item, index)}</View>
         ))}  */}
-        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
-         
-           navigation.navigate("Notification");
-      
-        }}>
-        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
-          <Image style={{height:20, width:20, resizeMode:'contain'}} 
-          source={require('../../assets/notification_new.png')} tintColor={"#fff"}/>
-          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>NOTIFICATIONS</Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("Notification");
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+                source={require("../../assets/notification_new.png")}
+                tintColor={"#fff"}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: "#fff",
+                  flex: 1,
+                  marginStart: 20,
+                }}
+              >
+                NOTIFICATIONS
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "#FFFFFF50",
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("Offers");
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+                source={require("../../assets/discount_shape.png")}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: "#fff",
+                  flex: 1,
+                  marginStart: 20,
+                }}
+              >
+                OFFERS
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "#FFFFFF50",
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              if (!profileDetailsComplete) {
+                // setShowAlert(true);
+                // setErrorMessage("Please Complete Your Profile!");
+                navigation.navigate("CompleteProfile");
+              } else {
+                navigation.navigate("Wallet");
+              }
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+                source={require("../../assets/wallet_minus.png")}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: "#fff",
+                  flex: 1,
+                  marginStart: 20,
+                }}
+              >
+                WALLET HISTORY
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "#FFFFFF50",
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate("Help");
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+                source={require("../../assets/warning.png")}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: "#fff",
+                  flex: 1,
+                  marginStart: 20,
+                }}
+              >
+                HELP & SUPPORT
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View
+            style={{ height: 1, marginTop: 20, backgroundColor: colors.YELLOW }}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{ marginTop: 10 }}
+            onPress={() => {
+              Logout();
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                height: 50,
+                width: "100%",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 20, width: 20, resizeMode: "contain" }}
+                source={require("../../assets/logout.png")}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: "#fff",
+                  flex: 1,
+                  marginStart: 20,
+                }}
+              >
+                LOGOUT
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-        </TouchableOpacity>
-        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
-        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
-        
-           navigation.navigate("Offers");
-      
-        }}>
-        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
-          <Image style={{height:20, width:20, resizeMode:'contain'}} 
-          source={require('../../assets/discount_shape.png')}/>
-          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>OFFERS</Text>
-        </View>
-        </TouchableOpacity>
-        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
-        <TouchableOpacity activeOpacity={0.8} onPress={()=>{
-           if (!profileDetailsComplete) {
-           // setShowAlert(true);
-           // setErrorMessage("Please Complete Your Profile!");
-           navigation.navigate("CompleteProfile");
-          } else {
-            navigation.navigate("Wallet");
-          }
-        }}>
-        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
-          <Image style={{height:20, width:20, resizeMode:'contain'}} 
-          source={require('../../assets/wallet_minus.png')}/>
-          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>WALLET HISTORY</Text>
-        </View>
-        </TouchableOpacity>
-        <View style={{height:1, backgroundColor:'#FFFFFF50', marginTop:10, marginBottom:10}}/>
-        <TouchableOpacity activeOpacity={0.8} onPress={() =>{
-           navigation.navigate("Help");
-        }}>
-        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
-          <Image style={{height:20, width:20, resizeMode:'contain'}} 
-          source={require('../../assets/warning.png')}/>
-          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>HELP & SUPPORT</Text>
-        </View>
-        </TouchableOpacity>
-        <View style={{height:1, 
-        marginTop:20,backgroundColor:colors.YELLOW}}/>
-         <TouchableOpacity activeOpacity={0.8} style={{marginTop:10}} onPress={()=>{
-          Logout();
-         }}>
-        <View style={{flexDirection:'row', height:50, width:'100%',alignItems:"center"}}>
-          <Image style={{height:20, width:20, resizeMode:'contain'}} 
-          source={require('../../assets/logout.png')}/>
-          <Text style={{fontSize:14, fontFamily:font.GoldPlay_SemiBold, color:"#fff", flex:1, marginStart:20}}>LOGOUT</Text>
-        </View>
-        </TouchableOpacity>
-      </View>
       </ScrollView>
     </SafeAreaView>
   );

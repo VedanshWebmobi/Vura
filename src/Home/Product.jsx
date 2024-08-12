@@ -26,9 +26,16 @@ import * as Progress from "react-native-progress";
 import { axiosCallAPI } from "../Api/Axios";
 import { FlatGrid } from "react-native-super-grid";
 import CommonHeaderNew from "../common/CommonHeader_new";
-import {useFocusEffect} from '@react-navigation/native'
+import { useFocusEffect } from "@react-navigation/native";
 
-export default function Product({ navigation, name, catID,p_navigation,search, setSearch}) {
+export default function Product({
+  navigation,
+  name,
+  catID,
+  p_navigation,
+  search,
+  setSearch,
+}) {
   // function open() {
   //   pickerRef.current.focus();
   // }
@@ -47,19 +54,34 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
   const [selectedValue, setSelectedValue] = useState(catID);
   const [isFirstTime, setIsFirstTime] = useState(true);
 
-  useEffect(() =>{
-    console.log("Use effect call out of condition =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
-    if(currentPage > 1){
-      console.log("Use effect call =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
+  useEffect(() => {
+    console.log(
+      "Use effect call out of condition =>",
+      "Category Id =>" +
+        selectedValue +
+        ", Current Page =>" +
+        currentPage +
+        ", Total Page =>" +
+        totalPages
+    );
+    if (currentPage > 1) {
+      console.log(
+        "Use effect call =>",
+        "Category Id =>" +
+          selectedValue +
+          ", Current Page =>" +
+          currentPage +
+          ", Total Page =>" +
+          totalPages
+      );
       fetchProductData(selectedValue);
     }
-  },[currentPage])
+  }, [currentPage]);
   // useEffect(() =>{
   //   if(selectedValue == 0){
   //     console.log("Product Data length => ",productData.length);
   //   }
   // },[productData]);
-
 
   useEffect(() => {
     console.log("After selecting value", currentPage);
@@ -68,21 +90,20 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
     setCurrentPage(1);
     setTotalPages(2);
     const timer = setTimeout(() => {
-     fetchProductData(selectedValue);
-   },1000);
+      fetchProductData(selectedValue);
+    }, 1000);
 
-  return () => clearTimeout(timer);
-      
-  }, [selectedValue,setSearch, search]);
+    return () => clearTimeout(timer);
+  }, [selectedValue, setSearch, search]);
 
   const fetchProductData = async (selectedValue = 0) => {
-    if(currentPage == 1){
+    if (currentPage == 1) {
       setProductData([]);
     }
     console.log("====================================");
     console.log("Api called in product with this value => ", selectedValue);
 
-    console.log("Current page => ",currentPage);
+    console.log("Current page => ", currentPage);
     console.log("====================================");
     // if (currentPage > totalPages) {
     //   console.log(currentPage, totalPages);
@@ -93,7 +114,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
     try {
       const requestOptions = {
         params: {
-          search:search,
+          search: search,
           categoryId: selectedValue,
           page: currentPage, // Pass the current page as a query parameter
           per_page: 10, // You may need to adjust this based on your API's pagination settings
@@ -108,32 +129,28 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
         true,
         navigation
       );
-   //   console.log(response.result);
-        setIsFirstTime(false);
+      // console.log(JSON.stringify(response.result));
+      setIsFirstTime(false);
       const newData = response.result;
-        if(newData.length > 0)
-        {
-          if(productData.length > 0 ){
-            setProductData(value => value.concat(newData));
-           } 
-           else{
-            setProductData(newData);
-           }
-        }
-        else{
+      if (newData.length > 0) {
+        if (productData.length > 0) {
+          setProductData((value) => value.concat(newData));
+        } else {
           setProductData(newData);
         }
-        
-        
+      } else {
+        setProductData(newData);
+      }
+
       // if(response.pages == 0)
       // {
       //   setTotalPages(2);
       // }
       // else{
-        setIsLoading(false);
+      setIsLoading(false);
       setTotalPages(response.pages);
-     // }
-     // setCurrentPage(currentPage + 1);
+      // }
+      // setCurrentPage(currentPage + 1);
     } catch (error) {
       console.error("Error fetching wallet data:", error);
     } finally {
@@ -147,19 +164,27 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
     setProductData([]);
     setSelectedValue(e.value);
   };
-  const renderFooter =()=>{
-    return currentPage < totalPages ? <ActivityIndicator size="large" color={colors.BLACK}/> : null
-  }
+  const renderFooter = () => {
+    return currentPage < totalPages ? (
+      <ActivityIndicator size="large" color={colors.BLACK} />
+    ) : null;
+  };
 
-  const handleLoadMore = () =>{
-    if(currentPage < totalPages && !isLoading && productData.length > 0)
-    {
-      console.log("Calling Load More =>", "Category Id =>"+selectedValue +", Current Page =>"+currentPage+", Total Page =>"+totalPages);
-      setCurrentPage((value) => value+1);
+  const handleLoadMore = () => {
+    if (currentPage < totalPages && !isLoading && productData.length > 0) {
+      console.log(
+        "Calling Load More =>",
+        "Category Id =>" +
+          selectedValue +
+          ", Current Page =>" +
+          currentPage +
+          ", Total Page =>" +
+          totalPages
+      );
+      setCurrentPage((value) => value + 1);
     }
-     // fetchProductData(selectedValue);
-      
-  }
+    // fetchProductData(selectedValue);
+  };
 
   const renderEmptyComponent = () => (
     <View
@@ -169,43 +194,48 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
         alignItems: "center",
       }}
     >
-      {
-        !isLoading ?  
+      {!isLoading ? (
         <Text
-        style={{
-          fontFamily: font.GoldPlay_Regular,
-          fontSize: 18,
-          color: "black",
-        }}
-      >
-        No Product Found
-      </Text>
-      :
-      <Text
-      style={{
-        fontFamily: font.GoldPlay_Regular,
-        fontSize: 18,
-        color: "black",
-      }}
-    ></Text>
-      }
-     
+          style={{
+            fontFamily: font.GoldPlay_Regular,
+            fontSize: 18,
+            color: "black",
+          }}
+        >
+          No Product Found
+        </Text>
+      ) : (
+        <Text
+          style={{
+            fontFamily: font.GoldPlay_Regular,
+            fontSize: 18,
+            color: "black",
+          }}
+        ></Text>
+      )}
     </View>
   );
- // <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
+  // <SafeAreaView style={[stylesCommon.whitebg,{backgroundColor:'@f2f2f2'}]}>
   return (
-      <View style={{flex:1}}>
+    <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
       {/* <CommonHeaderNew header_title={"OUR PRODUCTS"} header_color={colors.YELLOW} navigation={navigation}/> */}
       {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
-      {(isLoading && isFirstTime) ? (
+      {isLoading && isFirstTime ? (
         <ActivityIndicator
           size="large"
           color={colors.YELLOW}
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         />
       ) : (
-        <View style={{ flex: 1, paddingHorizontal: 15, paddingTop: 15,paddingBottom: Platform.OS == 'ios'? 60 : 100}}>
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 15,
+            paddingTop: 15,
+            paddingBottom: Platform.OS == "ios" ? 60 : 100,
+          }}
+        >
           {/* <View
             style={{
               flexDirection: "row",
@@ -244,7 +274,7 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
               />
             </View>
           </View> */}
-         
+
           <FlatGrid
             data={productData}
             spacing={0}
@@ -267,30 +297,44 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
                     style={{ alignItems: "center" }}
                     onPress={() => {
                       //console.log(p_navigation);
-                       p_navigation.navigate("ProductDetail", item)
+                      p_navigation.navigate("ProductDetail", item);
                     }}
                   >
                     <View style={{}}>
                       {
-                       // console.log(item.productImages)
+                        // console.log(item.productImages)
                       }
                       <Image
-                        source={{ uri:(item?.productImages?.length > 0) ?  item?.productImages[0]?.productImg : "" }}
-                        style={{ height: 150, width: 100, resizeMode: "contain" }}
+                        source={{
+                          uri:
+                            item?.productImages?.length > 0
+                              ? item?.productImages[0]?.productImg
+                              : "",
+                        }}
+                        style={{
+                          height: 150,
+                          width: 100,
+                          resizeMode: "contain",
+                        }}
                       />
                     </View>
                     <View
                       style={{
-                        
                         height: 1,
                         width: "100%",
                         marginVertical: 10,
                       }}
                     />
-                    <Text  style={{ fontFamily: font.GoldPlay_Medium, 
-                        height:45,
-                       fontSize:16, fontWeight:'500', textAlign:'center' }}
-                       numberOfLines={2}>
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_Medium,
+                        height: 45,
+                        fontSize: 16,
+                        fontWeight: "500",
+                        textAlign: "center",
+                      }}
+                      numberOfLines={2}
+                    >
                       {item.product_name}
                     </Text>
                   </TouchableOpacity>
@@ -304,12 +348,12 @@ export default function Product({ navigation, name, catID,p_navigation,search, s
             showsVerticalScrollIndicator={false}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.1}
-            
+
             // contentContainerStyle={{ maxWidth: SCREEN_WIDTH }}
           />
         </View>
       )}
-     </View>   
+    </View>
   );
 }
 

@@ -12,7 +12,7 @@ import {
   ScrollView,
   BackHandler,
   Dimensions,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -25,18 +25,18 @@ import PhoneInput from "react-native-international-phone-number";
 
 import axios from "axios";
 
-import { GET_PROFILE, LOGIN, VERIFY_OTP,POSTAL_CODE } from "../Api/Utils";
+import { GET_PROFILE, LOGIN, VERIFY_OTP, POSTAL_CODE } from "../Api/Utils";
 import { StackActions } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { axiosCallAPI } from "../Api/Axios";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Login({ navigation }) {
   const height = useHeaderHeight();
-  const SCREEN_DIMENSIONS = Dimensions.get('window');
+  const SCREEN_DIMENSIONS = Dimensions.get("window");
   const [number, setNumber] = useState("");
   const [showotp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState();
@@ -49,16 +49,15 @@ export default function Login({ navigation }) {
 
   const [selectedCountry, setSelectedCountry] = useState(null);
 
-useEffect(() =>{
-  const unsubscribe = navigation.addListener('focus', () => {
-    console.log("Phone Number",number);
-   // GetDetailsFromPincode("388540");
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      console.log("Phone Number", number);
+      // GetDetailsFromPincode("388540");
+    });
 
-});
-
-// Return the function to unsubscribe from the event so it gets removed on unmount
-return unsubscribe;
-},[])
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, []);
   const handleBackPress = () => {
     if (navigation.canGoBack()) {
       // Check if navigation can go back
@@ -84,7 +83,7 @@ return unsubscribe;
   function ValidationOTP() {
     if (otp == "" || otp == undefined || otp.length < 6) {
       setIconColor("red");
-      setAlertTitle("Error");
+      setAlertTitle("OPPS!");
       setAlertMessage("Enter a Valid OTP");
       setShowAlert(true);
       return false;
@@ -93,11 +92,11 @@ return unsubscribe;
     }
   }
   const validateNumber = () => {
-    const p_number = number.replace(" ",'');
-    console.log(number)
+    const p_number = number.replace(" ", "");
+    console.log(number);
     if (p_number.length != 10) {
       setIconColor("red");
-      setAlertTitle("Error");
+      setAlertTitle("OPPS!");
       setAlertMessage("Enter a Valid Number");
       setShowAlert(true);
       return false;
@@ -108,7 +107,7 @@ return unsubscribe;
   const sendOTP = (button) => {
     let loginFormData = new FormData();
 
-    loginFormData.append("mobileNo", number.replace(" ",""));
+    loginFormData.append("mobileNo", number.replace(" ", ""));
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -117,20 +116,20 @@ return unsubscribe;
 
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
-         console.log("Response from server:", response);
+        console.log("Response from server:", response);
         if (response && response.status) {
           setIconColor("green");
           setShowAlert(true);
           setAlertTitle("Success");
           setAlertMessage(response.message);
-         // setShowOtp(true);
+          // setShowOtp(true);
         } else {
           setIconColor("red");
           setShowAlert(true);
-          setAlertTitle("Error");
+          setAlertTitle("OPPS!");
           setAlertMessage(response.message);
           // setAlertMessage(response.error[0]);
-         // setShowOtp(true);
+          // setShowOtp(true);
           console.error("Invalid response data:", response);
         }
       })
@@ -178,7 +177,7 @@ return unsubscribe;
           } else {
             setIconColor("red");
             setShowAlert(true);
-            setAlertTitle("Error");
+            setAlertTitle("OPPS!");
             setAlertMessage(response);
             setShowOtp(true);
           }
@@ -186,7 +185,7 @@ return unsubscribe;
         .catch((error) => {
           setIconColor("red");
           setShowAlert(true);
-          setAlertTitle("Error");
+          setAlertTitle("OPPS!");
           setAlertMessage(error);
           setShowOtp(true);
         });
@@ -273,39 +272,35 @@ return unsubscribe;
     console.log(country.callingCode);
   }
 
-  function handleInputValue(phoneNumber){
-    const tempNumber = phoneNumber.replace(" ","");
-    if(tempNumber.length == 10){
+  function handleInputValue(phoneNumber) {
+    const tempNumber = phoneNumber.replace(" ", "");
+    if (tempNumber.length == 10) {
       setIsValidNumber(true);
-    }
-    else{
+    } else {
       setIsValidNumber(false);
     }
     setNumber(phoneNumber);
   }
 
-  const GetDetailsFromPincode = async(pincode)=>{
+  const GetDetailsFromPincode = async (pincode) => {
     const requestOptions = {
       headers: {
         Accept: "application/json",
       },
-      
     };
-    axios.get(POSTAL_CODE+pincode, requestOptions).then((response) =>{
-      
-          if(response.data[0].Status === "Success"){
-            console.log("Success",response.data);
-           console.log("City",response.data[0].PostOffice[0].Block); 
-         
-          }
-          else if(response.data[0].Status === "Error"){
-           
-          }
-    }).catch((error) => {
-      console.log("Error",error.response.data);
-    })
-   
-  }
+    axios
+      .get(POSTAL_CODE + pincode, requestOptions)
+      .then((response) => {
+        if (response.data[0].Status === "Success") {
+          console.log("Success", response.data);
+          console.log("City", response.data[0].PostOffice[0].Block);
+        } else if (response.data[0].Status === "Error") {
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error.response.data);
+      });
+  };
 
   return (
     <KeyboardAvoidingView
@@ -314,31 +309,33 @@ return unsubscribe;
       //keyboardVerticalOffset={Platform.OS === "ios" ? 0 : -60}
       //keyboardVerticalOffset={}
     >
-      <SafeAreaView style={{ flex: 1,  }}>
+      <SafeAreaView style={{ flex: 1 }}>
         <StatusBar backgroundColor={colors.BLACK} />
 
         <CommonAlert
           visible={showAlert} // Pass visibility state to the CommonAlert component
           hideModal={() => {
-            setShowAlert(false)
-            if(alertTitle === "Error")
-            {
-
-            }
-            else{
-            navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
+            setShowAlert(false);
+            if (alertTitle === "Error" || alertTitle === "OPPS!") {
+            } else {
+              navigation.navigate("OTPScreen", {
+                f_phone: number,
+                n_phone: number.replace(" ", ""),
+                code: selectedCountry.callingCode,
+              });
             }
           }} // Pass function to hide the modal
-          handleOkPress={() =>{
-         
-            setShowAlert(false)
-            if(alertTitle === "Error"){
-
+          handleOkPress={() => {
+            setShowAlert(false);
+            if (alertTitle === "Error" || alertTitle === "OPPS!") {
+            } else {
+              navigation.navigate("OTPScreen", {
+                f_phone: number,
+                n_phone: number.replace(" ", ""),
+                code: selectedCountry.callingCode,
+              });
             }
-            else{
-            navigation.navigate("OTPScreen",{f_phone : number, n_phone:number.replace(" ",""), code:selectedCountry.callingCode});  
-            }
-          } } // Pass function to handle Ok button press
+          }} // Pass function to handle Ok button press
           //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
           title={alertTitle} // Pass title text
           iconColor={iconColor}
@@ -346,76 +343,123 @@ return unsubscribe;
           // cancelButton={true} // Pass whether Cancel button should be displayed
         />
 
-        <View style={{marginStart:16, marginEnd:16}}>
-        {
-          !showotp ? 
-       
-        <View>
-        <View style={{height:(SCREEN_DIMENSIONS.height/5), alignItems:'center', justifyContent:'center', alignContent:'center',}}>
-           <Text style={{width:56, height:11, backgroundColor:colors.YELLOW,borderRadius:2}}/>
-        </View>
-          <View style={[stylesCommon.logoViewStyle]}>
-         
-            <View style={{ alignItems: "center", marginTop: 20 }}>
-              <Text style={[stylesCommon.welcomeText,{color:"#fff"}]}>
-                {"LOGIN WITH MOBILE NUMBER"}
-              </Text>
-              <Text style={[stylesCommon.welcomeText,{color:"#fff", fontSize:14, textAlign:"center",padding:10, fontFamily:font.GoldPlay_Medium}]}>
-                {"We Will Send You An One-Time-Password(OTP) To Your Mobile Number"}
-              </Text>
-           <View     style={{
-               width:SCREEN_DIMENSIONS.width-50,
-               marginTop:60
-              }}>
-              <PhoneInput
-      phoneInputStyles={{
-        flag:{fontSize:15},
-        caret:{fontSize:10},
-        callingCode:{fontSize:15},
-        flagContainer:{
-         backgroundColor: 'rgba(52, 52, 52, 0)',
-         
-        },
-        container:{
-          height:60,
-          borderRadius:10,
-          backgroundColor:'#fff'
-        }
-      }}
-        placeholder={"00000 00000"}
-        customMask={['##### #####']}
-        defaultCountry="IN"
-        value={number}
-        onChangePhoneNumber={handleInputValue}
-        selectedCountry={selectedCountry}
-        onChangeSelectedCountry={handleSelectedCountry}
-        returnKeyType={'done'}
-      />
-      </View> 
-          <Text style={{color:'#fff', fontFamily:font.GoldPlay_Regular,fontSize:12, marginTop:10}}>By Clicking Send OTP You Will Agree To Our <Text style={{color:'#fff', fontFamily:font.GoldPlay_SemiBold}}>Terms & Conditions</Text></Text>  
-              <View style={{ marginTop: 60, alignItems: "center" }}>
-            <TouchableHighlight
-              onPress={() =>{
-                if (isValidNumber)
-                {
-                 handleGenerate("Generate")
-                }
-              }
-                }
-              underlayColor={"black"}
-              style={{ borderRadius: 15 }}
-            >
+        <View style={{ marginStart: 16, marginEnd: 16 }}>
+          {!showotp ? (
+            <View>
               <View
-                // style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
-              
+                style={{
+                  height: SCREEN_DIMENSIONS.height / 5,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}
               >
-                <Text style={[stylesCommon.preButtonLabelStyle,{textDecorationLine:'underline',color:isValidNumber? colors.YELLOW : "#666666" }]}>
-                  GENERATE OTP
-                </Text>
+                <Text
+                  style={{
+                    width: 56,
+                    height: 11,
+                    backgroundColor: colors.YELLOW,
+                    borderRadius: 2,
+                  }}
+                />
               </View>
-            </TouchableHighlight>
+              <View style={[stylesCommon.logoViewStyle]}>
+                <View style={{ alignItems: "center", marginTop: 20 }}>
+                  <Text style={[stylesCommon.welcomeText, { color: "#fff" }]}>
+                    {"LOGIN WITH MOBILE NUMBER"}
+                  </Text>
+                  <Text
+                    style={[
+                      stylesCommon.welcomeText,
+                      {
+                        color: "#fff",
+                        fontSize: 14,
+                        textAlign: "center",
+                        padding: 10,
+                        fontFamily: font.GoldPlay_Medium,
+                      },
+                    ]}
+                  >
+                    {
+                      "We Will Send You An One-Time-Password(OTP) To Your Mobile Number"
+                    }
+                  </Text>
+                  <View
+                    style={{
+                      width: SCREEN_DIMENSIONS.width - 50,
+                      marginTop: 60,
+                    }}
+                  >
+                    <PhoneInput
+                      phoneInputStyles={{
+                        flag: { fontSize: 15 },
+                        caret: { fontSize: 10 },
+                        callingCode: { fontSize: 15 },
+                        flagContainer: {
+                          backgroundColor: "rgba(52, 52, 52, 0)",
+                        },
+                        container: {
+                          height: 60,
+                          borderRadius: 10,
+                          backgroundColor: "#fff",
+                        },
+                      }}
+                      placeholder={"00000 00000"}
+                      customMask={["##### #####"]}
+                      defaultCountry="IN"
+                      value={number}
+                      onChangePhoneNumber={handleInputValue}
+                      selectedCountry={selectedCountry}
+                      onChangeSelectedCountry={handleSelectedCountry}
+                      returnKeyType={"done"}
+                    />
+                  </View>
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontFamily: font.GoldPlay_Regular,
+                      fontSize: 12,
+                      marginTop: 10,
+                    }}
+                  >
+                    By Clicking Send OTP You Will Agree To Our{" "}
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_SemiBold,
+                      }}
+                    >
+                      Terms & Conditions
+                    </Text>
+                  </Text>
+                  <View style={{ marginTop: 60, alignItems: "center" }}>
+                    <TouchableHighlight
+                      onPress={() => {
+                        if (isValidNumber) {
+                          handleGenerate("Generate");
+                        }
+                      }}
+                      underlayColor={"black"}
+                      style={{ borderRadius: 15 }}
+                    >
+                      <View
+                      // style={[stylesCommon.preLoginButtonStyle, { width: 150 }]}
+                      >
+                        <Text
+                          style={[
+                            stylesCommon.preButtonLabelStyle,
+                            {
+                              textDecorationLine: "underline",
+                              color: isValidNumber ? colors.YELLOW : "#666666",
+                            },
+                          ]}
+                        >
+                          GENERATE OTP
+                        </Text>
+                      </View>
+                    </TouchableHighlight>
 
-            {/* <TouchableHighlight
+                    {/* <TouchableHighlight
               onPress={() => handleGenerate("OTP")}
               underlayColor={"black"}
               style={{ borderRadius: 15, marginTop: 20 }}
@@ -429,72 +473,89 @@ return unsubscribe;
                 <Text style={stylesCommon.preButtonLabelStyle}>RESEND</Text>
               </View>
             </TouchableHighlight> */}
-          </View>
+                  </View>
+                </View>
+              </View>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color="white"
+                style={{ position: "absolute", marginTop: 20 }}
+                onPress={() => {
+                  console.log(navigation.goBack());
+                }}
+              />
             </View>
-          </View>
-          <Ionicons name="arrow-back" size={24} color="white" style={{position:'absolute',marginTop:20}} onPress={()=>{console.log(navigation.goBack())}} /> 
-          </View>       
-          :
-
-          <View
-          style={{
-          }}
-        >
-      
-            <View style={{height:(SCREEN_DIMENSIONS.height/5),width:SCREEN_DIMENSIONS.width,  alignItems:'center', justifyContent:'center', alignContent:'center',}}>
-           
-        <Text style={{width:40, height:10, backgroundColor:colors.YELLOW,borderRadius:2}}/>
-        </View>
-          <View style={{ alignItems: "center" }}>
-            <Text style={stylesCommon.welcomeText}>
-              INSERT YOUR OTP HERE
-            </Text>
-          </View>
-          <View style={{ marginHorizontal: 10 }}>
-            <OtpInput
-              numberOfDigits={6}
-              onTextChange={(text) => setOtp(text)}
-              secureTextEntry
-              theme={{
-                containerStyle: {
-                  marginHorizontal: 35,
-                  marginVertical: 25,
-                },
-                inputsContainerStyle: { width: 100 },
-                pinCodeContainerStyle: {
-                  height: 40,
-                  width: 40,
-                  borderRadius: 10,
-                  borderColor: "white",
-                },
-                focusedPinCodeContainerStyle: {
-                  borderColor: colors.BLACK,
-                },
-                focusStickStyle: { backgroundColor: colors.BLACK },
-              }}
-            />
-          </View>
-
-          <View style={{ alignItems: "center" }}>
-            <TouchableHighlight
-              onPress={() => verifyOTP()}
-              underlayColor={"black"}
-              style={{ borderRadius: 15, marginTop: 20 }}
-            >
+          ) : (
+            <View style={{}}>
               <View
-                style={[
-                  stylesCommon.preLoginButtonStyle,
-                  { backgroundColor: "transparent", width: 150 },
-                ]}
+                style={{
+                  height: SCREEN_DIMENSIONS.height / 5,
+                  width: SCREEN_DIMENSIONS.width,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}
               >
-                <Text style={stylesCommon.preButtonLabelStyle}>
-                  CONFIRM
+                <Text
+                  style={{
+                    width: 40,
+                    height: 10,
+                    backgroundColor: colors.YELLOW,
+                    borderRadius: 2,
+                  }}
+                />
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text style={stylesCommon.welcomeText}>
+                  INSERT YOUR OTP HERE
                 </Text>
               </View>
-            </TouchableHighlight>
-          </View>
-        </View>
-      } 
+              <View style={{ marginHorizontal: 10 }}>
+                <OtpInput
+                  numberOfDigits={6}
+                  onTextChange={(text) => setOtp(text)}
+                  secureTextEntry
+                  theme={{
+                    containerStyle: {
+                      marginHorizontal: 35,
+                      marginVertical: 25,
+                    },
+                    inputsContainerStyle: { width: 100 },
+                    pinCodeContainerStyle: {
+                      height: 40,
+                      width: 40,
+                      borderRadius: 10,
+                      borderColor: "white",
+                    },
+                    focusedPinCodeContainerStyle: {
+                      borderColor: colors.BLACK,
+                    },
+                    focusStickStyle: { backgroundColor: colors.BLACK },
+                  }}
+                />
+              </View>
+
+              <View style={{ alignItems: "center" }}>
+                <TouchableHighlight
+                  onPress={() => verifyOTP()}
+                  underlayColor={"black"}
+                  style={{ borderRadius: 15, marginTop: 20 }}
+                >
+                  <View
+                    style={[
+                      stylesCommon.preLoginButtonStyle,
+                      { backgroundColor: "transparent", width: 150 },
+                    ]}
+                  >
+                    <Text style={stylesCommon.preButtonLabelStyle}>
+                      CONFIRM
+                    </Text>
+                  </View>
+                </TouchableHighlight>
+              </View>
+            </View>
+          )}
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
