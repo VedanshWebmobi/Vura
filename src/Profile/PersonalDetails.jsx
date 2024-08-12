@@ -445,7 +445,7 @@ export default function PersonalDetails({ navigation }) {
       );
 
       profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
-      // profileFormData.append("bank_verify", 1);
+      //profileFormData.append("bank_verify", 0);
 
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);

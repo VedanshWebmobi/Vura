@@ -32,6 +32,9 @@ export default function CompleteProfileScreen({ navigation, statusColor }) {
   const [screen, setScreen] = useState("");
   const [aadharNo, setAadharNo] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
+  const [message, setMessage] = useState("");
+  const [buttonTXT, setButtonTXT] = useState("");
+  const [title, setTitle] = useState("");
   const rotation = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const stretchValue = useRef(new Animated.Value(1)).current;
@@ -45,24 +48,53 @@ export default function CompleteProfileScreen({ navigation, statusColor }) {
       if (token) {
         if (
           StoreDetail &&
-          (StoreDetail.aadharCardNo.length == 0 ||
-            StoreDetail.document.length == 0 ||
-            StoreDetail.aadharCardNo == null)
+          (StoreDetail.aadharCardNo == null ||
+            StoreDetail.aadharCardNo.length == 0 ||
+            StoreDetail.document.length == 0)
         ) {
           setAadharNo(
             StoreDetail.aadharCardNo == null ? "" : StoreDetail.aadharCardNo
           );
           setProfilePhoto(StoreDetail.image);
           setScreen("AddAdhar");
+          setMessage(
+            "Please complete your profile first to\naccess further section."
+          );
+          setButtonTXT("COMPLETE PROFILE");
+          setTitle("Complete Your Profile");
         } else if (StoreDetail == null) {
           setScreen("AddAdhar");
+          setMessage(
+            "Please complete your profile first to\naccess further section."
+          );
+          setButtonTXT("COMPLETE PROFILE");
+          setTitle("Complete Your Profile");
+        } else if (StoreDetail.bank_verify === "0") {
+          setAadharNo(StoreDetail.aadharCardNo);
+          setProfilePhoto(StoreDetail.image);
+          setScreen("PersonalDetails");
+          setTitle("Verification Required");
+          setMessage(
+            "Please verify your bank details to\nfacilitate a smooth process.\nThank you!"
+          );
+          setButtonTXT("VERIFY NOW");
         } else {
           setAadharNo(StoreDetail.aadharCardNo);
           setProfilePhoto(StoreDetail.image);
           setScreen("PersonalDetails");
+          setMessage(
+            "Please complete your profile first to\naccess further section."
+          );
+          setButtonTXT("COMPLETE PROFILE");
+          setTitle("Complete Your Profile");
         }
       } else {
         setScreen("PreLogin");
+        setMessage(
+          "Please complete your profile first to\naccess further section."
+        );
+        setButtonTXT("COMPLETE PROFILE");
+        setTitle("Complete Your Profile");
       }
     };
     GetToken();
@@ -126,7 +158,7 @@ export default function CompleteProfileScreen({ navigation, statusColor }) {
               color: colors.BLACK,
             }}
           >
-            Complete Your Profile
+            {title}
           </Text>
           <Text
             style={{
@@ -137,7 +169,7 @@ export default function CompleteProfileScreen({ navigation, statusColor }) {
               padding: 20,
             }}
           >
-            Please complete your profile first to {"\n"}access further section.
+            {message}
           </Text>
           <TouchableOpacity
             activeOpacity={1}
@@ -203,7 +235,7 @@ export default function CompleteProfileScreen({ navigation, statusColor }) {
                     },
                   ]}
                 >
-                  COMPLETE PROFILE
+                  {buttonTXT}
                 </Animated.Text>
               </Animated.View>
             </View>

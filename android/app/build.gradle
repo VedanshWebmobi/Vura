@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.vura.crms'
+    namespace 'com.vurabau.app'
     defaultConfig {
-        applicationId 'com.vura.crms'
+        applicationId 'com.vurabau.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
@@ -100,10 +100,16 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release{
-            storeFile file('vura_mobile.keystore')
+        // release{
+        //     storeFile file('vura_mobile.keystore')
+        //     storePassword '123456'
+        //     keyAlias 'vura_mobile'
+        //     keyPassword '123456'
+        // }
+         release{
+            storeFile file('vura_old.keystore')
             storePassword '123456'
-            keyAlias 'vura_mobile'
+            keyAlias 'vura_old'
             keyPassword '123456'
         }
     }

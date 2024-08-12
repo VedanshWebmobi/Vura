@@ -1,5 +1,4 @@
-package com.vura.crms
-
+package com.vurabau.app
 import android.app.Application
 import android.content.res.Configuration
 import androidx.annotation.NonNull

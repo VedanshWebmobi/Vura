@@ -1,4 +1,4 @@
-package com.vura.crms
+package com.vurabau.app
 
 import android.os.Build
 import android.os.Bundle
