@@ -67,13 +67,13 @@ export default function Wallet({ navigation, route }) {
         toValue: 2, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(stretch_Value, {
         toValue: 1, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the stretch value to 1
@@ -87,13 +87,13 @@ export default function Wallet({ navigation, route }) {
         toValue: 0.9, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(scale_value, {
         toValue: 1, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the scale to 1
@@ -533,14 +533,14 @@ export default function Wallet({ navigation, route }) {
                   Points
                 </Text>
               </View>
-              {parseFloat(walletAmount) >= 300 ? (
+              {parseFloat(walletAmount) >= 30 ? (
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => {
                     setSHowView(true);
                     setTimeout(() => {
                       setSHowView(false);
-                      if (walletAmount >= 300) {
+                      if (walletAmount >= 30) {
                         navigation.navigate("Withdraw", {
                           walletAmount: walletAmount,
                         });

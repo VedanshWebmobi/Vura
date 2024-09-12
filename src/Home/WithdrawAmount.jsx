@@ -107,13 +107,13 @@ export default function WithdrawAmount({ navigation }) {
         toValue: 2, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(stretch_Value, {
         toValue: 1, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the stretch value to 1
@@ -127,13 +127,13 @@ export default function WithdrawAmount({ navigation }) {
         toValue: 0.9, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(scale_value, {
         toValue: 1, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the scale to 1
@@ -371,7 +371,7 @@ export default function WithdrawAmount({ navigation }) {
                       amount.toString().replace(",", "")
                     );
 
-                    if (amountInt >= 100 && amountInt <= 1000) {
+                    if (amountInt >= 0 && amountInt <= 1000) {
                       if (bankverify === "1") {
                         WithDrawalAmount();
                       } else {

@@ -14,7 +14,7 @@ import {
   Dimensions,
   Keyboard,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import stylesCommon, { SCREEN_HEIGHT } from "../Themes/stylesCommon";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,6 +48,7 @@ export default function Login({ navigation }) {
   const [isValidNumber, setIsValidNumber] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const isApiCall = useRef(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -117,6 +118,7 @@ export default function Login({ navigation }) {
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
         console.log("Response from server:", response);
+        // isApiCall.current = false;
         if (response && response.status) {
           setIconColor("green");
           setShowAlert(true);
@@ -134,6 +136,7 @@ export default function Login({ navigation }) {
         }
       })
       .catch((error) => {
+        isApiCall.current = false;
         console.error("Error in login request:", error);
       });
   };
@@ -435,7 +438,8 @@ export default function Login({ navigation }) {
                   <View style={{ marginTop: 60, alignItems: "center" }}>
                     <TouchableHighlight
                       onPress={() => {
-                        if (isValidNumber) {
+                        if (isValidNumber && !isApiCall.current) {
+                          isApiCall.current = true;
                           handleGenerate("Generate");
                         }
                       }}

@@ -164,6 +164,13 @@ export default function PersonalDetails({ navigation }) {
     document = route.params.document;
   }
   const { aadharNo } = route.params;
+  useEffect(() => {
+    if (aadharNo) {
+      console.log("Aadhar update");
+      setAadharNumber(aadharNo);
+    }
+  }, [aadharNo]);
+
   // setImage(profilePhoto);
   // useEffect(() => {
   //   setAadharNumber(aadharNo);
@@ -194,7 +201,7 @@ export default function PersonalDetails({ navigation }) {
     Animated.timing(rotateAnim, {
       toValue: rotated ? 0 : 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {});
     setRotated(!rotated);
   };
@@ -202,7 +209,7 @@ export default function PersonalDetails({ navigation }) {
     Animated.timing(rotateAnim_address, {
       toValue: rotated_address ? 0 : 1,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {});
     setRotatedAddress(!rotated_address);
   };
@@ -251,13 +258,13 @@ export default function PersonalDetails({ navigation }) {
         toValue: 2, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(stretch_Value, {
         toValue: 1, // You can adjust this value to control the stretch level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the stretch value to 1
@@ -270,13 +277,13 @@ export default function PersonalDetails({ navigation }) {
         toValue: 0.9, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(scale_value, {
         toValue: 1, // You can adjust this value to control the scale level
         duration: 200, // You can adjust the duration of the animation
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start(() => {
       // Reset the scale to 1
@@ -425,7 +432,8 @@ export default function PersonalDetails({ navigation }) {
       profileFormData.append("city", city_town);
       profileFormData.append("pincode", pincode);
       profileFormData.append("country", country);
-      profileFormData.append("aadharCardNo", aadharNo);
+      // profileFormData.append("aadharCardNo", aadharNo);
+      profileFormData.append("aadharCardNo", aadharNumber);
       profileFormData.append("panCardNo", panNo);
       profileFormData.append("accountHolderName", accountHolderName);
       profileFormData.append("accountNumber", accountNumber);
@@ -492,6 +500,9 @@ export default function PersonalDetails({ navigation }) {
           account_no: accountNumber, // You may need to adjust this based on your API's pagination settings
         },
       };
+      // console.log("URL", BANK_VERIFICATION);
+      //console.log("Params", requestOptions);
+
       // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
       const response = await axiosCallAPI(
         "post",
@@ -646,6 +657,13 @@ export default function PersonalDetails({ navigation }) {
       setAlertTitle("OPPS!");
       setIconColor("red");
       setErrorMessage("ENTER A VALID NAME");
+      setVisible(true);
+      return;
+    }
+    if (aadharNumber.trim().length != 16) {
+      setAlertTitle("OPPS!");
+      setIconColor("red");
+      setErrorMessage("ENTER A VALID AADHAR NUMBER");
       setVisible(true);
       return;
     }
@@ -1101,7 +1119,11 @@ export default function PersonalDetails({ navigation }) {
                               <TextInput
                                 key={index}
                                 ref={(ref) => (inputRefs.current[index] = ref)}
-                                value={aadharNo.substr(index * 4, 4)}
+                                value={
+                                  aadharNumber
+                                    ? aadharNumber.substr(index * 4, 4)
+                                    : ""
+                                }
                                 mode="outlined"
                                 outlineStyle={{
                                   borderColor: colors.YELLOW,
@@ -1110,7 +1132,7 @@ export default function PersonalDetails({ navigation }) {
                                 }}
                                 keyboardType="numeric"
                                 style={styles.input}
-                                placeholder="1234"
+                                placeholder="0000"
                                 placeholderTextColor={colors.LIGHT_GREY}
                                 contentStyle={{
                                   fontFamily: font.GoldPlay_Medium,
@@ -1118,14 +1140,19 @@ export default function PersonalDetails({ navigation }) {
                                   borderColor: colors.YELLOW,
                                   textAlign: "center",
                                 }}
-                                // onChangeText={(text) => {
-                                //   const newAadharNumber =
-                                //     aadharNumber.substr(0, index * 4) +
-                                //     text +
-                                //     aadharNumber.substr((index + 1) * 4);
-                                //   setAadharNumber(newAadharNumber);
-                                // }}
-                                editable={false}
+                                onChangeText={(text) => {
+                                  if (!aadharNumber) {
+                                    setAadharNumber(text);
+                                    return; // Exit the function if aadharNumber is null or empty
+                                  }
+                                  const newAadharNumber =
+                                    aadharNumber.substr(0, index * 4) +
+                                    text +
+                                    aadharNumber.substr((index + 1) * 4);
+
+                                  setAadharNumber(newAadharNumber);
+                                }}
+                                editable={true}
                                 maxLength={4}
                                 cursorColor="white"
                               />
