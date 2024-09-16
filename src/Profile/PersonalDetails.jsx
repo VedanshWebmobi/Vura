@@ -50,6 +50,8 @@ import * as ImagePicker from "expo-image-picker";
 import { StackActions } from "@react-navigation/native";
 
 export default function PersonalDetails({ navigation }) {
+  const isApiCall = useRef(false);
+  const isBankVerify = useRef(false);
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const rotateAnim_address = useRef(new Animated.Value(0)).current;
   const SCREEN_DIMENSIONS = Dimensions.get("window");
@@ -295,7 +297,9 @@ export default function PersonalDetails({ navigation }) {
     // Aadhar card number validation
     if (validation()) {
       console.log(profilePhoto);
+
       submitProfile();
+
       // All validations passed, navigate to BankDetails screen
 
       // navigation.navigate("BankDetails", {
@@ -309,6 +313,8 @@ export default function PersonalDetails({ navigation }) {
       //   city,
       //   state,
       // });
+    } else {
+      isApiCall.current = false;
     }
   };
 
@@ -479,11 +485,40 @@ export default function PersonalDetails({ navigation }) {
       if (response && response.status) {
         Preference.save(ExpoSecureKey.IS_REGISTER, "true");
         await getProfile();
+      } else {
+        isApiCall.current = false;
+        try {
+          if (typeof response.errors === "string") {
+            setAlertTitle("OPPS!");
+            setIconColor("red");
+            setErrorMessage(response.errors);
+            setVisible(true);
+          } else {
+            setAlertTitle("OPPS!");
+            setIconColor("red");
+            setErrorMessage(response.errors[0]);
+            setVisible(true);
+          }
+        } catch (error) {
+          setAlertTitle("OPPS!");
+          setIconColor("red");
+          setErrorMessage("Something went wrong, Please try again.");
+          // setErrorMessage(error.errors);
+          setVisible(true);
+        }
+
+        console.log("Error", response);
       }
     } catch (error) {
-      console.error("Error submitting profile:", error);
+      isApiCall.current = false;
+      // console.error("Error submitting profile:", error);
+      setAlertTitle("OPPS!");
+      setIconColor("red");
+      setErrorMessage("Something went wrong, Please try again.");
+      // setErrorMessage(error.errors);
+      setVisible(true);
     } finally {
-      setIsLoading(true);
+      // setIsLoading(false);
     }
   };
 
@@ -525,9 +560,11 @@ export default function PersonalDetails({ navigation }) {
         setVisible(true);
         setBankVerify("0");
       }
+      isBankVerify.current = false;
       console.log("Bank Verification", response);
     } catch (error) {
       setIsLoading(false);
+      isBankVerify.current = false;
       console.error("Error fetching or storing profile data:", error);
     } finally {
       setIsLoading(false);
@@ -653,20 +690,54 @@ export default function PersonalDetails({ navigation }) {
   };
 
   const validation = () => {
-    if (name.trim() === "") {
+    var isValid = true;
+    var msg = "";
+
+    if (aadharNumber.trim().length < 12) {
+      isValid = false;
+      msg = "ENTER A VALID AADHAR NUMBER";
+    } else if (panNo.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID PAN CARD NUMBER";
+    } else if (name.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID NAME";
+    } else if (flat_house.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Flat/House)";
+    } else if (area_street.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Area/Street)";
+    } else if (pincode.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Pincode)";
+    } else if (city_town.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (City/Town)";
+    } else if (state_new.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (State)";
+    } else if (country.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Country)";
+    } else if (!sameAddress && city.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID CURRENT ADDRESS (City/Town)";
+    } else if (!sameAddress && state.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID CURRENT ADDRESS (State)";
+    } else if (bankverify === "0") {
+      isValid = false;
+      msg = "PLEASE VERIFY BANK DETAILS.";
+    }
+
+    if (!isValid) {
       setAlertTitle("OPPS!");
       setIconColor("red");
-      setErrorMessage("ENTER A VALID NAME");
+      setErrorMessage(msg);
       setVisible(true);
-      return;
     }
-    if (aadharNumber.trim().length != 16) {
-      setAlertTitle("OPPS!");
-      setIconColor("red");
-      setErrorMessage("ENTER A VALID AADHAR NUMBER");
-      setVisible(true);
-      return;
-    }
+    return isValid;
 
     // Mobile number validation
     // if (phoneNo.length !== 10) {
@@ -729,7 +800,7 @@ export default function PersonalDetails({ navigation }) {
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
           aspect: [1, 1],
-          quality: 1,
+          quality: 0.4,
         });
       } else {
         await ImagePicker.requestCameraPermissionsAsync();
@@ -737,7 +808,7 @@ export default function PersonalDetails({ navigation }) {
           cameraType: ImagePicker.CameraType.front,
           allowsEditing: true,
           aspect: [1, 1],
-          quality: 1,
+          quality: 0.4,
         });
       }
 
@@ -1548,7 +1619,36 @@ export default function PersonalDetails({ navigation }) {
                                   backgroundColor: "#000",
                                   borderRadius: 25,
                                 }}
-                                onPress={() => VerifyBankDetails()}
+                                onPress={() => {
+                                  if (!isBankVerify.current) {
+                                    isBankVerify.current = true;
+                                    if (ifscCode.trim().length <= 0) {
+                                      setAlertTitle("OPPS!");
+                                      setIconColor("red");
+                                      setErrorMessage(
+                                        "ENTER A VALID BANK IFSC CODE."
+                                      );
+                                      setVisible(true);
+                                      setTimeout(() => {
+                                        isBankVerify.current = false;
+                                      }, 1000);
+                                    } else if (
+                                      accountNumber.trim().length <= 0
+                                    ) {
+                                      setAlertTitle("OPPS!");
+                                      setIconColor("red");
+                                      setErrorMessage(
+                                        "ENTER A VALID BANK ACCOUNT NUMBER."
+                                      );
+                                      setVisible(true);
+                                      setTimeout(() => {
+                                        isBankVerify.current = false;
+                                      }, 1000);
+                                    } else {
+                                      VerifyBankDetails();
+                                    }
+                                  }
+                                }}
                               >
                                 <Text
                                   style={{
@@ -1574,14 +1674,19 @@ export default function PersonalDetails({ navigation }) {
                   <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => {
-                      setSHowView(true);
-                      setTimeout(() => {
-                        setSHowView(false);
-                        handleNext();
-                      }, 450);
+                      if (!isApiCall.current) {
+                        isApiCall.current = true;
+                        setSHowView(true);
+                        setTimeout(() => {
+                          setSHowView(false);
+                          handleNext();
+                        }, 450);
+
+                        stretch(stretchValue);
+                        scaleText(scale);
+                      }
                       // rotateImage(rotation);
-                      stretch(stretchValue);
-                      scaleText(scale);
+
                       //handleOnPress("Products")
                     }}
                     //underlayColor={colors.YELLOW}

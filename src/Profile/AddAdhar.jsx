@@ -56,7 +56,7 @@ export default function AddAdhar({ navigation }) {
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
 
-          quality: 1,
+          quality: 0.4,
         });
       } else {
         await ImagePicker.requestCameraPermissionsAsync();
@@ -64,7 +64,7 @@ export default function AddAdhar({ navigation }) {
           cameraType: ImagePicker.CameraType.front,
           allowsEditing: true,
 
-          quality: 1,
+          quality: 0.4,
         });
       }
 

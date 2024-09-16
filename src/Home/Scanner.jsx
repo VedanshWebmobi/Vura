@@ -84,7 +84,7 @@ export default function Scanner({ navigation }) {
             });
 
             if (
-              image &&
+              // image &&
               address &&
               aadharCardNo &&
               panCardNo &&

@@ -77,7 +77,7 @@ export default function Home({ navigation }) {
             });
 
             if (
-              image &&
+              // image &&
               address &&
               aadharCardNo &&
               panCardNo &&

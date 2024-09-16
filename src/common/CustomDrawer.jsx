@@ -109,7 +109,7 @@ export default function CustomDrawer({ navigation }) {
             });
 
             if (
-              image &&
+              // image &&
               address &&
               aadharCardNo &&
               panCardNo &&
