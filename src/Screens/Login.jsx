@@ -33,6 +33,7 @@ import { axiosCallAPI } from "../Api/Axios";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { Loader } from "../common/Loader";
 
 export default function Login({ navigation }) {
   const height = useHeaderHeight();
@@ -70,6 +71,7 @@ export default function Login({ navigation }) {
   const handleGenerate = (buttonName) => {
     if (validateNumber()) {
       Keyboard.dismiss();
+
       sendOTP(buttonName);
     }
   };
@@ -106,6 +108,7 @@ export default function Login({ navigation }) {
   };
 
   const sendOTP = (button) => {
+    setIsLoading(true);
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", number.replace(" ", ""));
@@ -117,6 +120,7 @@ export default function Login({ navigation }) {
 
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
+        setIsLoading(false);
         console.log("Response from server:", response);
         // isApiCall.current = false;
         if (response && response.status) {
@@ -136,6 +140,7 @@ export default function Login({ navigation }) {
         }
       })
       .catch((error) => {
+        setIsLoading(false);
         isApiCall.current = false;
         console.error("Error in login request:", error);
       });
@@ -561,6 +566,7 @@ export default function Login({ navigation }) {
             </View>
           )}
         </View>
+        <Loader loading={isLoading} />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

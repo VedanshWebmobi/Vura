@@ -26,6 +26,7 @@ import CommonAlert from "../common/CommonAlert";
 import NumericInput from "@wwdrew/react-native-numeric-textinput";
 import * as Preference from "../StoreData/Preference";
 import { StackActions } from "@react-navigation/native";
+import { Loader } from "../common/Loader";
 
 export default function WithdrawAmount({ navigation }) {
   const route = useRoute();
@@ -163,7 +164,7 @@ export default function WithdrawAmount({ navigation }) {
         navigation
       );
       console.log("Withdrawal Response", response);
-
+      setIsLoading(false);
       if (response.status) {
         setIconColor("green");
         setShowAlert(true);
@@ -195,6 +196,12 @@ export default function WithdrawAmount({ navigation }) {
       }
     } catch (error) {
       setIsLoading(false);
+      setAlertTitle("OPPS!");
+      setAlertMessage(
+        "Network or Technical Issues Detected\nPlease Try After Sometime!"
+      );
+      setIconColor("red");
+      setShowAlert(true);
       console.error("Error fetching wallet data:", error);
     } finally {
       setIsLoading(false);
@@ -464,6 +471,7 @@ export default function WithdrawAmount({ navigation }) {
             </Text>
           </View>
         </View>
+        <Loader loading={isLoading} />
       </SafeAreaView>
     </>
   );

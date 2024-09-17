@@ -35,6 +35,7 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import CountdownTimer from "../common/CountDownTimer";
 import { useSmsUserConsent } from "@eabdullazyanov/react-native-sms-user-consent";
+import { Loader } from "../common/Loader";
 
 export default function OTPScreen({ navigation, route }) {
   const height = useHeaderHeight();
@@ -162,6 +163,7 @@ export default function OTPScreen({ navigation, route }) {
 
   const verifyOTP_API = () => {
     if (validateNumber() && ValidationOTP()) {
+      setIsLoading(true);
       setIsOTPWrong(false);
       var loginFormData = new FormData();
       loginFormData.append("mobileNo", number);
@@ -182,6 +184,7 @@ export default function OTPScreen({ navigation, route }) {
         navigation
       )
         .then((response) => {
+          setIsLoading(false);
           if (response && response.status) {
             Preference.save(ExpoSecureKey.IS_LOGIN, true);
             Preference.save(
@@ -218,6 +221,7 @@ export default function OTPScreen({ navigation, route }) {
           setAlertTitle("OPPS!");
           setAlertMessage(error);
           setShowOtp(true);
+          setIsLoading(false);
         });
     }
   };
@@ -330,6 +334,7 @@ export default function OTPScreen({ navigation, route }) {
         bank_verify: bank_verify,
       });
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching or storing profile data:", error);
     } finally {
       navigation.dispatch(StackActions.replace("HomeTab", { position: 0 }));
@@ -710,6 +715,7 @@ export default function OTPScreen({ navigation, route }) {
             </View>
           )}
         </View>
+        <Loader loading={isLoading} />
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
