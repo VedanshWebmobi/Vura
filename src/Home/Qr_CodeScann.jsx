@@ -22,6 +22,7 @@ import * as Preference from "../StoreData/Preference";
 import { VolumeManager } from "react-native-volume-manager";
 import { StackActions } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Loader } from "../common/Loader";
 
 var Sound = require("react-native-sound");
 
@@ -33,6 +34,7 @@ export default function QRCodeScanner_new({ navigation }) {
   const [iconColor, setIconColor] = useState("red");
   const [errorMessage, setErrorMessage] = useState("");
   const [isNormal, setIsNormal] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [fadeAnim] = useState(new Animated.Value(0));
   const [sound, mySound] = useState(null);
@@ -117,68 +119,78 @@ export default function QRCodeScanner_new({ navigation }) {
     });
   };
   const sendCoupon = async (QR_CODE) => {
-    var couponFormData = new FormData();
+    setIsLoading(true);
+    try {
+      var couponFormData = new FormData();
 
-    // couponFormData.append("coupon_code", qrCode);
-    couponFormData.append("coupon_code", QR_CODE);
+      // couponFormData.append("coupon_code", qrCode);
+      couponFormData.append("coupon_code", QR_CODE);
 
-    let requestOptions = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        Authorization: await getValueFor(ExpoSecureKey.TOKEN),
-      },
-    };
+      let requestOptions = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          Authorization: await getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
 
-    axiosCallAPI(
-      "post",
-      COUPON,
-      couponFormData,
-      requestOptions,
-      true,
-      navigation
-    ).then((response) => {
-      if (response && response.status) {
-        if (
-          response.message.includes("Please Contact Our Nearest Salesperson.")
-        ) {
-          setTitle("CONGRATULATIONS!");
-        } else {
-          setTitle("SUCCESSFULLY SCANNED!");
-        }
-        setIconColor("green");
-        setShowAlert(true);
-        setErrorMessage(response.message);
-        setQrCode("");
-        // Dialog.show({
-        //   type: ALERT_TYPE.SUCCESS,
-        //   title: "Success",
-        //   textBody: response.message,
-        //   button: "close",
-        // });
-      } else {
-        //{"data": null, "errors": ["Coupon code not found"], "message": "", "status": false}
-        if (response.message.length > 0) {
-          setErrorMessage(response.message);
-        } else {
-          if (response.errors.length > 0) {
-            setErrorMessage(response.errors[0]);
+      axiosCallAPI(
+        "post",
+        COUPON,
+        couponFormData,
+        requestOptions,
+        true,
+        navigation
+      ).then((response) => {
+        setIsLoading(false);
+        if (response && response.status) {
+          if (
+            response.message.includes("Please Contact Our Nearest Salesperson.")
+          ) {
+            setTitle("CONGRATULATIONS!");
           } else {
-            setErrorMessage("Something went wrong, Try again.");
+            setTitle("SUCCESSFULLY SCANNED!");
           }
-        }
-        setIconColor("red");
-        setTitle("OPPS!");
-        setShowAlert(true);
+          setIconColor("green");
+          setShowAlert(true);
+          setErrorMessage(response.message);
+          setQrCode("");
+          // Dialog.show({
+          //   type: ALERT_TYPE.SUCCESS,
+          //   title: "Success",
+          //   textBody: response.message,
+          //   button: "close",
+          // });
+        } else {
+          //{"data": null, "errors": ["Coupon code not found"], "message": "", "status": false}
+          if (response.message.length > 0) {
+            setErrorMessage(response.message);
+          } else {
+            if (response.errors.length > 0) {
+              setErrorMessage(response.errors[0]);
+            } else {
+              setErrorMessage("Something went wrong, Try again.");
+            }
+          }
+          setIconColor("red");
+          setTitle("OPPS!");
+          setShowAlert(true);
 
-        // Dialog.show({
-        //   type: ALERT_TYPE.DANGER,
-        //   title: "Error",
-        //   textBody: response.errors[0],
-        //   button: "close",
-        // });
-      }
-    });
+          // Dialog.show({
+          //   type: ALERT_TYPE.DANGER,
+          //   title: "Error",
+          //   textBody: response.errors[0],
+          //   button: "close",
+          // });
+        }
+      });
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage(error);
+      setIconColor("red");
+      setTitle("OPPS!");
+      setShowAlert(true);
+    }
   };
 
   return (
@@ -261,6 +273,7 @@ export default function QRCodeScanner_new({ navigation }) {
         )}
         {qrData && <Text style={styles.qrData}>{qrData}</Text>}
       </View>
+      <Loader loading={isLoading} />
     </SafeAreaView>
   );
 }

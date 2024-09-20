@@ -53,10 +53,11 @@ export default function OTPScreen({ navigation, route }) {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [enableResend, setEnableResend] = useState(false);
   const [isOTPWrong, setIsOTPWrong] = useState(false);
-  const [second, setSecond] = useState(30);
+  const [second, setSecond] = useState(60);
   const [alertType, setAlertType] = useState("");
   const retrievedCode = useSmsUserConsent();
   const OTPViewRef = useRef();
+  const isApiCall = useRef(false);
 
   useEffect(() => {
     // console.log(retrievedCode);
@@ -80,7 +81,7 @@ export default function OTPScreen({ navigation, route }) {
     }
   };
   const restartTimer = () => {
-    setSecond(30);
+    setSecond(60);
   };
   const handleOtpTimer = () => {
     setEnableResend(true);
@@ -120,12 +121,14 @@ export default function OTPScreen({ navigation, route }) {
       setAlertTitle("OPPS!");
       setAlertMessage("Enter a Valid Number");
       setShowAlert(true);
+      isApiCall.current = false;
       return false;
     }
     return true;
   };
 
   const sendOTP = (button) => {
+    setIsLoading(true);
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", route.params.n_phone);
@@ -137,6 +140,7 @@ export default function OTPScreen({ navigation, route }) {
 
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
+        setIsLoading(false);
         // console.log("Response from server:", response);
         if (response && response.status) {
           setIconColor("green");
@@ -157,6 +161,12 @@ export default function OTPScreen({ navigation, route }) {
         }
       })
       .catch((error) => {
+        setIsLoading(false);
+        isApiCall.current = false;
+        setIconColor("red");
+        setShowAlert(true);
+        setAlertTitle("OPPS!");
+        setAlertMessage("Something went wrong, Please try again.");
         console.error("Error in login request:", error);
       });
   };
@@ -694,7 +704,8 @@ export default function OTPScreen({ navigation, route }) {
                       fontFamily: font.GoldPlay_SemiBold,
                     }}
                     onPress={() => {
-                      if (enableResend) {
+                      if (enableResend && !isApiCall.current) {
+                        isApiCall.current = true;
                         handleGenerate("OTP");
                       }
                     }}

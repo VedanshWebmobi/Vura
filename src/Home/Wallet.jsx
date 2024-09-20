@@ -328,7 +328,7 @@ export default function Wallet({ navigation, route }) {
         true,
         navigation
       );
-      console.log("WithDrawal History", response);
+      console.log("WithDrawal History", JSON.stringify(response));
       const newData = response.transaction_log.result;
 
       //   setWalletData([...walletData, ...newData]);

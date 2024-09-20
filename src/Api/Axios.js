@@ -52,7 +52,20 @@ export const axiosCallAPI = (
         console.log("====================================");
         console.log("error inside axios");
         console.log("====================================");
-        ERROR_HANDLER(error, errors);
+        var newError = error;
+        ERROR_HANDLER(newError, errors);
+        if (typeof error.response.data.errors === "string") {
+          throw error.response.data.errors;
+        } else if (Array.isArray(error.response.data.errors)) {
+          console.log("is Array");
+          throw error.response.data.errors.join(", ");
+        } else {
+          console.log("is Object");
+          console.log(Object.values(error.response.data.errors).join(", "));
+          throw Object.values(error.response.data.errors).join(", ");
+        }
+
+        // throw error.response.data.errors;
       });
   } else if (method === "get") {
     if (params) {
@@ -76,8 +89,17 @@ export const axiosCallAPI = (
           }
         })
         .catch((error) => {
-          console.log(error);
-          ERROR_HANDLER(error, errors);
+          // console.log(error);
+          var newError = error;
+          ERROR_HANDLER(newError, errors);
+          if (typeof error.response.data.errors === "string") {
+            throw error.response.data.errors;
+          } else if (Array.isArray(error.response.data.errors)) {
+            throw error.response.data.errors.join(", ");
+          } else {
+            throw Object.values(error).join(", ");
+          }
+          //return error.response.data.errors;
         });
     } else {
       return axios
@@ -108,28 +130,34 @@ export const axiosCallAPI = (
           }
         })
         .catch((error) => {
-          //  ERROR_HANDLER(error, errors);
-
-          return error.response.data;
+          var newError = error;
+          ERROR_HANDLER(newError, errors);
+          if (typeof error.response.data.errors === "string") {
+            throw error.response.data.errors;
+          } else if (Array.isArray(error.response.data.errors)) {
+            throw error.response.data.errors.join(", ");
+          } else {
+            throw Object.values(error).join(", ");
+          }
+          //return error.response.data;
         });
     }
   }
 
   function ERROR_HANDLER(error, errors) {
-    console.log("Error aareaya hai bhai", error.response);
+    // console.log("Error aareaya hai bhai", error.response);
 
     if (error.response.status === 400) {
-      error = error.response.data.errors;
-      console.log("====================================");
-      console.log(error, "sfsfs", errors);
-      console.log("====================================");
-      Object.keys(errors).map(function (key, index) {
-        // showMessage(`${(errors[key], "error")}`);
-      });
-
-      if (error.response.data.message) {
-        //showMessage(error.response.data.message, "error");
-      }
+      // error = error.response.data.errors;
+      // console.log("====================================");
+      // console.log(error, "sfsfs", errors);
+      // console.log("====================================");
+      // Object.keys(errors).map(function (key, index) {
+      //   // showMessage(`${(errors[key], "error")}`);
+      // });
+      // if (error.response.data.message) {
+      //   //showMessage(error.response.data.message, "error");
+      // }
     } else if (error.response.status === 404) {
       //showMessage("API request not found", "error");
     } else if (error.response.data === 401) {

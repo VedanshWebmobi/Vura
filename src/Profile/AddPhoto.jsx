@@ -5,7 +5,7 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -26,7 +26,7 @@ import { GET_PROFILE } from "../Api/Utils";
 import * as Progress from "react-native-progress";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import {Fontisto } from '@expo/vector-icons';
+import { Fontisto } from "@expo/vector-icons";
 
 export default function AddPhoto({ navigation }) {
   const [visible, setVisible] = React.useState(false);
@@ -38,7 +38,11 @@ export default function AddPhoto({ navigation }) {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [showAlert, setShowAlert] = useState(false);
-  const containerStyle = { backgroundColor: "#F2F2F2", padding: 20, borderRadius:20 };
+  const containerStyle = {
+    backgroundColor: "#F2F2F2",
+    padding: 20,
+    borderRadius: 20,
+  };
   const uploadImage = async (mode) => {
     let result = {};
     try {
@@ -48,7 +52,7 @@ export default function AddPhoto({ navigation }) {
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
           aspect: [1, 1],
-          quality: 1,
+          quality: 0.4,
         });
       } else {
         await ImagePicker.requestCameraPermissionsAsync();
@@ -56,7 +60,7 @@ export default function AddPhoto({ navigation }) {
           cameraType: ImagePicker.CameraType.front,
           allowsEditing: true,
           aspect: [1, 1],
-          quality: 1,
+          quality: 0.4,
         });
       }
 
@@ -73,7 +77,9 @@ export default function AddPhoto({ navigation }) {
     try {
       setImage(image);
       hideModal();
-      setTimeout(() =>{navigation.navigate("AddAdhar", { profilePhoto: image });},1000)
+      setTimeout(() => {
+        navigation.navigate("AddAdhar", { profilePhoto: image });
+      }, 1000);
     } catch (error) {
       throw error;
     }
@@ -111,7 +117,6 @@ export default function AddPhoto({ navigation }) {
     const backHandlerSubscription = BackHandler.addEventListener(
       "hardwareBackPress",
       showback ? handleGoBack : handleBackButtonClick
-     
     );
 
     return () => backHandlerSubscription.remove();
@@ -162,7 +167,7 @@ export default function AddPhoto({ navigation }) {
         console.log("Register hai");
         setshowback(true);
       }
-     // getProfile();
+      // getProfile();
     };
 
     showMenu();
@@ -247,134 +252,174 @@ export default function AddPhoto({ navigation }) {
 
   return (
     <>
-    <SafeAreaView style={{flex:0, backgroundColor : colors.YELLOW}} />
-    <SafeAreaView  style={{flex:1, backgroundColor: '#fff'}} >
-    <View style={[stylesCommon.yellowbg,{backgroundColor:'#fff',  justifyContent:"center", alignItems:"center"}]}>
-      <StatusBar backgroundColor={colors.YELLOW} />
-
-      <CommonAlert
-        visible={showAlert} // Pass visibility state to the CommonAlert component
-        hideModal={() => setShowAlert(false)} // Pass function to hide the modal
-        handleOkPress={()=> handleClose()} // Pass function to handle Ok button press
-        handleCancelPress={() => setShowAlert(false)} // Pass function to handle Cancel button press
-        title="Close Registeration?" // Pass title text
-        iconName="error"
-        bodyText="Are you Sure You want to Exit" // Pass body text
-        cancelButton={true} // Pass whether Cancel button should be displayed
-      />
-
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={containerStyle}
-          style={{ flex: 1, justifyContent: "flex-end" }}
-        >
-          <View >
-            <Fontisto name="close" size={24} color={"#999999"} style={{alignSelf:'flex-end'}} onPress={()=>hideModal()}/>
-            <Text style={{color:colors.BLACK, fontSize:20, fontFamily:font.GoldPlay_SemiBold, alignSelf:"center", marginBottom:30}}>UPLOAD PHOTO</Text>
-          <View
-            style={{
-              flexDirection: "row",
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+        <View
+          style={[
+            stylesCommon.yellowbg,
+            {
+              backgroundColor: "#fff",
+              justifyContent: "center",
               alignItems: "center",
-              justifyContent: "space-evenly",
-              paddingBottom:20
-            }}
-          >
-            <View style={{ alignItems: "center" }}>
-              <Button
-                icon={({ size, color }) => (
-                  <Image
-                    source={require('../../assets/take_from_camera.png')}
-                    style={{
-                      width: 65,
-                      height: 65,
-                      marginStart: 10,
-                      resizeMode:'contain'
-                    }}
+            },
+          ]}
+        >
+          <StatusBar backgroundColor={colors.YELLOW} />
 
-                  />
-                )}
-                onPress={() => uploadImage("camera")}
-              />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize:16, textDecorationLine:'underline' }}>Camera</Text>
-            </View>
-            <View style={{ alignItems: "center" }}>
-              <Button
-                icon={({ size, color }) => (
-                  <Image
-                    source={require('../../assets/take_from_gallery.png')}
-                    style={{
-                      width: 65,
-                      height: 65,
-                      marginStart: 10,
-                      resizeMode:'contain'
-                    }}
-                  />
-                )}
-                onPress={() => uploadImage("gallery")}
-              />
-              <Text style={{ fontFamily: font.GoldPlay_SemiBold,fontSize:16, textDecorationLine:'underline' }}>
-                Gallery
-              </Text>
-            </View>
-          </View>
-          </View>
-        </Modal>
-      </Portal>
-      <CommonHeaderNew header_title={"CREATE PROFILE"}
-      header_color={colors.YELLOW} 
-      navigation ={navigation}
-      />
-      {/* <CommonHeader
+          <CommonAlert
+            visible={showAlert} // Pass visibility state to the CommonAlert component
+            hideModal={() => setShowAlert(false)} // Pass function to hide the modal
+            handleOkPress={() => handleClose()} // Pass function to handle Ok button press
+            handleCancelPress={() => setShowAlert(false)} // Pass function to handle Cancel button press
+            title="Close Registeration?" // Pass title text
+            iconName="error"
+            bodyText="Are you Sure You want to Exit" // Pass body text
+            cancelButton={true} // Pass whether Cancel button should be displayed
+          />
+
+          <Portal>
+            <Modal
+              visible={visible}
+              onDismiss={hideModal}
+              contentContainerStyle={containerStyle}
+              style={{ flex: 1, justifyContent: "flex-end" }}
+            >
+              <View>
+                <Fontisto
+                  name="close"
+                  size={24}
+                  color={"#999999"}
+                  style={{ alignSelf: "flex-end" }}
+                  onPress={() => hideModal()}
+                />
+                <Text
+                  style={{
+                    color: colors.BLACK,
+                    fontSize: 20,
+                    fontFamily: font.GoldPlay_SemiBold,
+                    alignSelf: "center",
+                    marginBottom: 30,
+                  }}
+                >
+                  UPLOAD PHOTO
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                    paddingBottom: 20,
+                  }}
+                >
+                  <View style={{ alignItems: "center" }}>
+                    <Button
+                      icon={({ size, color }) => (
+                        <Image
+                          source={require("../../assets/take_from_camera.png")}
+                          style={{
+                            width: 65,
+                            height: 65,
+                            marginStart: 10,
+                            resizeMode: "contain",
+                          }}
+                        />
+                      )}
+                      onPress={() => uploadImage("camera")}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 16,
+                        textDecorationLine: "underline",
+                      }}
+                    >
+                      Camera
+                    </Text>
+                  </View>
+                  <View style={{ alignItems: "center" }}>
+                    <Button
+                      icon={({ size, color }) => (
+                        <Image
+                          source={require("../../assets/take_from_gallery.png")}
+                          style={{
+                            width: 65,
+                            height: 65,
+                            marginStart: 10,
+                            resizeMode: "contain",
+                          }}
+                        />
+                      )}
+                      onPress={() => uploadImage("gallery")}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 16,
+                        textDecorationLine: "underline",
+                      }}
+                    >
+                      Gallery
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+          </Portal>
+          <CommonHeaderNew
+            header_title={"CREATE PROFILE"}
+            header_color={colors.YELLOW}
+            navigation={navigation}
+          />
+          {/* <CommonHeader
         handleGoBack={handleGoBack}
         navigation={navigation}
         screen={"addPhoto"}
         showBack={showback}
       /> */}
-      {isLoading ? (
-        <View style={stylesCommon.loaderViewStyle}>
-          <Progress.CircleSnail
-            size={50}
-            indeterminate={true}
-            color={"black"}
-          />
-        </View>
-      ) : (
-        <View
-          style={{
-            flex: 3,
-            justifyContent: "center",
-            alignItems: "center",
-         
-          }}
-        >
-        
-            <TouchableOpacity onPress={showModal} >
-              <Image
-                source={image ? { uri: image } : icon.PROFILE_CIRCLE}
-                style={{ width: 150, height: 150, borderRadius: 80, backgroundColor:'#cccccc' }}
+          {isLoading ? (
+            <View style={stylesCommon.loaderViewStyle}>
+              <Progress.CircleSnail
+                size={50}
+                indeterminate={true}
+                color={"black"}
               />
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 3,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <TouchableOpacity onPress={showModal}>
+                <Image
+                  source={image ? { uri: image } : icon.PROFILE_CIRCLE}
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 80,
+                    backgroundColor: "#cccccc",
+                  }}
+                />
 
-              <Image
-                source={icon.CAMERA_NEW}
-                style={{
-                  position: "absolute",
-                  width: 100,
-                  height: 100,
-                  left: 85,
-                  top: 80,
-                  
-                }}
-              />
-              {/* <Image
+                <Image
+                  source={icon.CAMERA_NEW}
+                  style={{
+                    position: "absolute",
+                    width: 100,
+                    height: 100,
+                    left: 85,
+                    top: 80,
+                  }}
+                />
+                {/* <Image
                   source={icon.PROFILE_ICON}
                   style={{ width: 52, height: 45 }}
                 /> */}
-            </TouchableOpacity>
-         
+              </TouchableOpacity>
 
-          {/* <Text
+              {/* <Text
             style={{
               fontFamily: font.GoldPlay_Medium,
               fontSize: 20,
@@ -386,41 +431,64 @@ export default function AddPhoto({ navigation }) {
           >
             UPLOAD YOUR PHOTO {"\n"} OR SELFIE
           </Text> */}
-        </View>
-      )}
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center",  }}>
-        <TouchableHighlight
-          onPress={() =>handleNext()}
-          style={{ backgroundColor: "transparent", borderRadius: 10 }}
-          underlayColor={"black"}
-        >
+            </View>
+          )}
           <View
-            style={{
-              paddingVertical: 8,
-              //backgroundColor: "black",
-              borderColor: "white",
-              alignItems: "center",
-              borderWidth: 1,
-              borderRadius: 10,
-              width: SCREEN_WIDTH / 3,
-            }}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
           >
-            <Text
-              style={[
-                stylesCommon.preButtonLabelStyle,
-                { textAlign: "center", fontSize: 16 },
-              ]}
+            <TouchableHighlight
+              onPress={() => handleNext()}
+              style={{ backgroundColor: "transparent", borderRadius: 10 }}
+              underlayColor={"black"}
             >
-              NEXT
+              <View
+                style={{
+                  paddingVertical: 8,
+                  //backgroundColor: "black",
+                  borderColor: "white",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  width: SCREEN_WIDTH / 3,
+                }}
+              >
+                <Text
+                  style={[
+                    stylesCommon.preButtonLabelStyle,
+                    { textAlign: "center", fontSize: 16 },
+                  ]}
+                >
+                  NEXT
+                </Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+          <View style={{ position: "absolute", bottom: 30 }}>
+            <Text
+              style={{
+                fontFamily: font.GoldPlay_Regular,
+                color: colors.BLACK,
+                fontSize: 12,
+              }}
+            >
+              If you Want To Set Your Profile Later, You Can{" "}
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  color: colors.BLACK,
+                  fontSize: 13,
+                  textDecorationLine: "underline",
+                }}
+                onPress={() => {
+                  navigation.navigate("HomeTab");
+                }}
+              >
+                SKIP
+              </Text>
             </Text>
           </View>
-        </TouchableHighlight>
-      </View>
-      <View style={{position:"absolute", bottom:30}}>
-            <Text style={{fontFamily:font.GoldPlay_Regular, color:colors.BLACK, fontSize:12}}>If you Want To Set Your Profile Later, You Can <Text style={{fontFamily:font.GoldPlay_SemiBold, color:colors.BLACK, fontSize:13, textDecorationLine:'underline'}} onPress={()=>{navigation.navigate("HomeTab")}} >SKIP</Text></Text>
         </View>
-    </View>
-    </SafeAreaView>
+      </SafeAreaView>
     </>
   );
 }

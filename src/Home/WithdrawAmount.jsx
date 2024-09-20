@@ -197,9 +197,10 @@ export default function WithdrawAmount({ navigation }) {
     } catch (error) {
       setIsLoading(false);
       setAlertTitle("OPPS!");
-      setAlertMessage(
-        "Network or Technical Issues Detected\nPlease Try After Sometime!"
-      );
+      setAlertMessage(error);
+      // setAlertMessage(
+      //   "Network or Technical Issues Detected\nPlease Try After Sometime!"
+      // );
       setIconColor("red");
       setShowAlert(true);
       console.error("Error fetching wallet data:", error);

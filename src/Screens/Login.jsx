@@ -108,10 +108,12 @@ export default function Login({ navigation }) {
   };
 
   const sendOTP = (button) => {
+    console.log("API call");
     setIsLoading(true);
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", number.replace(" ", ""));
+    //   loginFormData.append("mode", "test");
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -142,6 +144,10 @@ export default function Login({ navigation }) {
       .catch((error) => {
         setIsLoading(false);
         isApiCall.current = false;
+        setIconColor("red");
+        setShowAlert(true);
+        setAlertTitle("OPPS!");
+        setAlertMessage(error);
         console.error("Error in login request:", error);
       });
   };
@@ -325,7 +331,9 @@ export default function Login({ navigation }) {
           hideModal={() => {
             setShowAlert(false);
             if (alertTitle === "Error" || alertTitle === "OPPS!") {
+              isApiCall.current = true;
             } else {
+              isApiCall.current = false;
               navigation.navigate("OTPScreen", {
                 f_phone: number,
                 n_phone: number.replace(" ", ""),
@@ -336,7 +344,9 @@ export default function Login({ navigation }) {
           handleOkPress={() => {
             setShowAlert(false);
             if (alertTitle === "Error" || alertTitle === "OPPS!") {
+              isApiCall.current = true;
             } else {
+              isApiCall.current = false;
               navigation.navigate("OTPScreen", {
                 f_phone: number,
                 n_phone: number.replace(" ", ""),
@@ -444,6 +454,7 @@ export default function Login({ navigation }) {
                     <TouchableHighlight
                       onPress={() => {
                         if (isValidNumber && !isApiCall.current) {
+                          console.log("Inside the condition");
                           isApiCall.current = true;
                           handleGenerate("Generate");
                         }

@@ -387,6 +387,11 @@ export default function PersonalDetails({ navigation }) {
     } catch (error) {
       setIsLoading(false);
       setDeleteAccountRequest(false);
+      setIconColor("red");
+      setAlertTitle("OPPS!");
+      setErrorMessage(error);
+      //  setErrorMessage("Something went wrong, Please try again.");
+      setVisible(true);
       console.error("Error fetching or storing profile data:", error);
     }
   };
@@ -460,7 +465,7 @@ export default function PersonalDetails({ navigation }) {
       );
 
       profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
-      //profileFormData.append("bank_verify", 1);
+      // profileFormData.append("bank_verify", 1);
 
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);
@@ -482,12 +487,13 @@ export default function PersonalDetails({ navigation }) {
       );
 
       console.log("LE Bhai", response);
-
+      setIsLoading(false);
       if (response && response.status) {
         Preference.save(ExpoSecureKey.IS_REGISTER, "true");
         await getProfile();
       } else {
         isApiCall.current = false;
+
         try {
           if (typeof response.errors === "string") {
             setAlertTitle("OPPS!");
@@ -512,11 +518,11 @@ export default function PersonalDetails({ navigation }) {
       }
     } catch (error) {
       isApiCall.current = false;
-      // console.error("Error submitting profile:", error);
+      setIsLoading(false);
+      console.error("Error submitting profile:", typeof error);
       setAlertTitle("OPPS!");
       setIconColor("red");
-      setErrorMessage("Something went wrong, Please try again.");
-      // setErrorMessage(error.errors);
+      setErrorMessage(error);
       setVisible(true);
     } finally {
       // setIsLoading(false);
@@ -532,12 +538,12 @@ export default function PersonalDetails({ navigation }) {
           Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
         },
         params: {
-          ifsc_code: ifscCode, // Pass the current page as a query parameter
-          account_no: accountNumber, // You may need to adjust this based on your API's pagination settings
+          ifsc_code: ifscCode.trim(), // Pass the current page as a query parameter
+          account_no: accountNumber.trim(), // You may need to adjust this based on your API's pagination settings
         },
       };
       // console.log("URL", BANK_VERIFICATION);
-      //console.log("Params", requestOptions);
+      console.log("Params", requestOptions);
 
       // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
       const response = await axiosCallAPI(
@@ -564,6 +570,12 @@ export default function PersonalDetails({ navigation }) {
       isBankVerify.current = false;
       console.log("Bank Verification", response);
     } catch (error) {
+      setIconColor("red");
+      setAlertTitle("OPPS!");
+      setErrorMessage(error);
+      // setErrorMessage("Something went wrong, Please try again.");
+      setVisible(true);
+      setBankVerify("0");
       setIsLoading(false);
       isBankVerify.current = false;
       console.error("Error fetching or storing profile data:", error);
@@ -1375,6 +1387,7 @@ export default function PersonalDetails({ navigation }) {
                           item_label={"City/Town:"}
                           item_place_holder={"Enter your City/Town"}
                           item_return_key_type={"next"}
+                          item_editable={false}
                         />
                         <ProfileCustomView
                           item_value={state_new}
@@ -1384,6 +1397,7 @@ export default function PersonalDetails({ navigation }) {
                           item_label={"State:"}
                           item_place_holder={"Enter your State"}
                           item_return_key_type={"next"}
+                          item_editable={false}
                         />
 
                         <ProfileCustomView
@@ -1393,6 +1407,7 @@ export default function PersonalDetails({ navigation }) {
                           item_label={"Country:"}
                           item_place_holder={"Enter your Country"}
                           item_return_key_type={"next"}
+                          item_editable={false}
                         />
                         <Text
                           style={[

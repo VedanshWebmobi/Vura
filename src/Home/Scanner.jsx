@@ -29,6 +29,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
 import { useFocusEffect } from "@react-navigation/native";
 import * as Preference from "../StoreData/Preference";
 import CompleteProfileScreen from "../Screens/CompleteProfileScreen";
+import { Loader } from "../common/Loader";
 
 export default function Scanner({ navigation }) {
   const height = useHeaderHeight();
@@ -42,6 +43,7 @@ export default function Scanner({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCodeScanned = (data) => {
     console.log("Bhai le tera data", data.data);
@@ -122,60 +124,70 @@ export default function Scanner({ navigation }) {
     }
   }, [qrCode]);
   const sendCoupon = async (QR_CODE) => {
-    var couponFormData = new FormData();
+    try {
+      setIsLoading(true);
+      var couponFormData = new FormData();
 
-    // couponFormData.append("coupon_code", qrCode);
-    couponFormData.append("coupon_code", QR_CODE);
+      // couponFormData.append("coupon_code", qrCode);
+      couponFormData.append("coupon_code", QR_CODE);
 
-    let requestOptions = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "multipart/form-data",
-        Authorization: await getValueFor(ExpoSecureKey.TOKEN),
-      },
-    };
+      let requestOptions = {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+          Authorization: await getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
 
-    axiosCallAPI(
-      "post",
-      COUPON,
-      couponFormData,
-      requestOptions,
-      true,
-      navigation
-    ).then((response) => {
-      if (response && response.status) {
-        if (
-          response.message.includes("Please Contact Our Nearest Salesperson.")
-        ) {
-          setTitle("CONGRATULATIONS!");
-        } else {
-          setTitle("SUCCESSFULLY SCANNED!");
-        }
-        setIconColor("green");
+      axiosCallAPI(
+        "post",
+        COUPON,
+        couponFormData,
+        requestOptions,
+        true,
+        navigation
+      ).then((response) => {
+        setIsLoading(false);
+        if (response && response.status) {
+          if (
+            response.message.includes("Please Contact Our Nearest Salesperson.")
+          ) {
+            setTitle("CONGRATULATIONS!");
+          } else {
+            setTitle("SUCCESSFULLY SCANNED!");
+          }
+          setIconColor("green");
 
-        setShowAlert(true);
-        setErrorMessage(response.message);
-        setQrCode("");
-      } else {
-        if (response.message.length > 0) {
+          setShowAlert(true);
           setErrorMessage(response.message);
-        } else if (response.errors.length > 0) {
-          setErrorMessage(response.errors[0]);
+          setQrCode("");
         } else {
-          setErrorMessage("Something went wrong, Try again.");
-        }
-        setIconColor("red");
-        setTitle("OPPS!");
-        setShowAlert(true);
+          if (response.message.length > 0) {
+            setErrorMessage(response.message);
+          } else if (response.errors.length > 0) {
+            setErrorMessage(response.errors[0]);
+          } else {
+            setErrorMessage("Something went wrong, Try again.");
+          }
+          setIconColor("red");
+          setTitle("OPPS!");
+          setShowAlert(true);
 
-        // Dialog.show({
-        //   type: ALERT_TYPE.DANGER,
-        //   title: "Error",
-        //   textBody: response.errors[0],
-        //   button: "close",
-        // });
-      }
-    });
+          // Dialog.show({
+          //   type: ALERT_TYPE.DANGER,
+          //   title: "Error",
+          //   textBody: response.errors[0],
+          //   button: "close",
+          // });
+        }
+      });
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage(error);
+      setIconColor("red");
+      setTitle("OPPS!");
+      setShowAlert(true);
+    }
   };
 
   // if (!permission?.granted) {
@@ -421,6 +433,7 @@ export default function Scanner({ navigation }) {
             </KeyboardAvoidingView>
           )}
         </View>
+        <Loader loading={isLoading} />
       </SafeAreaView>
     </>
   );
