@@ -88,7 +88,7 @@ android {
         applicationId 'com.vurabau.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 211
+        versionCode 212
         versionName "0.3.1"
             missingDimensionStrategy 'react-native-camera', 'general'
         buildConfigField("boolean", "REACT_NATIVE_UNSTABLE_USE_RUNTIME_SCHEDULER_ALWAYS", (findProperty("reactNative.unstable_useRuntimeSchedulerAlways") ?: true).toString())

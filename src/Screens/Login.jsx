@@ -113,7 +113,7 @@ export default function Login({ navigation }) {
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", number.replace(" ", ""));
-    //   loginFormData.append("mode", "test");
+    //loginFormData.append("mode", "test");
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",

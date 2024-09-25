@@ -407,8 +407,8 @@ export default function PersonalDetails({ navigation }) {
       console.log("Apiiiii callled...", profilePhoto);
       console.log("====================================");
       profileFormData.append("name", name);
-      const position = profilePhoto.indexOf("http");
-      const position1 = profilePhoto.indexOf("https");
+      //const position = profilePhoto.indexOf("http");
+      //const position1 = profilePhoto.indexOf("https");
 
       if (image.length > 0) {
         profileFormData.append("image", {
@@ -519,7 +519,7 @@ export default function PersonalDetails({ navigation }) {
     } catch (error) {
       isApiCall.current = false;
       setIsLoading(false);
-      console.error("Error submitting profile:", typeof error);
+      // console.error("Error submitting profile:", typeof error);
       setAlertTitle("OPPS!");
       setIconColor("red");
       setErrorMessage(error);

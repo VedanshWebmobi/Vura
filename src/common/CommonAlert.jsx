@@ -123,7 +123,9 @@ export default function ({
                     textAlign: "center",
                   }}
                 >
-                  {bodyText.replace("<br><br>", "\n\n")}
+                  {typeof bodyText === "string"
+                    ? bodyText.replace("<br><br>", "\n\n")
+                    : bodyText.toString()}
                 </Text>
               </View>
               {/* <View
