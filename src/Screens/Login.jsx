@@ -34,6 +34,7 @@ import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { Loader } from "../common/Loader";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function Login({ navigation }) {
   const height = useHeaderHeight();
@@ -109,19 +110,26 @@ export default function Login({ navigation }) {
 
   const sendOTP = (button) => {
     console.log("API call");
+    crashlytics().log("Login Screen => Send OTP Api call");
     setIsLoading(true);
     let loginFormData = new FormData();
 
     loginFormData.append("mobileNo", number.replace(" ", ""));
-    //loginFormData.append("mode", "test");
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     };
-
+    crashlytics().log(
+      "Login Screen => Send OTP Api call => Parameter => " +
+        JSON.stringify(loginFormData)
+    );
     axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
       .then((response) => {
+        crashlytics().log(
+          "Login Screen => Send OTP Api call => Response =>" +
+            JSON.stringify(response)
+        );
         setIsLoading(false);
         console.log("Response from server:", response);
         // isApiCall.current = false;
@@ -142,6 +150,10 @@ export default function Login({ navigation }) {
         }
       })
       .catch((error) => {
+        crashlytics().log(
+          "Login Screen => Send OTP Api call => Main try catch"
+        );
+        crashlytics().recordError(error);
         setIsLoading(false);
         isApiCall.current = false;
         setIconColor("red");

@@ -23,6 +23,7 @@ import { MaterialIcons, Fontisto } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import CommonHeaderNew from "../common/CommonHeader_new";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function AddAdhar({ navigation }) {
   const SCREEN_DIMENSIONS = Dimensions.get("window");
@@ -72,6 +73,10 @@ export default function AddAdhar({ navigation }) {
         await saveImage(result.assets[0].uri);
       }
     } catch (error) {
+      crashlytics().log(
+        "AddAdhar Screen => Photo or gallery selection try catch"
+      );
+      crashlytics().recordError(error);
       alert("Error uploading image: " + error.message);
       hideModal();
     }

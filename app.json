@@ -22,12 +22,15 @@
         "foregroundImage": "./assets/adaptiveIcon.png",
         "backgroundColor": "#000000"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.vura.crms"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
       "expo-font",
       "expo-secure-store",
       [

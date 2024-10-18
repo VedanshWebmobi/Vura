@@ -27,6 +27,7 @@ import NumericInput from "@wwdrew/react-native-numeric-textinput";
 import * as Preference from "../StoreData/Preference";
 import { StackActions } from "@react-navigation/native";
 import { Loader } from "../common/Loader";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function WithdrawAmount({ navigation }) {
   const route = useRoute();
@@ -143,6 +144,7 @@ export default function WithdrawAmount({ navigation }) {
   };
 
   const WithDrawalAmount = async () => {
+    crashlytics().log("WithdrawAmount Screen => Withdraw Amount Api call");
     Keyboard.dismiss();
     try {
       const requestOptions = {
@@ -154,7 +156,10 @@ export default function WithdrawAmount({ navigation }) {
           amount: amount.toString().replace(",", ""),
         },
       };
-
+      crashlytics().log(
+        "WithdrawAmount Screen => Withdraw Amount Api call => Parameter => " +
+          JSON.stringify(requestOptions)
+      );
       const response = await axiosCallAPI(
         "post",
         WITHDRAW,
@@ -164,6 +169,10 @@ export default function WithdrawAmount({ navigation }) {
         navigation
       );
       console.log("Withdrawal Response", response);
+      crashlytics().log(
+        "WithdrawAmount Screen => Withdraw Amount Api call => Response => " +
+          JSON.stringify(response)
+      );
       setIsLoading(false);
       if (response.status) {
         setIconColor("green");
@@ -195,6 +204,10 @@ export default function WithdrawAmount({ navigation }) {
         setShowAlert(true);
       }
     } catch (error) {
+      crashlytics().log(
+        "WithdrawAmount Screen => Withdraw Amount Api call => Main try catch"
+      );
+      crashlytics().recordError(error);
       setIsLoading(false);
       setAlertTitle("OPPS!");
       setAlertMessage(error);

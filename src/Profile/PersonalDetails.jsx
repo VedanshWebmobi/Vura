@@ -49,6 +49,7 @@ import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import { StackActions } from "@react-navigation/native";
 import { Loader } from "../common/Loader";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function PersonalDetails({ navigation }) {
   const isApiCall = useRef(false);
@@ -296,7 +297,13 @@ export default function PersonalDetails({ navigation }) {
 
   const handleNext = () => {
     // Aadhar card number validation
+    crashlytics().log(
+      "PersonalDetails Screen =>  Submit Profile => Check Validation"
+    );
     if (validation()) {
+      crashlytics().log(
+        "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
+      );
       console.log(profilePhoto);
 
       submitProfile();
@@ -315,6 +322,9 @@ export default function PersonalDetails({ navigation }) {
       //   state,
       // });
     } else {
+      crashlytics().log(
+        "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
+      );
       isApiCall.current = false;
     }
   };
@@ -347,6 +357,7 @@ export default function PersonalDetails({ navigation }) {
   }, [accountNumber, ifscCode]);
 
   const delete_Account = async () => {
+    crashlytics().log("PersonalDetails Screen =>  Delete Account API call");
     setDeleteAccountRequest(true);
     setIsLoading(true);
     try {
@@ -366,7 +377,14 @@ export default function PersonalDetails({ navigation }) {
       );
       setIsLoading(false);
       //{"data": {}, "errors": {}, "message": "Artisan deleted successfully.", "status": true}
+      crashlytics().log(
+        "PersonalDetails Screen =>  Delete Account API call => Response => " +
+          JSON.stringify(response)
+      );
       if (response.status) {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Delete Account API call => Success"
+        );
         Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
         Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
         Preference.deleteItem(ExpoSecureKey.TOKEN);
@@ -377,6 +395,9 @@ export default function PersonalDetails({ navigation }) {
         setErrorMessage(response.message);
         setVisible(true);
       } else {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Delete Account API call => Fail"
+        );
         setDeleteAccountRequest(false);
         setIconColor("red");
         setAlertTitle("OPPS!");
@@ -385,6 +406,10 @@ export default function PersonalDetails({ navigation }) {
       }
       console.log(response);
     } catch (error) {
+      crashlytics().log(
+        "PersonalDetails Screen =>  Delete Account API call => Main try catch "
+      );
+      crashlytics().recordError(error);
       setIsLoading(false);
       setDeleteAccountRequest(false);
       setIconColor("red");
@@ -401,6 +426,7 @@ export default function PersonalDetails({ navigation }) {
     //  return;
     console.log("yeh ja raha hia ander.....", profilePhoto);
     setIsLoading(true);
+    crashlytics().log("PersonalDetails Screen =>  Call Submit Profile API");
     try {
       let profileFormData = new FormData();
       console.log("====================================");
@@ -470,6 +496,10 @@ export default function PersonalDetails({ navigation }) {
       console.log("====================================");
       console.log("yeh hai bhai", profileFormData);
       console.log("====================================");
+      crashlytics().log(
+        "PersonalDetails Screen =>  Submit Profile => Parameter => " +
+          JSON.stringify(profileFormData)
+      );
       let requestOptions = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -486,7 +516,11 @@ export default function PersonalDetails({ navigation }) {
         navigation
       );
 
-      console.log("LE Bhai", response);
+      // console.log("LE Bhai", response);
+      crashlytics().log(
+        "PersonalDetails Screen =>  Submit Profile => Response => " +
+          JSON.stringify(response)
+      );
       setIsLoading(false);
       if (response && response.status) {
         Preference.save(ExpoSecureKey.IS_REGISTER, "true");
@@ -507,6 +541,11 @@ export default function PersonalDetails({ navigation }) {
             setVisible(true);
           }
         } catch (error) {
+          crashlytics().log(
+            "PersonalDetails Screen =>  Response status false try catch => " +
+              error.toString()
+          );
+          crashlytics().recordError(error);
           setAlertTitle("OPPS!");
           setIconColor("red");
           setErrorMessage("Something went wrong, Please try again.");
@@ -517,6 +556,11 @@ export default function PersonalDetails({ navigation }) {
         console.log("Error", response);
       }
     } catch (error) {
+      crashlytics().log(
+        "PersonalDetails Screen => Submit Profile => Main try catch => " +
+          error.toString()
+      );
+      crashlytics().recordError(error);
       isApiCall.current = false;
       setIsLoading(false);
       // console.error("Error submitting profile:", typeof error);
@@ -530,6 +574,7 @@ export default function PersonalDetails({ navigation }) {
   };
 
   const VerifyBankDetails = async () => {
+    crashlytics().log("PersonalDetails Screen =>  Verify Bank API call");
     setIsLoading(true);
     try {
       const requestOptions = {
@@ -544,6 +589,10 @@ export default function PersonalDetails({ navigation }) {
       };
       // console.log("URL", BANK_VERIFICATION);
       console.log("Params", requestOptions);
+      crashlytics().log(
+        "PersonalDetails Screen =>  Verify Bank API call => Parameter =>" +
+          JSON.stringify(requestOptions)
+      );
 
       // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
       const response = await axiosCallAPI(
@@ -554,13 +603,23 @@ export default function PersonalDetails({ navigation }) {
         true,
         navigation
       );
+      crashlytics().log(
+        "PersonalDetails Screen =>  Verify Bank API call => Response => " +
+          JSON.stringify(response)
+      );
       if (response.data.bank_verify) {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Verify Bank API call => Response => true"
+        );
         setIconColor("green");
         setAlertTitle("SUCCESS!");
         setErrorMessage(response.message);
         setVisible(true);
         setBankVerify("1");
       } else {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Verify Bank API call => Response => false"
+        );
         setIconColor("red");
         setAlertTitle("OPPS!");
         setErrorMessage(response.message);
@@ -570,6 +629,10 @@ export default function PersonalDetails({ navigation }) {
       isBankVerify.current = false;
       console.log("Bank Verification", response);
     } catch (error) {
+      crashlytics().log(
+        "PersonalDetails Screen =>  Verify Bank API call => Main try catch"
+      );
+      crashlytics().recordError(error);
       setIconColor("red");
       setAlertTitle("OPPS!");
       setErrorMessage(error);
@@ -585,6 +648,7 @@ export default function PersonalDetails({ navigation }) {
   };
 
   const getProfile = async () => {
+    crashlytics().log("PersonalDetails Screen =>  Get Profile Api call");
     setIsLoading(true);
     try {
       const requestOptions = {
@@ -602,7 +666,10 @@ export default function PersonalDetails({ navigation }) {
         true,
         navigation
       );
-
+      crashlytics().log(
+        "PersonalDetails Screen =>  Get Profile Api call => Response => " +
+          JSON.stringify(response)
+      );
       console.log("Bhai yeh method mai yeh mil raha", response);
       //  Extract relevant data from the API response
       const {
@@ -694,6 +761,10 @@ export default function PersonalDetails({ navigation }) {
       });
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
+      crashlytics().log(
+        "PersonalDetails Screen =>  Get Profile Api call => Main try catch"
+      );
+      crashlytics().recordError(error);
     } finally {
       //navigation.navigate("HomeTab");
       navigation.dispatch(StackActions.replace("HomeTab"));

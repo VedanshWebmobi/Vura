@@ -36,6 +36,7 @@ import { Ionicons } from "@expo/vector-icons";
 import CountdownTimer from "../common/CountDownTimer";
 import { useSmsUserConsent } from "@eabdullazyanov/react-native-sms-user-consent";
 import { Loader } from "../common/Loader";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function OTPScreen({ navigation, route }) {
   const height = useHeaderHeight();
@@ -172,6 +173,7 @@ export default function OTPScreen({ navigation, route }) {
   };
 
   const verifyOTP_API = () => {
+    crashlytics().log("OTPScreen Screen => Verify OTP Api call");
     if (validateNumber() && ValidationOTP()) {
       setIsLoading(true);
       setIsOTPWrong(false);
@@ -184,7 +186,10 @@ export default function OTPScreen({ navigation, route }) {
           "Content-Type": "multipart/form-data",
         },
       };
-
+      crashlytics().log(
+        "OTPScreen Screen => Verify OTP Api call => Parameter " +
+          JSON.stringify(loginFormData)
+      );
       axiosCallAPI(
         "post",
         VERIFY_OTP,
@@ -194,6 +199,10 @@ export default function OTPScreen({ navigation, route }) {
         navigation
       )
         .then((response) => {
+          crashlytics().log(
+            "OTPScreen Screen => Verify OTP Api call => Response =>" +
+              JSON.stringify(response)
+          );
           setIsLoading(false);
           if (response && response.status) {
             Preference.save(ExpoSecureKey.IS_LOGIN, true);
@@ -226,6 +235,10 @@ export default function OTPScreen({ navigation, route }) {
           }
         })
         .catch((error) => {
+          crashlytics().log(
+            "OTPScreen Screen => Verify OTP Api call => Main try catch"
+          );
+          crashlytics().recordError(error);
           setIconColor("red");
           setShowAlert(true);
           setAlertTitle("OPPS!");

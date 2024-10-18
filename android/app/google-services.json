@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881756692567",
+    "project_id": "vura-e5d37",
+    "storage_bucket": "vura-e5d37.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881756692567:android:6bb8d6c8958dd2dfb34312",
+        "android_client_info": {
+          "package_name": "com.vurabau.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN7gGdsDGr2i0DVrZfnhgMJQa7hMxAdgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

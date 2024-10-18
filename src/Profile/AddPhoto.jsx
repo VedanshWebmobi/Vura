@@ -27,6 +27,7 @@ import * as Progress from "react-native-progress";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function AddPhoto({ navigation }) {
   const [visible, setVisible] = React.useState(false);
@@ -68,6 +69,10 @@ export default function AddPhoto({ navigation }) {
         await saveImage(result.assets[0].uri);
       }
     } catch (error) {
+      crashlytics().log(
+        "AddPhoto Screen => Photo or gallery selection try catch"
+      );
+      crashlytics().recordError(error);
       alert("Error uploading image: " + error.message);
       hideModal();
     }

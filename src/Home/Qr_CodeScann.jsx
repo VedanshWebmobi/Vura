@@ -23,6 +23,7 @@ import { VolumeManager } from "react-native-volume-manager";
 import { StackActions } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Loader } from "../common/Loader";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 var Sound = require("react-native-sound");
 
@@ -119,6 +120,7 @@ export default function QRCodeScanner_new({ navigation }) {
     });
   };
   const sendCoupon = async (QR_CODE) => {
+    crashlytics().log("QR_CodeScann Screen => Scan coupon code Api call");
     setIsLoading(true);
     try {
       var couponFormData = new FormData();
@@ -133,7 +135,10 @@ export default function QRCodeScanner_new({ navigation }) {
           Authorization: await getValueFor(ExpoSecureKey.TOKEN),
         },
       };
-
+      crashlytics().log(
+        "QR_CodeScann Screen => Scan coupon code Api call => Parameter" +
+          JSON.stringify(couponFormData)
+      );
       axiosCallAPI(
         "post",
         COUPON,
@@ -142,6 +147,10 @@ export default function QRCodeScanner_new({ navigation }) {
         true,
         navigation
       ).then((response) => {
+        crashlytics().log(
+          "QR_CodeScann Screen => Scan coupon code Api call => Response" +
+            JSON.stringify(response)
+        );
         setIsLoading(false);
         if (response && response.status) {
           if (
@@ -185,6 +194,10 @@ export default function QRCodeScanner_new({ navigation }) {
         }
       });
     } catch (error) {
+      crashlytics().log(
+        "QR_CodeScann Screen => Scan coupon code Api call => Main try catch"
+      );
+      crashlytics().recordError(error);
       setIsLoading(false);
       setErrorMessage(error);
       setIconColor("red");
