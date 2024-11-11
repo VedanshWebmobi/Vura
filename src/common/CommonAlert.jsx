@@ -31,6 +31,8 @@ export default function ({
   handleCancelPress,
   cancelButton,
   bodyTextSize,
+  imageStyle,
+  bodyTextStyle,
 }) {
   //   const [visible, setVisible] = React.useState(false);
 
@@ -87,7 +89,10 @@ export default function ({
                   />
                 ) : (
                   <Image
-                    style={{ height: 100, width: 100, marginTop: -20 }}
+                    style={[
+                      { height: 100, width: 100, marginTop: -20 },
+                      imageStyle,
+                    ]}
                     source={require("../../assets/success.gif")}
                   />
                 )}
@@ -115,13 +120,16 @@ export default function ({
                   {title}
                 </Text>
                 <Text
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 30,
-                    fontFamily: font.GoldPlay_SemiBold,
-                    fontSize: bodyTextSize ? bodyTextSize : 15,
-                    textAlign: "center",
-                  }}
+                  style={[
+                    {
+                      marginTop: 10,
+                      marginBottom: 30,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      fontSize: bodyTextSize ? bodyTextSize : 15,
+                      textAlign: "center",
+                    },
+                    bodyTextStyle,
+                  ]}
                 >
                   {typeof bodyText === "string"
                     ? bodyText.replace("<br><br>", "\n\n")

@@ -36,8 +36,14 @@ export const icon = {
   IMAGE6: require("../../assets/image6.png"),
   CEMENT: require("../../assets/cement.png"),
   DOWNLOAD_ICON: require("../../assets/downloadIcon.png"),
-  PROFILE_NEW :require("../../assets/profile_new.png"),
-  PROFILE_CIRCLE:require("../../assets/profile_circle.png")
+  PROFILE_NEW: require("../../assets/profile_new.png"),
+  PROFILE_CIRCLE: require("../../assets/profile_circle.png"),
+  PDF_DIS: require("../../assets/pdf_dis.png"),
+  ADD_DIS: require("../../assets/add_dis.png"),
+  Down_DIS: require("../../assets/down_arrow.png"),
+  SEARCH_ICN_DIS: require("../../assets/searc_icon_dis.png"),
+  FILTER_DIS: require("../../assets/filter_dis.png"),
+  EDIT_DIS: require("../../assets/edit_dis.png"),
 };
 
 export const font = {
@@ -57,6 +63,7 @@ export const colors = {
   LIGHT_GREY: "#C4C2C2",
   SUCCESS_GREEN: "#5cb85c",
   ERROR_RED: "#cc0000",
+  INVOICE_GREY: "#666666",
 };
 
 export const ExpoSecureKey = {
