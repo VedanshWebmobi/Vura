@@ -116,13 +116,9 @@ export default function Orders({
             });
           };
 
-          const inputRange = state.routes.map((_, i) => i);
-          const opacity = position.interpolate({
-            inputRange,
-            outputRange: inputRange.map((i) =>
-              i === index ? "#fff" : "#cccccc"
-            ),
-          });
+          const activeStyles = isFocused
+            ? { backgroundColor: "#fff" }
+            : { backgroundColor: "#cccccc" };
 
           return (
             <TouchableOpacity
@@ -134,7 +130,7 @@ export default function Orders({
               onLongPress={onLongPress}
               style={{
                 flex: 1,
-                backgroundColor: opacity,
+                backgroundColor: activeStyles.backgroundColor,
                 borderRadius: 25,
                 height: "100%",
                 justifyContent: "center",
