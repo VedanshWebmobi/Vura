@@ -25,7 +25,13 @@ import PhoneInput from "react-native-international-phone-number";
 
 import axios from "axios";
 
-import { GET_PROFILE, LOGIN, VERIFY_OTP, POSTAL_CODE } from "../Api/Utils";
+import {
+  GET_PROFILE,
+  LOGIN,
+  VERIFY_OTP,
+  POSTAL_CODE,
+  DISLOGIN,
+} from "../Api/Utils";
 import { StackActions } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -36,8 +42,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Loader } from "../common/Loader";
 import crashlytics from "@react-native-firebase/crashlytics";
 
-export default function Login({ navigation }) {
+export default function Login({ navigation, route }) {
   const height = useHeaderHeight();
+  const { selectedCategory } = route.params;
   const SCREEN_DIMENSIONS = Dimensions.get("window");
   const [number, setNumber] = useState("");
   const [showotp, setShowOtp] = useState(false);
@@ -109,11 +116,15 @@ export default function Login({ navigation }) {
   };
 
   const sendOTP = (button) => {
-    console.log("API call");
+    console.log("API call", selectedCategory);
     crashlytics().log("Login Screen => Send OTP Api call");
     setIsLoading(true);
-    let loginFormData = new FormData();
 
+    if (selectedCategory && selectedCategory !== "") {
+      Preference.saveSelectedCategory(selectedCategory);
+    }
+
+    let loginFormData = new FormData();
     loginFormData.append("mobileNo", number.replace(" ", ""));
     let requestOptions = {
       headers: {
@@ -124,7 +135,14 @@ export default function Login({ navigation }) {
       "Login Screen => Send OTP Api call => Parameter => " +
         JSON.stringify(loginFormData)
     );
-    axiosCallAPI("post", LOGIN, loginFormData, requestOptions, true, navigation)
+    axiosCallAPI(
+      "post",
+      selectedCategory === "distributer" ? DISLOGIN : LOGIN,
+      loginFormData,
+      requestOptions,
+      true,
+      navigation
+    )
       .then((response) => {
         crashlytics().log(
           "Login Screen => Send OTP Api call => Response =>" +

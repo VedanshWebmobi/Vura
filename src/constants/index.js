@@ -44,6 +44,9 @@ export const icon = {
   SEARCH_ICN_DIS: require("../../assets/searc_icon_dis.png"),
   FILTER_DIS: require("../../assets/filter_dis.png"),
   EDIT_DIS: require("../../assets/edit_dis.png"),
+  ORDER_ICON: require("../../assets/order_icon.png"),
+  ACCOUNT_ICON: require("../../assets/account_icon.png"),
+  CHART_ICON: require("../../assets/chart.png"),
 };
 
 export const font = {
@@ -70,4 +73,5 @@ export const ExpoSecureKey = {
   IS_LOGIN: "is_login",
   TOKEN: "token",
   IS_REGISTER: "is_register",
+  SELECTED_CATEGORY: "selectedCategory",
 };

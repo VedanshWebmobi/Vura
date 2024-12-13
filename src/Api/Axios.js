@@ -22,13 +22,13 @@ export const axiosCallAPI = (
     responseType: "json",
     timeout: 30000,
   });
-
+  console.log("Axios ke abder", params, "/", headerRequest);
   if (method === "post") {
-    console.log("yeh bhe raha huin axiox ander", params);
+    console.log("yeh bhe raha huin axiox ander", params, endpoint);
     return client
       .post(endpoint, params, headerRequest)
       .then((response) => {
-        // console.log("Bhai yeh hai dekhle ab", response.data);
+        // console.log("Bhai yeh hai dekhle ab", response.data.status);
         if (response.data.status) {
           if (response.data.message !== "") {
             if (isShowMessage)
@@ -50,7 +50,7 @@ export const axiosCallAPI = (
       })
       .catch((error) => {
         console.log("====================================");
-        console.log("error inside axios");
+        console.log("error inside axios", error, endpoint);
         console.log("====================================");
         var newError = error;
         ERROR_HANDLER(newError, errors);
@@ -69,6 +69,7 @@ export const axiosCallAPI = (
       });
   } else if (method === "get") {
     if (params) {
+      console.log("1 get mai aya", endpoint, params, headerRequest);
       return axios
         .get(endpoint, params, headerRequest)
         .then((response) => {
@@ -102,10 +103,11 @@ export const axiosCallAPI = (
           //return error.response.data.errors;
         });
     } else {
+      console.log("in second get", params);
       return axios
         .get(endpoint, headerRequest)
         .then((response) => {
-          //  console.log("response status in axiox call", response.data.message);
+          console.log("response status in axiox call", response.data);
           //  console.log("response data in axiox call", response.data);
           //  console.log("response data.data in axiox call", response.data.data);
           if (response.data.status) {
@@ -145,7 +147,7 @@ export const axiosCallAPI = (
   }
 
   function ERROR_HANDLER(error, errors) {
-    // console.log("Error aareaya hai bhai", error.response);
+    console.log("Error aareaya hai bhai", error.response.status, params);
 
     if (error.response.status === 400) {
       // error = error.response.data.errors;

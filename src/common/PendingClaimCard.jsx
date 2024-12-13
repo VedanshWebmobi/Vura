@@ -17,10 +17,12 @@ export default function PendingClaimCard({ item, onPress, isClaim = false }) {
     >
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
         <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 14 }}>
-          {item.invoiceNo}
+          {item?.pi_response?.main_invoice_no
+            ? item?.pi_response?.main_invoice_no
+            : ""}
         </Text>
         <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 14 }}>
-          {isClaim ? item.date : ""}
+          {isClaim ? item?.pi_response?.main_invoice_date : ""}
         </Text>
       </View>
 
@@ -34,17 +36,18 @@ export default function PendingClaimCard({ item, onPress, isClaim = false }) {
       />
 
       <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 14 }}>
-        {item.title}
+        {item?.claims?.[0]?.claim_type}
       </Text>
       <Text
         style={{
           fontFamily: font.GoldPlay_Medium,
           fontSize: 13,
+          color: "#666666",
           marginTop: 10,
         }}
         numberOfLines={2}
       >
-        {item.desc}
+        {item?.claims?.[0]?.notes}
       </Text>
     </TouchableOpacity>
   );

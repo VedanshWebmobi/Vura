@@ -132,7 +132,7 @@ export default function App() {
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            // initialRouteName={token ? "Home" : "StartScreen"}
+            initialRouteName={token ? "Home" : "StartScreen"}
             // initialRouteName={token ? "HomeTab" : "StartScreen"}
           >
             <Stack.Screen name="Orders" component={Orders} />

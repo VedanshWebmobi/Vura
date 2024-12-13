@@ -8,7 +8,8 @@ import ClaimedHistory from "./ClaimedHistory";
 import CompletedHistory from "./CompletedHistory";
 import OrderHistoryTab from "../common/OrderHistorTab";
 
-export default function OrderHistory({ navigation }) {
+export default function OrderHistory({ searchText }) {
+  // console.log("HEre is the order navi", navigation);
   const Tab = createMaterialTopTabNavigator();
   return (
     <View style={{ flex: 1 }}>
@@ -24,8 +25,8 @@ export default function OrderHistory({ navigation }) {
             <CompletedHistory
               name="COMPLETED"
               catID="completed" // You can customize this value as per your logic
-              p_navigation={navigation}
-              //   search={search}
+              // p_navigation={navigation}
+              searchText={searchText}
               //   setSearch={setSearch}
             />
           )}
@@ -37,8 +38,8 @@ export default function OrderHistory({ navigation }) {
             <PendingHistory
               name="PENDING"
               catID="pending" // You can customize this value as per your logic
-              p_navigation={navigation}
-              //  search={search}
+              //   p_navigation={navigation}
+              searchText={searchText}
               //   setSearch={setSearch}
             />
           )}
@@ -50,8 +51,8 @@ export default function OrderHistory({ navigation }) {
             <ClaimedHistory
               name="CLAIMED"
               catID="claimed" // You can customize this value as per your logic
-              p_navigation={navigation}
-              //   search={search}
+              //  p_navigation={navigation}
+              searchText={searchText}
               //   setSearch={setSearch}
             />
           )}

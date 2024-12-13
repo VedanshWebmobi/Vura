@@ -181,8 +181,18 @@ export default function Orders({
           tabBar={(props) => <MyTabBar {...props} />}
           swipeEnabled={false}
         >
-          <Tab.Screen name="NEW INVOICE" component={InvoiceList} />
-          <Tab.Screen name="ORDERS HISTORY" component={OrderHistory} />
+          <Tab.Screen
+            name="NEW INVOICE"
+            children={() => (
+              <InvoiceList searchText={searchText} setSearch={setSearch} />
+            )}
+          />
+          <Tab.Screen
+            name="ORDERS HISTORY"
+            children={() => (
+              <OrderHistory searchText={searchText} setSearch={setSearch} />
+            )}
+          />
         </Tab.Navigator>
         <DistributerSearch
           isVisible={isSearchVisible}

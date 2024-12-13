@@ -13,10 +13,15 @@ import {
   Easing,
   Alert,
   SafeAreaView,
+  Linking,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import { colors, font, icon } from "../constants";
 import stylesCommon from "../Themes/stylesCommon";
+import moment from "moment";
+import * as FileSystem from "expo-file-system";
+import * as DocumentPicker from "expo-document-picker";
+import * as Sharing from "expo-sharing";
 
 export default function InvoiceCard({
   item,
@@ -26,6 +31,8 @@ export default function InvoiceCard({
   isClaim = false,
   isEdit = false,
   onEditPress,
+  onAcceptClaim,
+  onPdfPress,
 }) {
   const [showView, setSHowView] = useState(false);
   const SCREEN_DIMENSIONS = Dimensions.get("window");
@@ -35,6 +42,8 @@ export default function InvoiceCard({
     inputRange: [1, 2],
     outputRange: [1, 0.9], // You can adjust the output range to control the stretching size
   });
+  const [downloading, setDownloading] = useState(false);
+  const [downloadPath, setDownloadPath] = useState("");
   const stretch = (stretch_Value) => {
     Animated.sequence([
       Animated.timing(stretch_Value, {
@@ -75,6 +84,11 @@ export default function InvoiceCard({
     });
   };
 
+  const handleImagePress = (imageUrl) => {
+    // You can replace this with a download function if needed
+    Linking.openURL(imageUrl);
+  };
+
   return (
     <View
       style={{
@@ -102,7 +116,7 @@ export default function InvoiceCard({
           fontSize: 26,
         }}
       >
-        {item.invoiceNo}
+        {item?.pi_response?.main_invoice_no}
       </Text>
       <Text
         style={{
@@ -111,7 +125,7 @@ export default function InvoiceCard({
           marginTop: 5,
         }}
       >
-        {item.date}
+        {moment(item?.pi_response?.main_invoice_date).format("MMMM DD, YYYY")}
       </Text>
 
       {isEdit && (
@@ -141,21 +155,33 @@ export default function InvoiceCard({
       {isEdit ? (
         <View>
           <View style={{ gap: 8 }}>
-            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 13 }}>
+            <Text
+              style={{
+                fontFamily: font.GoldPlay_Medium,
+                fontSize: 13,
+                color: "#666666",
+              }}
+            >
               Claimed Title
             </Text>
 
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}>
-              {item.title}
+              {item?.claims?.[0]?.claim_type}
             </Text>
           </View>
-          <View style={{ gap: 8, marginTop: 15, marginBottom: 35 }}>
-            <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 13 }}>
+          <View style={{ gap: 8, marginTop: 15, marginBottom: 20 }}>
+            <Text
+              style={{
+                fontFamily: font.GoldPlay_Medium,
+                fontSize: 13,
+                color: "#666666",
+              }}
+            >
               Description
             </Text>
 
             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 13 }}>
-              {item.desc}
+              {item?.claims?.[0]?.notes}
             </Text>
           </View>
         </View>
@@ -167,17 +193,175 @@ export default function InvoiceCard({
         <View>
           <View style={{ gap: 8 }}>
             <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 15 }}>
-              {item.title}
+              {item?.claims?.[0]?.claim_type}
             </Text>
           </View>
-          <View style={{ gap: 8, marginTop: 15, marginBottom: 35 }}>
+          <View style={{ gap: 8, marginTop: 15, marginBottom: 10 }}>
             <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 13 }}>
-              {item.desc}
+              {item?.claims?.[0]?.notes}
             </Text>
           </View>
         </View>
       ) : (
         ""
+      )}
+
+      {!buttons && (isClaim || isEdit) && (
+        <View style={{ marginBottom: 25 }}>
+          <Text
+            style={{
+              fontFamily: font.GoldPlay_Medium,
+              fontSize: 13,
+              color: "#666666",
+              marginBottom: 8,
+            }}
+          >
+            Attachments
+          </Text>
+
+          {item?.claims?.[0]?.document &&
+            item?.claims?.[0]?.document.map((imageUrl, index) => {
+              const imageName = `Image ${index + 1}`; // Generate names like "Image 1", "Image 2", etc.
+
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleImagePress(imageUrl)} // Clicking the name will open the image
+                >
+                  <View style={{ marginBottom: 10 }}>
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 16,
+                        color: "blue",
+                        textDecorationLine: "underline", // Make the name clickable like a link
+                      }}
+                    >
+                      {imageName}{" "}
+                      {/* Display static name like "Image 1", "Image 2", etc. */}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+
+          {item?.claims?.[0].operator_status !== null && (
+            <View style={{ marginTop: 10 }}>
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 14,
+                  color: "black",
+                  marginBottom: 8,
+                }}
+              >
+                Operator Comments
+              </Text>
+
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 13,
+                  color: "#666666",
+                  marginBottom: 8,
+                }}
+              >
+                Note
+              </Text>
+
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 13,
+                  marginBottom: 20,
+                }}
+              >
+                {item?.claims?.[0]?.operator_remarks}
+              </Text>
+
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 13,
+                  color: "#666666",
+                  marginBottom: 8,
+                }}
+              >
+                Attachments
+              </Text>
+
+              {item?.claims?.[0]?.operator_attachment &&
+                item?.claims?.[0]?.operator_attachment.map(
+                  (imageUrl, index) => {
+                    const imageName = `Image ${index + 1}`; // Generate names like "Image 1", "Image 2", etc.
+
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => handleImagePress(imageUrl)} // Clicking the name will open the image
+                      >
+                        <View style={{ marginBottom: 10 }}>
+                          <Text
+                            style={{
+                              fontFamily: font.GoldPlay_Medium,
+                              fontSize: 16,
+                              color: "blue",
+                              textDecorationLine: "underline", // Make the name clickable like a link
+                            }}
+                          >
+                            {imageName}{" "}
+                            {/* Display static name like "Image 1", "Image 2", etc. */}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  }
+                )}
+
+              {item?.claims?.[0]?.operator_status !== "" && (
+                <View>
+                  <Text
+                    style={{
+                      fontFamily: font.GoldPlay_Medium,
+                      fontSize: 13,
+                      color: "#666666",
+                      marginBottom: 8,
+                      marginTop: 12,
+                    }}
+                  >
+                    Status
+                  </Text>
+
+                  {item?.claims?.[0]?.operator_status === "1" ? (
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 13,
+                        marginBottom: 20,
+                        color: "green",
+                      }}
+                    >
+                      Accepted
+                    </Text>
+                  ) : item?.claims?.[0]?.operator_status === "2" ? (
+                    <Text
+                      style={{
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 13,
+                        marginBottom: 20,
+                        color: "red",
+                      }}
+                    >
+                      Rejected
+                    </Text>
+                  ) : (
+                    ""
+                  )}
+                </View>
+              )}
+            </View>
+          )}
+        </View>
       )}
 
       <View
@@ -204,10 +388,10 @@ export default function InvoiceCard({
               marginTop: 5,
             }}
           >
-            {item.totalAmount}
+            {item?.pi_response?.main_total}
           </Text>
         </View>
-        <View
+        <TouchableOpacity
           style={{
             flexDirection: "row",
             gap: 6,
@@ -218,6 +402,7 @@ export default function InvoiceCard({
             padding: 10,
             paddingHorizontal: 12,
           }}
+          onPress={onPdfPress}
         >
           <Image
             source={icon.PDF_DIS}
@@ -231,7 +416,7 @@ export default function InvoiceCard({
           >
             PDF
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {buttons && (
@@ -286,6 +471,39 @@ export default function InvoiceCard({
               }}
             >
               CLAIM
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {isEdit && item?.claims?.[0]?.operator_status === "1" && (
+        <View
+          style={{
+            flex: 1,
+
+            alignItems: "flex-end",
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              borderRadius: 30,
+
+              backgroundColor: "#000",
+              width: SCREEN_DIMENSIONS.width / 2.8,
+              height: 45,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={onAcceptClaim}
+          >
+            <Text
+              style={{
+                color: "#fff",
+                fontFamily: font.GoldPlay_SemiBold,
+                fontSize: 16,
+              }}
+            >
+              ACCEPT
             </Text>
           </TouchableOpacity>
         </View>

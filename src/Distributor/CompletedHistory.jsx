@@ -13,103 +13,134 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Preference from "../StoreData/Preference";
 import DateRangePickerModal from "../common/DateRangePickerModal";
-import { font, icon } from "../constants";
+import { colors, ExpoSecureKey, font, icon } from "../constants";
+import { axiosCallAPI } from "../Api/Axios";
+import { COMPLETED_HISTORY, WITHDRAW_HISTORY } from "../Api/Utils";
+import axios from "axios";
+import moment from "moment";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CompletedHistory({ p_navigation, refresh }) {
-  const [walletData, setWalletData] = useState([
-    { id: 1, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 2, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 3, date: "August 29, 2024", invoieNo: "VSA/09/634/19-25" },
-    { id: 4, date: "August 22, 2024", invoieNo: "VSA/09/634/21-25" },
-    { id: 5, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 6, date: "August 2, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 7, date: "August 23, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 8, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 9, date: "August 9, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 10, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 1, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 2, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 3, date: "August 29, 2024", invoieNo: "VSA/09/634/19-25" },
-    { id: 4, date: "August 22, 2024", invoieNo: "VSA/09/634/21-25" },
-    { id: 5, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 6, date: "August 2, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 7, date: "August 23, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 8, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 9, date: "August 9, 2024", invoieNo: "VSA/09/634/24-25" },
-    { id: 10, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
-  ]);
+export default function CompletedHistory({ searchText }) {
+  // const [orderHistory, setOrderHistory] = useState([
+  //   { id: 1, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 2, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 3, date: "August 29, 2024", invoieNo: "VSA/09/634/19-25" },
+  //   { id: 4, date: "August 22, 2024", invoieNo: "VSA/09/634/21-25" },
+  //   { id: 5, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 6, date: "August 2, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 7, date: "August 23, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 8, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 9, date: "August 9, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 10, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 1, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 2, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 3, date: "August 29, 2024", invoieNo: "VSA/09/634/19-25" },
+  //   { id: 4, date: "August 22, 2024", invoieNo: "VSA/09/634/21-25" },
+  //   { id: 5, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 6, date: "August 2, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 7, date: "August 23, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 8, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 9, date: "August 9, 2024", invoieNo: "VSA/09/634/24-25" },
+  //   { id: 10, date: "September 02, 2024", invoieNo: "VSA/09/634/24-25" },
+  // ]);
+
+  const [orderHistory, setOrderHistory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loader, setloader] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const navigation = useNavigation();
+
+  // Function to handle date range selection from the modal
+  const handleDateRangeSelected = (start, end) => {
+    console.log("Date Range Selected:", start, end);
+    setStartDate(start);
+    setEndDate(end);
+    setCurrentPage(1);
+    fetchOrderHistory(start, end);
+  };
 
   useEffect(() => {
-    // if(walletData.length > 0)
-    //  {
-    console.log("Refresh", refresh);
-
-    fetchWalletData();
-    //}
+    if (orderHistory?.length > 0) {
+      fetchOrderHistory();
+    }
   }, [currentPage]);
+
+  useEffect(() => {
+    fetchOrderHistory(startDate, endDate);
+  }, [searchText]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchOrderHistory();
+    }, [])
+  );
 
   useFocusEffect(
     React.useCallback(() => {
       setCurrentPage(1);
     }, [])
   );
+
   const LoadMoreData = () => {
-    if (walletData.length > 0) {
+    if (orderHistory?.length > 0) {
       if (currentPage < totalPages) {
         setCurrentPage(currentPage + 1);
       }
     }
   };
-  const fetchWalletData = async () => {
-    //setloader(true);
-    if (currentPage > totalPages) {
-      return;
-    }
-    // setIsLoading(true);
+
+  const fetchOrderHistory = async (startDate, endDate) => {
+    setloader(true);
+    console.log(
+      "Fetching order history Of Confirmed:",
+      moment(startDate).format("YYYY-MM-DD"),
+      startDate,
+      "endDate:",
+      moment(endDate).format("YYYY-MM-DD"),
+      endDate
+    );
     try {
-      const requestOptions = {
-        headers: {
-          Accept: "application/json",
-          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
-        },
-        params: {
-          page: currentPage, // Pass the current page as a query parameter
-          per_page: 10, // You may need to adjust this based on your API's pagination settings
-        },
+      const token = await Preference.getValueFor(ExpoSecureKey.TOKEN);
+
+      const params = {
+        page: currentPage,
+        per_page: 10,
+        type: "confirmed",
+        startdate:
+          startDate !== undefined ? moment(startDate).format("YYYY-MM-DD") : "",
+        enddate:
+          endDate !== undefined ? moment(endDate).format("YYYY-MM-DD") : "",
+        search: searchText,
       };
 
-      const response = await axiosCallAPI(
-        "get",
-        WITHDRAW_HISTORY,
-        "",
-        requestOptions,
-        true,
-        p_navigation
-      );
-      console.log("WithDrawal History", response.transaction_log.result);
-      const newData = response.transaction_log.result;
-      if (currentPage != 1) {
-        setWalletData([...walletData, ...newData]);
+      const headers = {
+        Accept: "application/json",
+        Authorization: token,
+      };
+
+      const response = await axios.get(COMPLETED_HISTORY, {
+        headers: headers,
+        params: params,
+      });
+
+      const newData = response.data.data.result;
+
+      if (currentPage !== 1) {
+        setOrderHistory([...orderHistory, ...newData]);
       } else {
-        setWalletData(newData);
+        setOrderHistory(newData);
       }
-      //  if(response.client_data)
-      //  {
-      //  setwalletAmount(response.client_data.available_balance);
-      //  setTotalAmount(response.client_data.received_amount);
-      //  setWithdrawalAmount(response.client_data.withdrawal_amount);
-      //  }
-      setTotalPages(response.transaction_log.pages);
-      // setCurrentPage(currentPage + 1);
+
+      setTotalPages(response.data.pages);
     } catch (error) {
-      console.error("Error fetching wallet data:", error);
+      console.error("Error fetching order history:", error);
     } finally {
-      // setIsLoading(false);
-      // setloader(false);
+      setloader(false);
     }
   };
 
@@ -120,7 +151,7 @@ export default function CompletedHistory({ p_navigation, refresh }) {
         backgroundColor: index % 2 == 0 ? "#fff" : "#f2f2f2",
         padding: 12,
       }}
-      onPress={() => p_navigation.navigate("CompleteOrder")}
+      onPress={() => navigation.navigate("CompleteOrder", { item: item })}
     >
       <View
         style={{
@@ -131,23 +162,25 @@ export default function CompletedHistory({ p_navigation, refresh }) {
       >
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 12 }}>
-            {item.date}
+            {moment(item?.pi_response?.main_invoice_date).format(
+              "MMMM DD, YYYY"
+            )}
           </Text>
         </View>
 
         <View style={{}}>
           <Text style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 12 }}>
-            {item.invoieNo}
+            {item?.pi_response?.main_invoice_no}
           </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 
-  const renderFooter = (type) => {
+  const renderFooter = () => {
     return (
       <View>
-        {currentPage < totalPages && walletData.length > 0 && (
+        {currentPage < totalPages && orderHistory?.length > 0 && (
           <Progress.CircleSnail
             size={50}
             indeterminate={true}
@@ -193,6 +226,7 @@ export default function CompletedHistory({ p_navigation, refresh }) {
         justifyContent: "space-between",
         marginHorizontal: 10,
         marginBottom: 15,
+        paddingTop: 5,
       }}
     >
       <TouchableOpacity
@@ -210,6 +244,19 @@ export default function CompletedHistory({ p_navigation, refresh }) {
           source={icon.FILTER_DIS}
           style={{ width: 20, height: 20, resizeMode: "contain" }}
         />
+        {startDate && endDate && (
+          <View
+            style={{
+              backgroundColor: colors.ERROR_RED,
+              height: 8,
+              width: 8,
+              borderRadius: 100,
+              right: -3,
+              top: -2,
+              position: "absolute",
+            }}
+          />
+        )}
       </TouchableOpacity>
       <View>
         <Text style={{ fontFamily: font.GoldPlay_Medium, fontSize: 14 }}>
@@ -221,20 +268,24 @@ export default function CompletedHistory({ p_navigation, refresh }) {
 
   return (
     <View>
-      <DateRangePickerModal isVisible={isModalVisible} onClose={closeModal} />
+      <DateRangePickerModal
+        isVisible={isModalVisible}
+        onClose={closeModal}
+        onDateRangeSelected={handleDateRangeSelected}
+      />
       <FlatList
-        data={walletData}
+        data={orderHistory}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        //  keyExtractor={(item) => item}
         showsVerticalScrollIndicator={false}
         onEndReached={LoadMoreData}
         onEndReachedThreshold={0.1}
         style={{
           marginHorizontal: 15,
-          marginTop: 22,
+          marginTop: 17,
           marginBottom: 35,
         }}
-        ListFooterComponent={renderFooter("wallet")}
+        ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmptyComponent}
         ListHeaderComponent={renderHeader}
       />

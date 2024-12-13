@@ -12,14 +12,21 @@ import {
 import DatePicker from "react-native-date-picker";
 import { font, icon } from "../constants";
 import { SCREEN_WIDTH } from "../Themes/stylesCommon";
+import CommonAlert from "./CommonAlert";
 
-const DateRangePickerModal = ({ isVisible, onClose }) => {
+const DateRangePickerModal = ({ isVisible, onClose, onDateRangeSelected }) => {
   // States to manage modal visibility and selected dates
   const [openModal, setOpenModal] = useState(false);
   const [openStartDate, setOpenStartDate] = useState(false);
   const [openEndDate, setOpenEndDate] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
+
+  const [visible, setVisible] = React.useState(false);
+  const hideModal = () => setVisible(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [iconColor, setIconColor] = useState("red");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Function to open the modal
   const toggleModal = () => setOpenModal(!openModal);
@@ -36,8 +43,33 @@ const DateRangePickerModal = ({ isVisible, onClose }) => {
   };
 
   const closeModal = () => {
+    if (!startDate || !endDate) {
+      setIconColor("red");
+      setAlertTitle("OPPS!");
+      setErrorMessage(
+        "Please select both start and end dates before submitting"
+      );
+      setVisible(true);
+
+      return; // Prevent closing the modal if validation fails
+    }
+    onDateRangeSelected(startDate, endDate);
+    onClose();
+    // setStartDate("");
+    // setEndDate("");
+  };
+
+  const closewithoutFeedback = () => {
     setStartDate("");
     setEndDate("");
+    onDateRangeSelected(undefined, undefined);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setStartDate("");
+    setEndDate("");
+    onDateRangeSelected(undefined, undefined);
     onClose();
   };
 
@@ -50,7 +82,21 @@ const DateRangePickerModal = ({ isVisible, onClose }) => {
         transparent={true}
         onRequestClose={onClose}
       >
-        <TouchableWithoutFeedback onPress={() => closeModal()}>
+        <CommonAlert
+          visible={visible} // Pass visibility state to the CommonAlert component
+          hideModal={hideModal} // Pass function to hide the modal
+          handleOkPress={() => {
+            setVisible(false);
+          }} // Pass function to handle Ok button press
+          //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+          title={alertTitle} // Pass title text
+          iconName="error"
+          iconColor={iconColor}
+          bodyText={errorMessage} // Pass body text
+          // cancelButton={true} // Pass whether Cancel button should be displayed
+        />
+
+        <TouchableWithoutFeedback>
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               <View style={styles.dateRow}>
@@ -91,12 +137,27 @@ const DateRangePickerModal = ({ isVisible, onClose }) => {
 
               <View
                 style={{
-                  alignItems: "flex-end",
+                  //  alignItems: "center",
+
                   marginEnd: 8,
                   marginTop: 10,
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  gap: 15,
                   marginBottom: 25,
                 }}
               >
+                <TouchableOpacity onPress={handleReset}>
+                  <Text
+                    style={{
+                      fontFamily: font.GoldPlay_SemiBold,
+                      fontSize: 16,
+                      textDecorationLine: "underline",
+                    }}
+                  >
+                    RESET
+                  </Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={closeModal}>
                   <Text
                     style={{
