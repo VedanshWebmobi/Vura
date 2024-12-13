@@ -7,6 +7,7 @@ import RejectionModal from "../common/RejectionModal";
 import { DOWNLOAD_INVOICE, ORDERS, ORDER_ACCEPT, PRODUCTS } from "../Api/Utils";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Preference from "../StoreData/Preference";
+import * as Progress from "react-native-progress";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
@@ -191,7 +192,7 @@ const InvoiceList = ({ navigation, searchText }) => {
         setInvoiceData(newData);
       }
 
-      setTotalPages(response.data.pages);
+      setTotalPages(response?.data?.data?.pages);
     } catch (error) {
       console.error("Error fetching order history:", error);
     } finally {

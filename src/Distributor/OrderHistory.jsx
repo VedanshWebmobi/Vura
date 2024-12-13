@@ -7,6 +7,7 @@ import PendingHistory from "./PendingHistory";
 import ClaimedHistory from "./ClaimedHistory";
 import CompletedHistory from "./CompletedHistory";
 import OrderHistoryTab from "../common/OrderHistorTab";
+import * as Progress from "react-native-progress";
 
 export default function OrderHistory({ searchText }) {
   // console.log("HEre is the order navi", navigation);
