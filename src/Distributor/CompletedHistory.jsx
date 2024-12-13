@@ -21,6 +21,7 @@ import { COMPLETED_HISTORY, WITHDRAW_HISTORY } from "../Api/Utils";
 import axios from "axios";
 import moment from "moment";
 import { useNavigation } from "@react-navigation/native";
+import * as Progress from "react-native-progress";
 
 export default function CompletedHistory({ searchText }) {
   // const [orderHistory, setOrderHistory] = useState([
@@ -54,10 +55,12 @@ export default function CompletedHistory({ searchText }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const navigation = useNavigation();
+  const [showDot, setshowDot] = useState(false);
 
   // Function to handle date range selection from the modal
   const handleDateRangeSelected = (start, end) => {
     console.log("Date Range Selected:", start, end);
+    setshowDot(true);
     setStartDate(start);
     setEndDate(end);
     setCurrentPage(1);
@@ -76,7 +79,9 @@ export default function CompletedHistory({ searchText }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      setshowDot(false);
       fetchOrderHistory();
+      //resetDates();
     }, [])
   );
 
@@ -85,6 +90,13 @@ export default function CompletedHistory({ searchText }) {
       setCurrentPage(1);
     }, [])
   );
+
+  // const resetDates = () => {
+  //   setStartDate("");
+  //   setEndDate("");
+
+  //   fetchOrderHistory(undefined, undefined);
+  // };
 
   const LoadMoreData = () => {
     if (orderHistory?.length > 0) {
@@ -99,7 +111,7 @@ export default function CompletedHistory({ searchText }) {
     console.log(
       "Fetching order history Of Confirmed:",
       moment(startDate).format("YYYY-MM-DD"),
-      startDate,
+      startDate !== undefined,
       "endDate:",
       moment(endDate).format("YYYY-MM-DD"),
       endDate
@@ -128,6 +140,7 @@ export default function CompletedHistory({ searchText }) {
         params: params,
       });
 
+      console.log("response data:", response);
       const newData = response.data.data.result;
 
       if (currentPage !== 1) {
@@ -135,8 +148,8 @@ export default function CompletedHistory({ searchText }) {
       } else {
         setOrderHistory(newData);
       }
-
-      setTotalPages(response.data.pages);
+      console.log("here is the pages", response?.data?.data?.pages);
+      setTotalPages(response?.data?.data?.pages);
     } catch (error) {
       console.error("Error fetching order history:", error);
     } finally {
@@ -244,7 +257,7 @@ export default function CompletedHistory({ searchText }) {
           source={icon.FILTER_DIS}
           style={{ width: 20, height: 20, resizeMode: "contain" }}
         />
-        {startDate && endDate && (
+        {startDate && endDate && showDot && (
           <View
             style={{
               backgroundColor: colors.ERROR_RED,
@@ -272,12 +285,14 @@ export default function CompletedHistory({ searchText }) {
         isVisible={isModalVisible}
         onClose={closeModal}
         onDateRangeSelected={handleDateRangeSelected}
+        //resetDates={resetDates}
       />
       <FlatList
         data={orderHistory}
         renderItem={renderItem}
         //  keyExtractor={(item) => item}
-        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item?.pi_response?.order_id?.toString()}
+        showsVerticalScrollIndicator={true}
         onEndReached={LoadMoreData}
         onEndReachedThreshold={0.1}
         style={{

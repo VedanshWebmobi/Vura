@@ -11,6 +11,7 @@ import RejectionModal from "../common/RejectionModal";
 import * as Preference from "../StoreData/Preference";
 import { DOWNLOAD_INVOICE } from "../Api/Utils";
 import axios from "axios";
+import * as Progress from "react-native-progress";
 
 const ClaimedOrder = ({ navigation, route }) => {
   const { item } = route.params;

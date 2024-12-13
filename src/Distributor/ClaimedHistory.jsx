@@ -17,6 +17,7 @@ import * as Preference from "../StoreData/Preference";
 import { COMPLETED_HISTORY, WITHDRAW_HISTORY } from "../Api/Utils";
 import axios from "axios";
 import moment from "moment";
+import * as Progress from "react-native-progress";
 
 export default function ClaimedHistory({ searchText }) {
   const [orderHistory, setOrderHistory] = useState([]);
@@ -99,7 +100,7 @@ export default function ClaimedHistory({ searchText }) {
         setOrderHistory(newData);
       }
 
-      setTotalPages(response.data.pages);
+      setTotalPages(response?.data?.data?.pages);
     } catch (error) {
       console.error("Error fetching order history:", error);
     } finally {

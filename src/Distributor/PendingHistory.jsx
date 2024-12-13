@@ -14,6 +14,7 @@ import { colors, ExpoSecureKey, font, icon } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Preference from "../StoreData/Preference";
+import * as Progress from "react-native-progress";
 import { COMPLETED_HISTORY, WITHDRAW_HISTORY } from "../Api/Utils";
 import axios from "axios";
 import moment from "moment";
@@ -123,7 +124,7 @@ export default function PendingHistory({ searchText }) {
       } else {
         setOrderHistory(newData);
       }
-      setTotalPages(response.data.pages);
+      setTotalPages(response?.data?.data?.pages);
     } catch (error) {
       console.error("Error fetching order history:", error);
     } finally {

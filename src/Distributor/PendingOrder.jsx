@@ -18,6 +18,7 @@ import RejectionModal from "../common/RejectionModal";
 import { CLAIM_COMPLETED, DOWNLOAD_INVOICE, ORDER_CLAIM } from "../Api/Utils";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Preference from "../StoreData/Preference";
+import * as Progress from "react-native-progress";
 import axios from "axios";
 
 const PendingOrder = ({ route, navigation }) => {

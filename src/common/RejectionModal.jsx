@@ -138,6 +138,10 @@ const RejectionModal = ({
       formData.append(`document[${index}]`, newImage);
     });
 
+    if (!isEdit) {
+      formData.append(`availableImg[0]`, "");
+    }
+
     formData.append("notes", description);
     console.log("Appending notes:", description); // Log the description
 

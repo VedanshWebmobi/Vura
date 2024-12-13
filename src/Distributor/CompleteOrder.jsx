@@ -10,6 +10,7 @@ import { colors, ExpoSecureKey } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DOWNLOAD_INVOICE } from "../Api/Utils";
 import axios from "axios";
+import * as Progress from "react-native-progress";
 
 const CompleteOrder = ({ route, navigation }) => {
   const { item } = route.params; // Extract 'item' from route.params

@@ -476,38 +476,40 @@ export default function InvoiceCard({
         </View>
       )}
 
-      {isEdit && item?.claims?.[0]?.operator_status === "1" && (
-        <View
-          style={{
-            flex: 1,
-
-            alignItems: "flex-end",
-          }}
-        >
-          <TouchableOpacity
+      {isEdit &&
+        (item?.claims?.[0]?.operator_status === "1" ||
+          item?.claims?.[0]?.operator_status === "2") && (
+          <View
             style={{
-              borderRadius: 30,
+              flex: 1,
 
-              backgroundColor: "#000",
-              width: SCREEN_DIMENSIONS.width / 2.8,
-              height: 45,
-              alignItems: "center",
-              justifyContent: "center",
+              alignItems: "flex-end",
             }}
-            onPress={onAcceptClaim}
           >
-            <Text
+            <TouchableOpacity
               style={{
-                color: "#fff",
-                fontFamily: font.GoldPlay_SemiBold,
-                fontSize: 16,
+                borderRadius: 30,
+
+                backgroundColor: "#000",
+                width: SCREEN_DIMENSIONS.width / 2.8,
+                height: 45,
+                alignItems: "center",
+                justifyContent: "center",
               }}
+              onPress={onAcceptClaim}
             >
-              ACCEPT
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
+              <Text
+                style={{
+                  color: "#fff",
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 16,
+                }}
+              >
+                ACCEPT
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
     </View>
   );
 }
