@@ -178,11 +178,11 @@ const InvoiceList = ({ navigation, searchText }) => {
         headers: headers,
         params: params,
       });
-      console.log(
-        "Full Response of invoic3:",
-        response.data.data.result,
-        params
-      );
+      // console.log(
+      //   "Full Response of invoic3:",
+      //   response.data.data.result,
+      //   params
+      // );
 
       const newData = response.data.data.result;
       //console.error("Your response vvv:", JSON.stringify(newData));

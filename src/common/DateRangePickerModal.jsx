@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,7 +14,12 @@ import { font, icon } from "../constants";
 import { SCREEN_WIDTH } from "../Themes/stylesCommon";
 import CommonAlert from "./CommonAlert";
 
-const DateRangePickerModal = ({ isVisible, onClose, onDateRangeSelected }) => {
+const DateRangePickerModal = ({
+  isVisible,
+  onClose,
+  onDateRangeSelected,
+  showDot,
+}) => {
   // States to manage modal visibility and selected dates
   const [openModal, setOpenModal] = useState(false);
   const [openStartDate, setOpenStartDate] = useState(false);
@@ -72,6 +77,13 @@ const DateRangePickerModal = ({ isVisible, onClose, onDateRangeSelected }) => {
     onDateRangeSelected(undefined, undefined);
     onClose();
   };
+
+  useEffect(() => {
+    if (!showDot) {
+      setStartDate("");
+      setEndDate("");
+    }
+  }, [showDot]);
 
   return (
     <View style={styles.container}>

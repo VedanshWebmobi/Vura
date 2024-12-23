@@ -28,9 +28,11 @@ export default function ClaimedHistory({ searchText }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const navigation = useNavigation();
+  const [showDot, setshowDot] = useState(false);
 
   const handleDateRangeSelected = (start, end) => {
     console.log("Date Range Selected:", start, end);
+    setshowDot(true);
     setStartDate(start);
     setEndDate(end);
     setCurrentPage(1);
@@ -50,8 +52,8 @@ export default function ClaimedHistory({ searchText }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("startDate", startDate, endDate);
-      fetchOrderHistory(startDate, endDate);
+      setshowDot(false);
+      fetchOrderHistory();
     }, [])
   );
 
@@ -77,8 +79,14 @@ export default function ClaimedHistory({ searchText }) {
         page: currentPage,
         per_page: 10,
         type: "claim",
-        startdate: startDate ? moment(startDate).format("YYYY-MM-DD") : "", // Convert date to ISO string if present
-        enddate: endDate ? moment(endDate).format("YYYY-MM-DD") : "", // Convert date to ISO string if present
+        startdate:
+          startDate && moment(startDate).isValid()
+            ? moment(startDate).format("YYYY-MM-DD")
+            : "",
+        enddate:
+          endDate && moment(endDate).isValid()
+            ? moment(endDate).format("YYYY-MM-DD")
+            : "",
         search: searchText,
       };
 
@@ -163,7 +171,7 @@ export default function ClaimedHistory({ searchText }) {
           source={icon.FILTER_DIS}
           style={{ width: 20, height: 20, resizeMode: "contain" }}
         />
-        {startDate && endDate && (
+        {startDate && endDate && showDot && (
           <View
             style={{
               backgroundColor: colors.ERROR_RED,
@@ -220,6 +228,7 @@ export default function ClaimedHistory({ searchText }) {
         isVisible={isModalVisible}
         onClose={closeModal}
         onDateRangeSelected={handleDateRangeSelected}
+        showDot={showDot}
       />
       <FlatList
         data={orderHistory}

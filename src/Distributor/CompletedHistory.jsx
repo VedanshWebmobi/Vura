@@ -123,10 +123,15 @@ export default function CompletedHistory({ searchText }) {
         page: currentPage,
         per_page: 10,
         type: "confirmed",
+
         startdate:
-          startDate !== undefined ? moment(startDate).format("YYYY-MM-DD") : "",
+          startDate && moment(startDate).isValid()
+            ? moment(startDate).format("YYYY-MM-DD")
+            : "",
         enddate:
-          endDate !== undefined ? moment(endDate).format("YYYY-MM-DD") : "",
+          endDate && moment(endDate).isValid()
+            ? moment(endDate).format("YYYY-MM-DD")
+            : "",
         search: searchText,
       };
 
@@ -140,7 +145,7 @@ export default function CompletedHistory({ searchText }) {
         params: params,
       });
 
-      console.log("response data:", response);
+      console.log("response data of Conffffiremd:", response.data.data, params);
       const newData = response.data.data.result;
 
       if (currentPage !== 1) {
@@ -148,7 +153,7 @@ export default function CompletedHistory({ searchText }) {
       } else {
         setOrderHistory(newData);
       }
-      console.log("here is the pages", response?.data?.data?.pages);
+
       setTotalPages(response?.data?.data?.pages);
     } catch (error) {
       console.error("Error fetching order history:", error);
@@ -285,7 +290,7 @@ export default function CompletedHistory({ searchText }) {
         isVisible={isModalVisible}
         onClose={closeModal}
         onDateRangeSelected={handleDateRangeSelected}
-        //resetDates={resetDates}
+        showDot={showDot}
       />
       <FlatList
         data={orderHistory}

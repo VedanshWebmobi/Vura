@@ -27,11 +27,13 @@ export default function PendingHistory({ searchText }) {
   const [loader, setloader] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [showDot, setshowDot] = useState(false);
+
   const navigation = useNavigation();
 
   const handleDateRangeSelected = (start, end) => {
     console.log("Date Range Selected:", start, end);
-
+    setshowDot(true);
     setStartDate(start);
     setEndDate(end);
 
@@ -48,8 +50,8 @@ export default function PendingHistory({ searchText }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("startDate", startDate, endDate);
-      fetchOrderHistory(startDate, endDate);
+      setshowDot(false);
+      fetchOrderHistory();
     }, [])
   );
 
@@ -102,8 +104,14 @@ export default function PendingHistory({ searchText }) {
         page: currentPage,
         per_page: 10,
         type: "pending",
-        startdate: startDate ? moment(startDate).format("YYYY-MM-DD") : "", // Convert date to ISO string if present
-        enddate: endDate ? moment(endDate).format("YYYY-MM-DD") : "", // Convert date to ISO string if present
+        startdate:
+          startDate && moment(startDate).isValid()
+            ? moment(startDate).format("YYYY-MM-DD")
+            : "",
+        enddate:
+          endDate && moment(endDate).isValid()
+            ? moment(endDate).format("YYYY-MM-DD")
+            : "",
         search: searchText,
       };
 
@@ -163,7 +171,7 @@ export default function PendingHistory({ searchText }) {
           source={icon.FILTER_DIS}
           style={{ width: 20, height: 20, resizeMode: "contain" }}
         />
-        {startDate && endDate && (
+        {startDate && endDate && showDot && (
           <View
             style={{
               backgroundColor: colors.ERROR_RED,
@@ -220,6 +228,7 @@ export default function PendingHistory({ searchText }) {
         isVisible={isModalVisible}
         onClose={closeModal}
         onDateRangeSelected={handleDateRangeSelected}
+        showDot={showDot}
       />
       <FlatList
         data={orderHistory}
