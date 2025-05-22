@@ -18,9 +18,14 @@ import stylesCommon, {
 } from "../Themes/stylesCommon";
 import { colors, font, icon } from "../constants";
 import CommonHeaderNew from "../common/CommonHeader_new";
-
+import { axiosCallAPI } from "../Api/Axios";
+import { Loader } from "../common/Loader";
+import { PRODUCTS } from "../Api/Utils";
 export default function CashBack({ navigation }) {
   const [statusColor, setStatusColor] = useState(colors.YELLOW);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [couponData, setCouponData] = useState([]);
   const data = [
     { name: "VURA KrafTile (G)", point: "8" },
     { name: "VURA FasTile (G)", point: "15" },
@@ -40,10 +45,46 @@ export default function CashBack({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       setStatusColor(colors.YELLOW);
-
+      GetProductData();
       return () => {};
     }, [navigation])
   );
+  const GetProductData = async () => {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        params: {
+          search: "",
+          categoryId: 0,
+          page: 0, // Pass the current page as a query parameter
+          // You may need to adjust this based on your API's pagination settings
+        },
+      };
+      const response = await axiosCallAPI(
+        "get",
+        PRODUCTS,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+      const newData = response.result;
+      const filterArray = newData.filter(
+        (item) => parseFloat(item.couponValue) > 0
+      );
+      const CouponPrice = filterArray.sort(
+        (a, b) => parseFloat(a.couponValue) - parseFloat(b.couponValue)
+      );
+      setCouponData(CouponPrice);
+      console.log("Product Data => ", JSON.stringify(CouponPrice));
+    } catch (error) {
+      setCouponData([]);
+      console.error("Error fetching Product data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const HeaderView = () => {
     return (
       <View>
@@ -206,32 +247,50 @@ export default function CashBack({ navigation }) {
               </Text>
             </View>
             <View style={{ padding: 10 }}>
-              <HeaderView />
-              {data.map((item, index) => {
+              {couponData.length != 0 && !isLoading && <HeaderView />}
+              {couponData.length == 0 && !isLoading && (
+                <View
+                  style={{
+                    flex: 1,
+                    height: 300,
+                    alignContent: "center",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text style={{ fontFamily: "Gp_SemiBold", fontSize: 15 }}>
+                    No Data Found
+                  </Text>
+                </View>
+              )}
+              {couponData.map((item, index) => {
                 return (
                   <ChildView
-                    name={item.name}
-                    point={item.point}
+                    name={item.product_name}
+                    point={parseInt(item.couponValue)}
                     index={index}
                   />
                 );
               })}
-              <Text
-                style={{
-                  fontFamily: font.GoldPlay_SemiBold,
-                  fontSize: 13,
-                  color: "#000000",
-                  alignSelf: "center",
-                  padding: 10,
-                  marginTop: 10,
-                  textAlign: "center",
-                }}
-              >
-                Cashback Available in 20Kg. Bag Packings Only
-              </Text>
+              {couponData.length != 0 && !isLoading && (
+                <Text
+                  style={{
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: 13,
+                    color: "#000000",
+                    alignSelf: "center",
+                    padding: 10,
+                    marginTop: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  Cashback Available in 20Kg. Bag Packings Only
+                </Text>
+              )}
             </View>
           </View>
         </ScrollView>
+        <Loader loading={isLoading} />
       </SafeAreaView>
     </>
   );

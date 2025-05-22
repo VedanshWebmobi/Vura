@@ -106,13 +106,14 @@ export default function ProfileCustomView({
             placeholderTextColor={"#999999"}
             autoCapitalize={item_all_capital ? "characters" : "sentences"}
             onChangeText={(text) => {
+              const filtered = text.replace(/[^a-zA-Z0-9 ]/g, "");
               if (item_handle_account_number) {
-                item_handle_account_number(text);
+                item_handle_account_number(filtered);
               }
               if (item_handle_ifsc_code) {
-                item_handle_ifsc_code(text);
+                item_handle_ifsc_code(filtered);
               }
-              item_setValue(text);
+              item_setValue(filtered);
             }}
             cursorColor="white"
             maxLength={32}
@@ -271,17 +272,17 @@ export default function ProfileCustomView({
             placeholderTextColor={"#999999"}
             autoCapitalize={item_all_capital ? "characters" : "sentences"}
             onChangeText={(text) => {
-              console.log(text);
-
+              console.log("My Console => ", text);
+              const filtered = text.replace(/[^a-zA-Z0-9 ]/g, "");
               if (item_input === "only_alphabet") {
                 onInputChange(text);
               } else if (item_label === "Pin Code:") {
                 if (text.length >= 6) {
-                  GetDetailsFromPincode(text);
+                  GetDetailsFromPincode(filtered);
                 }
-                item_setValue(text);
+                item_setValue(filtered);
               } else {
-                item_setValue(text);
+                item_setValue(filtered);
                 // handleTextChange(text)
               }
             }}

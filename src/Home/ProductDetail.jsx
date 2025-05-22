@@ -40,6 +40,7 @@ export default function ProductDetail({ navigation, route }) {
     characteristics,
     description,
     usageGuide,
+    unit,
   } = route.params;
 
   console.log("Chars", characteristics);
@@ -201,7 +202,7 @@ export default function ProductDetail({ navigation, route }) {
               <Text
                 style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 30 }}
               >
-                {product_name}
+                {product_name + " - " + size + unit}
               </Text>
               <Text
                 style={{
@@ -289,31 +290,40 @@ export default function ProductDetail({ navigation, route }) {
               </Text>
             </View>
           </View>
-          <View
-            style={{ height: 2, backgroundColor: colors.YELLOW, margin: 10 }}
-          />
-          <View style={{ padding: 15 }}>
-            <View style={{ marginBottom: 5 }}>
-              <Text
-                style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
-              >
-                Characteristics
-              </Text>
-            </View>
-
+          {characteristics.trim().length > 0 && (
             <View>
-              <Text>
-                <Text
-                  style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
-                >
-                  {characteristics}
-                </Text>
-              </Text>
+              <View
+                style={{
+                  height: 2,
+                  backgroundColor: colors.YELLOW,
+                  margin: 10,
+                }}
+              />
+              <View style={{ padding: 15 }}>
+                <View style={{ marginBottom: 5 }}>
+                  <Text
+                    style={{ fontFamily: font.GoldPlay_SemiBold, fontSize: 18 }}
+                  >
+                    Characteristics
+                  </Text>
+                </View>
+
+                <View>
+                  <Text>
+                    <Text
+                      style={{ fontFamily: font.GoldPlay_Medium, fontSize: 16 }}
+                    >
+                      {characteristics}
+                    </Text>
+                  </Text>
+                </View>
+              </View>
             </View>
-          </View>
+          )}
           <View
             style={{ height: 2, backgroundColor: colors.YELLOW, margin: 10 }}
           />
+
           {usageGuide.length > 0 && (
             <View>
               <View style={{ padding: 15 }}>
@@ -378,92 +388,93 @@ export default function ProductDetail({ navigation, route }) {
               />
             </View>
           )}
-          <View>
-            <View style={{ padding: 15 }}>
-              <Text
-                style={{
-                  fontFamily: font.GoldPlay_SemiBold,
-                  fontSize: 18,
-                }}
-              >
-                Documents & Downloads
-              </Text>
-            </View>
+          {productDocuments.length > 0 && (
+            <View>
+              <View style={{ padding: 15 }}>
+                <Text
+                  style={{
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: 18,
+                  }}
+                >
+                  Documents & Downloads
+                </Text>
+              </View>
 
-            <SimpleGrid
-              data={productDocuments}
-              maxItemsPerRow={2}
-              renderItem={({ item, index }) => {
-                console.log("yeh hai bhai ", index);
-                return (
-                  <View style={{}} key={index}>
-                    <View
-                      style={{
-                        justifyContent: "space-around",
-                        alignItems: "center",
-                        marginTop: 10,
+              <SimpleGrid
+                data={productDocuments}
+                maxItemsPerRow={2}
+                renderItem={({ item, index }) => {
+                  console.log("yeh hai bhai ", index);
+                  return (
+                    <View style={{}} key={index}>
+                      <View
+                        style={{
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          marginTop: 10,
 
-                        // backgroundColor: "red",
-                      }}
-                    >
-                      <TouchableOpacity
-                        key={index}
-                        onPress={() =>
-                          downloadFile(
-                            item.productDocument,
-                            item.productDocName
-                          )
-                        }
+                          // backgroundColor: "red",
+                        }}
                       >
-                        <View
-                          style={{
-                            gap: 5,
-                            alignItems: "center",
-                          }}
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() =>
+                            downloadFile(
+                              item.productDocument,
+                              item.productDocName
+                            )
+                          }
                         >
-                          <Image
-                            source={require("../../assets/pdf.png")}
-                            style={{
-                              height: 80,
-                              width: 80,
-                              resizeMode: "contain",
-                              //backgroundColor: "blue",
-                            }}
-                          />
                           <View
                             style={{
-                              //backgroundColor: "red",
-                              // width: SCREEN_WIDTH / 2,
-                              padding: 5,
-                              marginTop: 5,
-                              borderRadius: 5,
+                              gap: 5,
+                              alignItems: "center",
                             }}
                           >
-                            {console.log(index)}
-
-                            <Text
+                            <Image
+                              source={require("../../assets/pdf.png")}
                               style={{
-                                fontFamily: font.GoldPlay_SemiBold,
-                                color: "black",
-                                fontSize: 14,
-                                textAlign: "center",
-                                textDecorationLine: "underline",
-                                height: 40,
+                                height: 80,
+                                width: 80,
+                                resizeMode: "contain",
+                                //backgroundColor: "blue",
                               }}
-                              numberOfLines={2}
+                            />
+                            <View
+                              style={{
+                                //backgroundColor: "red",
+                                // width: SCREEN_WIDTH / 2,
+                                padding: 5,
+                                marginTop: 5,
+                                borderRadius: 5,
+                              }}
                             >
-                              {item.productDocName}
-                            </Text>
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                );
-              }}
-            />
+                              {console.log(index)}
 
-            {/* {data.map((document, index) => {
+                              <Text
+                                style={{
+                                  fontFamily: font.GoldPlay_SemiBold,
+                                  color: "black",
+                                  fontSize: 14,
+                                  textAlign: "center",
+                                  textDecorationLine: "underline",
+                                  height: 40,
+                                }}
+                                numberOfLines={2}
+                              >
+                                {item.productDocName}
+                              </Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }}
+              />
+
+              {/* {data.map((document, index) => {
               return (
                 <View style={{ gap: 5 }} key={index}>
                   <View
@@ -504,7 +515,7 @@ export default function ProductDetail({ navigation, route }) {
                 </View>
               );
             })} */}
-            {/* <View style={{ gap: 5 }}>
+              {/* <View style={{ gap: 5 }}>
               <View
                 style={{
                   justifyContent: "space-around",
@@ -606,7 +617,8 @@ export default function ProductDetail({ navigation, route }) {
                 </View>
               </TouchableOpacity>
             </View> */}
-          </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

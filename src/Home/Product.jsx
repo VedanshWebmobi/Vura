@@ -335,7 +335,7 @@ export default function Product({
                       }}
                       numberOfLines={2}
                     >
-                      {item.product_name}
+                      {item.product_name + " - " + item.size + item.unit}
                     </Text>
                   </TouchableOpacity>
                 </View>

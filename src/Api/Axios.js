@@ -4,7 +4,7 @@ import axios from "axios";
 import * as Utils from "./Utils";
 import * as Preference from "../StoreData/Preference";
 import { Alert } from "react-native";
-
+import { StackActions, CommonActions } from "@react-navigation/native";
 import { ExpoSecureKey } from "../constants";
 import CommonAlert from "../common/CommonAlert";
 
@@ -160,11 +160,17 @@ export const axiosCallAPI = (
       // }
     } else if (error.response.status === 404) {
       //showMessage("API request not found", "error");
-    } else if (error.response.data === 401) {
+    } else if (error.response.status === 401) {
+      console.log("Error Handler => " + error.response.status);
       //showMessage(error.message.status);
-      Preference.SetData(ExpoSecureKey.IS_LOGIN, "false");
-      Preference.SetData(ExpoSecureKey.TOKEN, "");
-      navigation.dispatch(StackActions.replace("LoginScreen"));
+      Preference.save(ExpoSecureKey.IS_LOGIN, "false").then(() => {
+        Preference.deleteItem(ExpoSecureKey.TOKEN).then(() => {
+          navigation.dispatch(
+            CommonActions.reset({ index: 0, routes: [{ name: "PreLogin" }] })
+            //  StackActions.replace("PreLogin", { position: 0 })
+          );
+        });
+      });
     } else {
       //showMessage(error.message, "error");
     }
