@@ -42,13 +42,16 @@ import Wallet from "./src/Home/Wallet";
 import ProductDetail from "./src/Home/ProductDetail";
 import Notification from "./src/Home/Notification";
 
-
 import * as Preference from "./src/StoreData/Preference";
 import { ExpoSecureKey } from "./src/constants";
 import CreateProfileScreen from "./src/Screens/CreateProfileScreen";
 import HomeTabScreen from "./src/Home/HomeTabScreen";
 import WithdrawAmount from "./src/Home/WithdrawAmount";
 import QRCodeScanner_new from "./src/Home/Qr_CodeScann";
+import Orders from "./src/Distributor/Orders";
+import CompleteOrder from "./src/Distributor/CompleteOrder";
+import PendingOrder from "./src/Distributor/PendingOrder";
+import ClaimedOrder from "./src/Distributor/ClaimedOrder";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -129,16 +132,24 @@ export default function App() {
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            // initialRouteName={token ? "Home" : "StartScreen"}
-            initialRouteName={token ? "HomeTab" : "StartScreen"}
+            initialRouteName={token ? "Home" : "StartScreen"}
+            // initialRouteName={token ? "HomeTab" : "StartScreen"}
           >
+            <Stack.Screen name="Orders" component={Orders} />
+            <Stack.Screen name="CompleteOrder" component={CompleteOrder} />
+            <Stack.Screen name="PendingOrder" component={PendingOrder} />
+            <Stack.Screen name="ClaimedOrder" component={ClaimedOrder} />
             <Stack.Screen name="StartScreen" component={StartScreen} />
             <Stack.Screen name="PreLogin" component={PreLogin} />
             <Stack.Screen name="Category" component={Category} />
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="OTPScreen" component={OTPScreen} />
             <Stack.Screen name="Login_Success" component={LoginSuccessScreen} />
-            <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
+            <Stack.Screen
+              name="CreateProfile"
+              component={CreateProfileScreen}
+            />
+
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="CustomDrawer" component={CustomDrawer} />
             <Stack.Screen name="Product" component={Product} />
@@ -154,11 +165,13 @@ export default function App() {
             <Stack.Screen name="Scanner" component={Scanner} />
             <Stack.Screen name="Help" component={HelpAndSupport} />
             <Stack.Screen name="HomeTab" component={HomeTabScreen} />
-            <Stack.Screen name="CompleteProfile" component={CompleteProfileScreen} />
+            <Stack.Screen
+              name="CompleteProfile"
+              component={CompleteProfileScreen}
+            />
             <Stack.Screen name="Withdraw" component={WithdrawAmount} />
             <Stack.Screen name="QRScanner" component={QRCodeScanner_new} />
             <Stack.Screen name="Notification" component={Notification} />
-
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

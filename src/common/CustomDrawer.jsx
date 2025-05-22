@@ -35,6 +35,7 @@ export default function CustomDrawer({ navigation }) {
   const [profileDetails, setProfileDetails] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
   // const menuItems = [
   //   "Home",
@@ -51,6 +52,7 @@ export default function CustomDrawer({ navigation }) {
     Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
     Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
     Preference.deleteItem(ExpoSecureKey.TOKEN);
+    Preference.deleteItem(ExpoSecureKey.SELECTED_CATEGORY);
     Preference.clearPreferences();
     // Clear user data or perform any necessary logout actions
     // Reset the navigation stack to navigate to the "LoginScreen"
@@ -124,6 +126,13 @@ export default function CustomDrawer({ navigation }) {
             } else {
               setProfileDetailsComplete(false);
             }
+          }
+
+          const storedCategory = await Preference.getSelectedCategory();
+          console.log("Selected Category:", storedCategory);
+
+          if (storedCategory) {
+            setSelectedCategory(storedCategory);
           }
         } catch (error) {
           console.error("Error retrieving details:", error);
@@ -256,76 +265,128 @@ export default function CustomDrawer({ navigation }) {
       />
       <View style={{ justifyContent: "flex-start", gap: 20, padding: 10 }}>
         <View style={{ flexDirection: "row" }}>
-          <Image
-            source={profile?.length > 0 ? { uri: profile } : icon.PROFILE_PIC}
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 40,
-              borderWidth: 2,
-              borderColor: colors.YELLOW,
-            }}
-            onError={() => setprofile("")}
-          />
-          <View
-            style={{ flex: 1, paddingStart: 20, paddingEnd: 10, paddingTop: 2 }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontFamily: font.GoldPlay_SemiBold,
-                fontSize: 20,
-              }}
-            >
-              {name?.length > 0 ? name : "Unknown"}
-            </Text>
+          {selectedCategory === "distributer" ? (
             <View
               style={{
                 flexDirection: "row",
-                marginTop: 10,
+                justifyContent: "space-between",
                 alignItems: "center",
+                flex: 1,
+                marginTop: 30,
               }}
             >
-              <Image
-                source={require("../../assets/image_.png")}
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-              />
               <Text
                 style={{
                   color: "#fff",
-                  fontFamily: font.GoldPlay_Medium,
-                  fontSize: 14,
-                  marginStart: 10,
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 20,
                 }}
               >
-                Artisan
+                Distributor
               </Text>
+
+              <View style={{ flexDirection: "row", gap: 2 }}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_Medium,
+                    fontSize: 12,
+                  }}
+                >
+                  Code:
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_Medium,
+                    fontSize: 12,
+                  }}
+                >
+                  0000 0000
+                </Text>
+              </View>
             </View>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("Profile Details", profileDetails);
-              if (profileDetails.length == 0) {
-                navigation.navigate("AddAdhar");
-              } else if (
-                profileDetails.aadharCardNo == "" ||
-                profileDetails.aadharCardNo == null
-              ) {
-                navigation.navigate("AddAdhar");
-              } else {
-                navigation.navigate("PersonalDetails", {
-                  profilePhoto: profileDetails.image,
-                  aadharNo: profileDetails.aadharCardNo,
-                });
-              }
-              //
-            }}
-          >
-            <Image
-              style={{ height: 35, width: 35 }}
-              source={require("../../assets/edit_yellow.png")}
-            />
-          </TouchableOpacity>
+          ) : (
+            <>
+              <Image
+                source={
+                  profile?.length > 0 ? { uri: profile } : icon.PROFILE_PIC
+                }
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 40,
+                  borderWidth: 2,
+                  borderColor: colors.YELLOW,
+                }}
+                onError={() => setprofile("")}
+              />
+              <View
+                style={{
+                  flex: 1,
+                  paddingStart: 20,
+                  paddingEnd: 10,
+                  paddingTop: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: 20,
+                  }}
+                >
+                  {name?.length > 0 ? name : "Unknown"}
+                </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    source={require("../../assets/image_.png")}
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                  />
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontFamily: font.GoldPlay_Medium,
+                      fontSize: 14,
+                      marginStart: 10,
+                    }}
+                  >
+                    Artisan
+                  </Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Profile Details", profileDetails);
+                  if (profileDetails.length == 0) {
+                    navigation.navigate("AddAdhar");
+                  } else if (
+                    profileDetails.aadharCardNo == "" ||
+                    profileDetails.aadharCardNo == null
+                  ) {
+                    navigation.navigate("AddAdhar");
+                  } else {
+                    navigation.navigate("PersonalDetails", {
+                      profilePhoto: profileDetails.image,
+                      aadharNo: profileDetails.aadharCardNo,
+                    });
+                  }
+                  //
+                }}
+              >
+                <Image
+                  style={{ height: 35, width: 35 }}
+                  source={require("../../assets/edit_yellow.png")}
+                />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
         {/* <View style={{ alignItems: "center" }}>
           <TouchableHighlight
@@ -406,6 +467,94 @@ export default function CustomDrawer({ navigation }) {
               marginBottom: 10,
             }}
           />
+          {selectedCategory === "distributer" ? (
+            <>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Orders");
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={icon.ORDER_ICON}
+                    tintColor={"#fff"}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    ORDERS
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              />
+
+              {/* <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Orders");
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={icon.ACCOUNT_ICON}
+                    tintColor={"#fff"}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    ACCOUNTS
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              /> */}
+            </>
+          ) : (
+            ""
+          )}
+
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {
@@ -490,6 +639,54 @@ export default function CustomDrawer({ navigation }) {
               marginBottom: 10,
             }}
           />
+
+          {/* {selectedCategory === "distributer" ? (
+            <>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Orders");
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={icon.CHART_ICON}
+                    tintColor={"#fff"}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    SALES
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              />
+            </>
+          ) : (
+            ""
+          )} */}
+
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {

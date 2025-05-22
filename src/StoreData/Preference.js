@@ -64,6 +64,35 @@ export async function clearPreferences() {
   }
 }
 
+export async function saveSelectedCategory(category) {
+  try {
+    if (category) {
+      await SecureStore.setItemAsync("selectedCategory", category);
+      console.log(`Selected category saved: ${category}`);
+    } else {
+      console.error("Category is invalid, not saving.");
+    }
+  } catch (error) {
+    console.error(`Error saving selected category: ${error}`);
+  }
+}
+
+export async function getSelectedCategory() {
+  try {
+    const selectedCategory = await SecureStore.getItemAsync("selectedCategory");
+    if (selectedCategory) {
+      console.log("Retrieved selectedCategory:", selectedCategory);
+      return selectedCategory;
+    } else {
+      console.log("No selected category found.");
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error retrieving selected category: ${error}`);
+    return null;
+  }
+}
+
 // export async function storeImage(uri, filename) {
 //   try {
 //     const response = await fetch(uri);

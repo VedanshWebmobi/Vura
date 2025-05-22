@@ -180,6 +180,7 @@ export default function WithdrawAmount({ navigation }) {
         setAlertTitle("TRANSACTION SUCCESSFULLY!");
         setAlertMessage(response.message);
       } else {
+        re;
         setAlertTitle("OPPS!");
         // setAlertMessage(response.message);
         //  if (response.message) {
