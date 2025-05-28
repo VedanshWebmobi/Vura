@@ -62,6 +62,7 @@ export default function Login({ navigation, route }) {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       console.log("Phone Number", number);
+      console.log("Category =>", selectedCategory);
       // GetDetailsFromPincode("388540");
     });
 

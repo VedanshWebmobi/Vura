@@ -52,6 +52,7 @@ import Orders from "./src/Distributor/Orders";
 import CompleteOrder from "./src/Distributor/CompleteOrder";
 import PendingOrder from "./src/Distributor/PendingOrder";
 import ClaimedOrder from "./src/Distributor/ClaimedOrder";
+import RetailOrder from "./src/Retailer/RetailrOrder";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -172,6 +173,7 @@ export default function App() {
             <Stack.Screen name="Withdraw" component={WithdrawAmount} />
             <Stack.Screen name="QRScanner" component={QRCodeScanner_new} />
             <Stack.Screen name="Notification" component={Notification} />
+            <Stack.Screen name="RetailerOrder" component={RetailOrder} />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

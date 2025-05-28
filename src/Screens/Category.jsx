@@ -33,7 +33,7 @@ export default function Category({ navigation }) {
     //{ key: "market_operator", value: "I Am A Market Operator" },
     { key: "distributer", value: "I Am A Distributer" },
     //{ key: "dealer", value: "I Am A Dealer" },
-    //{ key: "retailer", value: "I Am A Retailer" },
+    { key: "retailer", value: "I Am A Retailer" },
     //{ key: "contractor", value: "I Am A Contractor" },
     //{ key: "architect", value: "I Am An Architect" },
     { key: "artisan", value: "I Am An Artisan" },
@@ -167,7 +167,11 @@ export default function Category({ navigation }) {
 
   const handleConfirm = () => {
     if (selectedItem !== "") {
-      navigation.navigate("Login", { selectedCategory: selectedItem });
+      if (selectedItem === "retailer") {
+        navigation.navigate("RetailerOrder");
+      } else {
+        navigation.navigate("Login", { selectedCategory: selectedItem });
+      }
     } else {
       setshowAlert(true);
     }

@@ -306,6 +306,47 @@ export default function CustomDrawer({ navigation }) {
                 </Text>
               </View>
             </View>
+          ) : selectedCategory === "retailer" ? (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flex: 1,
+                marginTop: 30,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 20,
+                }}
+              >
+                Retailer
+              </Text>
+
+              <View style={{ flexDirection: "row", gap: 2 }}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_Medium,
+                    fontSize: 12,
+                  }}
+                >
+                  Code:
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_Medium,
+                    fontSize: 12,
+                  }}
+                >
+                  0000 0000
+                </Text>
+              </View>
+            </View>
           ) : (
             <>
               <Image
@@ -554,7 +595,93 @@ export default function CustomDrawer({ navigation }) {
           ) : (
             ""
           )}
+          {selectedCategory === "retailer" ? (
+            <>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Orders");
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={icon.ORDER_ICON}
+                    tintColor={"#fff"}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    ORDERS
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              />
 
+              {/* <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Orders");
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={icon.ACCOUNT_ICON}
+                    tintColor={"#fff"}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    ACCOUNTS
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              /> */}
+            </>
+          ) : (
+            ""
+          )}
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() => {

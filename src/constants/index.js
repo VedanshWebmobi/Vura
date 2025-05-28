@@ -67,6 +67,7 @@ export const colors = {
   SUCCESS_GREEN: "#5cb85c",
   ERROR_RED: "#cc0000",
   INVOICE_GREY: "#666666",
+  WHITE: "#FFFFFF",
 };
 
 export const ExpoSecureKey = {
