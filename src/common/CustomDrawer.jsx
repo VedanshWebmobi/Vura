@@ -37,6 +37,8 @@ export default function CustomDrawer({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [profileDetailsComplete, setProfileDetailsComplete] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [code, setCode] = useState("0000 0000");
   // const menuItems = [
   //   "Home",
   //   "Products",
@@ -62,9 +64,25 @@ export default function CustomDrawer({ navigation }) {
       routes: [{ name: "PreLogin" }], // Set the route to navigate to
     });
   };
-
+  useEffect(() => {
+    if (selectedCategory.length > 0) {
+      if (selectedCategory === "retailer") {
+        Preference.getPreference("retailer_profile").then((profile) => {
+          console.log("Reatiler Profile => ", profile.code);
+          setCode(profile.code);
+        });
+      }
+      setIsReady(true);
+    }
+  }, [selectedCategory]);
   useEffect(() => {
     const showUpdateButton = async () => {
+      const storedCategory_ = await Preference.getSelectedCategory();
+      console.log("Selected Category:", storedCategory_);
+
+      if (storedCategory_) {
+        setSelectedCategory(storedCategory_);
+      }
       const isRegistered = await Preference.getValueFor(
         ExpoSecureKey.IS_REGISTER
       );
@@ -128,12 +146,12 @@ export default function CustomDrawer({ navigation }) {
             }
           }
 
-          const storedCategory = await Preference.getSelectedCategory();
-          console.log("Selected Category:", storedCategory);
+          // const storedCategory = await Preference.getSelectedCategory();
+          // console.log("Selected Category:", storedCategory);
 
-          if (storedCategory) {
-            setSelectedCategory(storedCategory);
-          }
+          // if (storedCategory) {
+          //   setSelectedCategory(storedCategory);
+          // }
         } catch (error) {
           console.error("Error retrieving details:", error);
         }
@@ -263,173 +281,175 @@ export default function CustomDrawer({ navigation }) {
         bodyText={errorMessage} // Pass body text
         // cancelButton={true} // Pass whether Cancel button should be displayed
       />
-      <View style={{ justifyContent: "flex-start", gap: 20, padding: 10 }}>
-        <View style={{ flexDirection: "row" }}>
-          {selectedCategory === "distributer" ? (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flex: 1,
-                marginTop: 30,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontFamily: font.GoldPlay_SemiBold,
-                  fontSize: 20,
-                }}
-              >
-                Distributor
-              </Text>
-
-              <View style={{ flexDirection: "row", gap: 2 }}>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: font.GoldPlay_Medium,
-                    fontSize: 12,
-                  }}
-                >
-                  Code:
-                </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: font.GoldPlay_Medium,
-                    fontSize: 12,
-                  }}
-                >
-                  0000 0000
-                </Text>
-              </View>
-            </View>
-          ) : selectedCategory === "retailer" ? (
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flex: 1,
-                marginTop: 30,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontFamily: font.GoldPlay_SemiBold,
-                  fontSize: 20,
-                }}
-              >
-                Retailer
-              </Text>
-
-              <View style={{ flexDirection: "row", gap: 2 }}>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: font.GoldPlay_Medium,
-                    fontSize: 12,
-                  }}
-                >
-                  Code:
-                </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: font.GoldPlay_Medium,
-                    fontSize: 12,
-                  }}
-                >
-                  0000 0000
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <>
-              <Image
-                source={
-                  profile?.length > 0 ? { uri: profile } : icon.PROFILE_PIC
-                }
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 40,
-                  borderWidth: 2,
-                  borderColor: colors.YELLOW,
-                }}
-                onError={() => setprofile("")}
-              />
-              <View
-                style={{
-                  flex: 1,
-                  paddingStart: 20,
-                  paddingEnd: 10,
-                  paddingTop: 2,
-                }}
-              >
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: font.GoldPlay_SemiBold,
-                    fontSize: 20,
-                  }}
-                >
-                  {name?.length > 0 ? name : "Unknown"}
-                </Text>
+      {isReady && (
+        <View>
+          <View style={{ justifyContent: "flex-start", gap: 20, padding: 10 }}>
+            <View style={{ flexDirection: "row" }}>
+              {selectedCategory === "distributer" ? (
                 <View
                   style={{
                     flexDirection: "row",
-                    marginTop: 10,
+                    justifyContent: "space-between",
                     alignItems: "center",
+                    flex: 1,
+                    marginTop: 30,
                   }}
                 >
-                  <Image
-                    source={require("../../assets/image_.png")}
-                    style={{ height: 20, width: 20, resizeMode: "contain" }}
-                  />
                   <Text
                     style={{
                       color: "#fff",
-                      fontFamily: font.GoldPlay_Medium,
-                      fontSize: 14,
-                      marginStart: 10,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      fontSize: 20,
                     }}
                   >
-                    Artisan
+                    Distributor
                   </Text>
+
+                  <View style={{ flexDirection: "row", gap: 2 }}>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 12,
+                      }}
+                    >
+                      Code:
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 12,
+                      }}
+                    >
+                      {code}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  console.log("Profile Details", profileDetails);
-                  if (profileDetails.length == 0) {
-                    navigation.navigate("AddAdhar");
-                  } else if (
-                    profileDetails.aadharCardNo == "" ||
-                    profileDetails.aadharCardNo == null
-                  ) {
-                    navigation.navigate("AddAdhar");
-                  } else {
-                    navigation.navigate("PersonalDetails", {
-                      profilePhoto: profileDetails.image,
-                      aadharNo: profileDetails.aadharCardNo,
-                    });
-                  }
-                  //
-                }}
-              >
-                <Image
-                  style={{ height: 35, width: 35 }}
-                  source={require("../../assets/edit_yellow.png")}
-                />
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-        {/* <View style={{ alignItems: "center" }}>
+              ) : selectedCategory === "retailer" ? (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flex: 1,
+                    marginTop: 30,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontFamily: font.GoldPlay_SemiBold,
+                      fontSize: 20,
+                    }}
+                  >
+                    Retailer
+                  </Text>
+
+                  <View style={{ flexDirection: "row", gap: 2 }}>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 12,
+                      }}
+                    >
+                      Code:
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_Medium,
+                        fontSize: 12,
+                      }}
+                    >
+                      {code}
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <>
+                  <Image
+                    source={
+                      profile?.length > 0 ? { uri: profile } : icon.PROFILE_PIC
+                    }
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 40,
+                      borderWidth: 2,
+                      borderColor: colors.YELLOW,
+                    }}
+                    onError={() => setprofile("")}
+                  />
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingStart: 20,
+                      paddingEnd: 10,
+                      paddingTop: 2,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 20,
+                      }}
+                    >
+                      {name?.length > 0 ? name : "Unknown"}
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        marginTop: 10,
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        source={require("../../assets/image_.png")}
+                        style={{ height: 20, width: 20, resizeMode: "contain" }}
+                      />
+                      <Text
+                        style={{
+                          color: "#fff",
+                          fontFamily: font.GoldPlay_Medium,
+                          fontSize: 14,
+                          marginStart: 10,
+                        }}
+                      >
+                        Artisan
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log("Profile Details", profileDetails);
+                      if (profileDetails.length == 0) {
+                        navigation.navigate("AddAdhar");
+                      } else if (
+                        profileDetails.aadharCardNo == "" ||
+                        profileDetails.aadharCardNo == null
+                      ) {
+                        navigation.navigate("AddAdhar");
+                      } else {
+                        navigation.navigate("PersonalDetails", {
+                          profilePhoto: profileDetails.image,
+                          aadharNo: profileDetails.aadharCardNo,
+                        });
+                      }
+                      //
+                    }}
+                  >
+                    <Image
+                      style={{ height: 35, width: 35 }}
+                      source={require("../../assets/edit_yellow.png")}
+                    />
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+            {/* <View style={{ alignItems: "center" }}>
           <TouchableHighlight
             onPress={() => navigation.navigate("AddPhoto")}
             style={{ backgroundColor: "transparent", borderRadius: 10 }}
@@ -459,61 +479,19 @@ export default function CustomDrawer({ navigation }) {
             </View>
           </TouchableHighlight>
         </View> */}
-      </View>
-      <View
-        style={{ height: 1, marginTop: 20, backgroundColor: colors.YELLOW }}
-      />
-      <ScrollView style={{ marginTop: 30 }}>
-        <View style={{ paddingStart: 10, paddingEnd: 10 }}>
-          {/* {menuItems.map((item, index) => (
+          </View>
+          <View
+            style={{ height: 1, marginTop: 20, backgroundColor: colors.YELLOW }}
+          />
+          <ScrollView style={{ marginTop: 30 }}>
+            <View style={{ paddingStart: 10, paddingEnd: 10 }}>
+              {/* {menuItems.map((item, index) => (
           <View key={index}>{renderItem(item, index)}</View>
         ))}  */}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("Notification");
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-                source={require("../../assets/notification_new.png")}
-                tintColor={"#fff"}
-              />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: font.GoldPlay_SemiBold,
-                  color: "#fff",
-                  flex: 1,
-                  marginStart: 20,
-                }}
-              >
-                NOTIFICATIONS
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "#FFFFFF50",
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          />
-          {selectedCategory === "distributer" ? (
-            <>
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  navigation.navigate("Orders");
+                  navigation.navigate("Notification");
                 }}
               >
                 <View
@@ -526,7 +504,7 @@ export default function CustomDrawer({ navigation }) {
                 >
                   <Image
                     style={{ height: 20, width: 20, resizeMode: "contain" }}
-                    source={icon.ORDER_ICON}
+                    source={require("../../assets/notification_new.png")}
                     tintColor={"#fff"}
                   />
                   <Text
@@ -538,7 +516,7 @@ export default function CustomDrawer({ navigation }) {
                       marginStart: 20,
                     }}
                   >
-                    ORDERS
+                    NOTIFICATIONS
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -550,8 +528,90 @@ export default function CustomDrawer({ navigation }) {
                   marginBottom: 10,
                 }}
               />
+              {selectedCategory === "distributer" ? (
+                <>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      navigation.navigate("Orders");
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        height: 50,
+                        width: "100%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{ height: 20, width: 20, resizeMode: "contain" }}
+                        source={icon.ORDER_ICON}
+                        tintColor={"#fff"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: font.GoldPlay_SemiBold,
+                          color: "#fff",
+                          flex: 1,
+                          marginStart: 20,
+                        }}
+                      >
+                        ORDERS
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: "#FFFFFF50",
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      navigation.navigate("RetailerOrderDistributor");
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        height: 50,
+                        width: "100%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{ height: 20, width: 20, resizeMode: "contain" }}
+                        source={icon.ORDER_ICON}
+                        tintColor={"#fff"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: font.GoldPlay_SemiBold,
+                          color: "#fff",
+                          flex: 1,
+                          marginStart: 20,
+                        }}
+                      >
+                        RETAILER ORDERS
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: "#FFFFFF50",
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                  />
 
-              {/* <TouchableOpacity
+                  {/* <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
                   navigation.navigate("Orders");
@@ -591,54 +651,54 @@ export default function CustomDrawer({ navigation }) {
                   marginBottom: 10,
                 }}
               /> */}
-            </>
-          ) : (
-            ""
-          )}
-          {selectedCategory === "retailer" ? (
-            <>
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => {
-                  navigation.navigate("Orders");
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    height: 50,
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    style={{ height: 20, width: 20, resizeMode: "contain" }}
-                    source={icon.ORDER_ICON}
-                    tintColor={"#fff"}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: font.GoldPlay_SemiBold,
-                      color: "#fff",
-                      flex: 1,
-                      marginStart: 20,
+                </>
+              ) : (
+                ""
+              )}
+              {selectedCategory === "retailer" ? (
+                <>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      navigation.navigate("RetailerOrder");
                     }}
                   >
-                    ORDERS
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: "#FFFFFF50",
-                  marginTop: 10,
-                  marginBottom: 10,
-                }}
-              />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        height: 50,
+                        width: "100%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{ height: 20, width: 20, resizeMode: "contain" }}
+                        source={icon.ORDER_ICON}
+                        tintColor={"#fff"}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: font.GoldPlay_SemiBold,
+                          color: "#fff",
+                          flex: 1,
+                          marginStart: 20,
+                        }}
+                      >
+                        ORDERS
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: "#FFFFFF50",
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                  />
 
-              {/* <TouchableOpacity
+                  {/* <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
                   navigation.navigate("Orders");
@@ -678,96 +738,99 @@ export default function CustomDrawer({ navigation }) {
                   marginBottom: 10,
                 }}
               /> */}
-            </>
-          ) : (
-            ""
-          )}
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("Offers");
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-                source={require("../../assets/discount_shape.png")}
-              />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: font.GoldPlay_SemiBold,
-                  color: "#fff",
-                  flex: 1,
-                  marginStart: 20,
+                </>
+              ) : (
+                ""
+              )}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Offers");
                 }}
               >
-                OFFERS
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "#FFFFFF50",
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              if (!profileDetailsComplete) {
-                // setShowAlert(true);
-                // setErrorMessage("Please Complete Your Profile!");
-                navigation.navigate("CompleteProfile");
-              } else {
-                navigation.navigate("Wallet");
-              }
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-                source={require("../../assets/wallet_minus.png")}
-              />
-              <Text
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={require("../../assets/discount_shape.png")}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    OFFERS
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
                 style={{
-                  fontSize: 14,
-                  fontFamily: font.GoldPlay_SemiBold,
-                  color: "#fff",
-                  flex: 1,
-                  marginStart: 20,
+                  height: 1,
+                  backgroundColor: "#FFFFFF50",
+                  marginTop: 10,
+                  marginBottom: 10,
                 }}
-              >
-                WALLET HISTORY
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "#FFFFFF50",
-              marginTop: 10,
-              marginBottom: 10,
-            }}
-          />
-
-          {/* {selectedCategory === "distributer" ? (
+              />
+              {selectedCategory != "retailer" && (
+                <View>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      if (!profileDetailsComplete) {
+                        // setShowAlert(true);
+                        // setErrorMessage("Please Complete Your Profile!");
+                        navigation.navigate("CompleteProfile");
+                      } else {
+                        navigation.navigate("Wallet");
+                      }
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        height: 50,
+                        width: "100%",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        style={{ height: 20, width: 20, resizeMode: "contain" }}
+                        source={require("../../assets/wallet_minus.png")}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: font.GoldPlay_SemiBold,
+                          color: "#fff",
+                          flex: 1,
+                          marginStart: 20,
+                        }}
+                      >
+                        WALLET HISTORY
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: "#FFFFFF50",
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                  />
+                </View>
+              )}
+              {/* {selectedCategory === "distributer" ? (
             <>
               <TouchableOpacity
                 activeOpacity={0.8}
@@ -814,74 +877,80 @@ export default function CustomDrawer({ navigation }) {
             ""
           )} */}
 
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => {
-              navigation.navigate("Help");
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-                source={require("../../assets/warning.png")}
-              />
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: font.GoldPlay_SemiBold,
-                  color: "#fff",
-                  flex: 1,
-                  marginStart: 20,
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => {
+                  navigation.navigate("Help");
                 }}
               >
-                HELP & SUPPORT
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{ height: 1, marginTop: 20, backgroundColor: colors.YELLOW }}
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={{ marginTop: 10 }}
-            onPress={() => {
-              Logout();
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                height: 50,
-                width: "100%",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                style={{ height: 20, width: 20, resizeMode: "contain" }}
-                source={require("../../assets/logout.png")}
-              />
-              <Text
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={require("../../assets/warning.png")}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    HELP & SUPPORT
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <View
                 style={{
-                  fontSize: 14,
-                  fontFamily: font.GoldPlay_SemiBold,
-                  color: "#fff",
-                  flex: 1,
-                  marginStart: 20,
+                  height: 1,
+                  marginTop: 20,
+                  backgroundColor: colors.YELLOW,
+                }}
+              />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{ marginTop: 10 }}
+                onPress={() => {
+                  Logout();
                 }}
               >
-                LOGOUT
-              </Text>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    height: 50,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{ height: 20, width: 20, resizeMode: "contain" }}
+                    source={require("../../assets/logout.png")}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_SemiBold,
+                      color: "#fff",
+                      flex: 1,
+                      marginStart: 20,
+                    }}
+                  >
+                    LOGOUT
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </ScrollView>
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
 }

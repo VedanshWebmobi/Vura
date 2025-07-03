@@ -25,7 +25,7 @@ import PhoneInput from "react-native-international-phone-number";
 
 import axios from "axios";
 
-import { GET_PROFILE, LOGIN, VERIFY_OTP } from "../Api/Utils";
+import { GET_PROFILE, LOGIN, VERIFY_OTP, RETAILER_PROFILE } from "../Api/Utils";
 import { StackActions } from "@react-navigation/native";
 import * as Progress from "react-native-progress";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -61,7 +61,7 @@ export default function OTPScreen({ navigation, route }) {
   const isApiCall = useRef(false);
 
   useEffect(() => {
-    // console.log(retrievedCode);
+    console.log(route.params.category);
     if (retrievedCode) {
       setOtp(retrievedCode);
 
@@ -360,9 +360,40 @@ export default function OTPScreen({ navigation, route }) {
       setIsLoading(false);
       console.error("Error fetching or storing profile data:", error);
     } finally {
-      navigation.dispatch(StackActions.replace("HomeTab", { position: 0 }));
+      if (route.params.category === "retailer") {
+        GetRetailerProfile();
+      } else {
+        navigation.dispatch(StackActions.replace("HomeTab", { position: 0 }));
+      }
       setIsLoading(false);
       // Hide loader after fetching data
+    }
+  };
+
+  const GetRetailerProfile = async () => {
+    setIsLoading(true);
+    try {
+      const requestOptions = {
+        headers: {
+          Accept: "application/json",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
+      const response = await axiosCallAPI(
+        "get",
+        RETAILER_PROFILE,
+        "",
+        requestOptions,
+        true,
+        navigation
+      );
+      await Preference.storePreference("retailer_profile", response);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching or storing profile data:", error);
+    } finally {
+      setIsLoading(false);
+      navigation.dispatch(StackActions.replace("HomeTab", { position: 0 }));
     }
   };
   function handleSelectedCountry(country) {

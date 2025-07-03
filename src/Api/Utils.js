@@ -1,6 +1,9 @@
 //http://tms.vura.ae/
 // export const BASE_URL = "http://65.1.27.14/Vura_API_Server/src/api/";
-export const BASE_URL = "https://tms.vura.ae/hr/Vura_API_Server/src/api/";
+//export const BASE_URL = "https://tms.vura.ae/hr/Vura_API_Server/src/api/";
+export const BASE_URL =
+  "https://tms.vura.ae/retailerapp/Vura_API_Server/src/api/";
+//https://tms.vura.ae/retailerapp/Vura_API_Server/src/api
 //export const BASE_URL = "https://tms.vura.ae/dev/Vura_API_Server/src/api/";
 //export const BASE_URL = "https://we.vura.ae/Vura_API_Server/src/api/";
 export const ADD = `${BASE_URL}Client/add`;
@@ -28,3 +31,9 @@ export const NOTIFICATION = `${BASE_URL}Notification/list`;
 export const NOTIFICATION_READ = `${BASE_URL}Notification/set-read`;
 export const DELETE_ACCOUNT = `${BASE_URL}Client/client-delete`;
 export const POSTAL_CODE = "https://api.postalpincode.in/pincode/";
+export const RETAILER_PROFILE = `${BASE_URL}retailer/profile`;
+export const RETAILER_CREATE_ORDER = `${BASE_URL}retailer/sales-order/save`;
+export const RETAILER_ORDER_LIST = `${BASE_URL}retailer/sales-order/list`;
+export const RETAILER_ORDER_ACTION = `${BASE_URL}retailer/sales-order/cp-action`;
+export const RETAILER_CREATE_INVOICE = `${BASE_URL}retailer/sales-order/add-invoice`;
+export const RETAILER_COMPLETE_ORDER = `${BASE_URL}retailer/sales-order/complete`;

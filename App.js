@@ -53,6 +53,8 @@ import CompleteOrder from "./src/Distributor/CompleteOrder";
 import PendingOrder from "./src/Distributor/PendingOrder";
 import ClaimedOrder from "./src/Distributor/ClaimedOrder";
 import RetailOrder from "./src/Retailer/RetailrOrder";
+import RetailerOrder from "./src/Distributor/RetailerOrder";
+import RetailerOrderDetail from "./src/common/RetailerOrderDetail";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -133,8 +135,8 @@ export default function App() {
         <NavigationContainer onReady={onLayoutRootView}>
           <Stack.Navigator
             screenOptions={{ headerShown: false }}
-            initialRouteName={token ? "Home" : "StartScreen"}
-            // initialRouteName={token ? "HomeTab" : "StartScreen"}
+            //initialRouteName={token ? "Home" : "StartScreen"}
+            initialRouteName={token ? "HomeTab" : "StartScreen"}
           >
             <Stack.Screen name="Orders" component={Orders} />
             <Stack.Screen name="CompleteOrder" component={CompleteOrder} />
@@ -174,6 +176,14 @@ export default function App() {
             <Stack.Screen name="QRScanner" component={QRCodeScanner_new} />
             <Stack.Screen name="Notification" component={Notification} />
             <Stack.Screen name="RetailerOrder" component={RetailOrder} />
+            <Stack.Screen
+              name="RetailerOrderDistributor"
+              component={RetailerOrder}
+            />
+            <Stack.Screen
+              name="RetailerOrderDetail"
+              component={RetailerOrderDetail}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

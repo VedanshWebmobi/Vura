@@ -119,7 +119,7 @@ export default function RetailOrder({ navigation }) {
           <Tab.Screen name="Create Order" children={() => <CreateOrder />} />
           <Tab.Screen
             name="ORDERS HISTORY"
-            children={() => <RetailerHistory />}
+            children={() => <RetailerHistory navigation={navigation} />}
           />
         </Tab.Navigator>
       </SafeAreaView>

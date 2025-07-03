@@ -23,7 +23,13 @@ export default function CustomViewRetailer({
   numberOfLine = 1,
   maxLengthForMultiline = 100,
   onClickCalendar,
+  showMaxLength = false,
   dropDownData,
+  inputTextBackGround = "#FFFFFF",
+  inputType = "default",
+  titleTextStyle,
+  _ref,
+  _next_ref,
   ...rest
 }) {
   const maxLength = isMultiLine ? maxLengthForMultiline : undefined;
@@ -39,7 +45,7 @@ export default function CustomViewRetailer({
   ];
   return (
     <View style={[styles.mainContainer, mainContainerStyle]}>
-      <Text style={styles.titleStyle}>{titleText}</Text>
+      <Text style={[styles.titleStyle, titleTextStyle]}>{titleText}</Text>
       <View style={styles.inputContainer}>
         {isDate && (
           <TouchableOpacity
@@ -55,6 +61,7 @@ export default function CustomViewRetailer({
               justifyContent: "center",
               padding: 10,
             }}
+            {...rest}
           >
             <View style={{ flex: 1 }}>
               <Text
@@ -88,6 +95,8 @@ export default function CustomViewRetailer({
               padding: 10,
               fontFamily: font.GoldPlay_SemiBold,
               color: colors.BLACK,
+              backgroundColor: inputTextBackGround,
+              borderRadius: 10,
             }}
             multiline={isMultiLine}
             placeholder={placeHolderText}
@@ -95,12 +104,22 @@ export default function CustomViewRetailer({
             textAlignVertical={isMultiLine ? "top" : "center"}
             maxLength={maxLength}
             value={value}
+            onChangeText={(text) => setValue(text)}
+            ref={_ref}
+            onSubmitEditing={() => {
+              _next_ref ? _next_ref.current?.focus() : null;
+            }}
+            returnKeyType={"next"}
+            keyboardType={inputType}
             {...rest}
           />
         )}
         {isDropDown && (
           <Dropdown
-            style={styles.dropdown}
+            style={[
+              styles.dropdown,
+              { backgroundColor: inputTextBackGround, borderRadius: 10 },
+            ]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
             inputSearchStyle={styles.inputSearchStyle}
@@ -117,13 +136,14 @@ export default function CustomViewRetailer({
               setValue(item);
             }}
             iconColor={colors.YELLOW}
+            {...rest}
           />
         )}
       </View>
-      {isMultiLine && (
+      {isMultiLine && showMaxLength && (
         <View style={{ alignItems: "flex-end", marginTop: 5, marginRight: 5 }}>
           <Text style={{ fontFamily: font.GoldPlay_Regular, fontSize: 12 }}>
-            12/100
+            {value ? `${value.length}/100` : "0/100"}
           </Text>
         </View>
       )}

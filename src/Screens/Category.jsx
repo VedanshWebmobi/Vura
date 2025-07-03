@@ -16,6 +16,7 @@ import stylesCommon from "../Themes/stylesCommon";
 import CommonAlert from "../common/CommonAlert";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import * as Preference from "../StoreData/Preference";
 export default function Category({ navigation }) {
   // const data = [
   //   // "I Am An Employee",
@@ -165,10 +166,12 @@ export default function Category({ navigation }) {
     );
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedItem !== "") {
       if (selectedItem === "retailer") {
-        navigation.navigate("RetailerOrder");
+        navigation.navigate("Login", {
+          selectedCategory: selectedItem,
+        });
       } else {
         navigation.navigate("Login", { selectedCategory: selectedItem });
       }

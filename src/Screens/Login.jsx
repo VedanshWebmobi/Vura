@@ -138,7 +138,9 @@ export default function Login({ navigation, route }) {
     );
     axiosCallAPI(
       "post",
-      selectedCategory === "distributer" ? DISLOGIN : LOGIN,
+      selectedCategory === "distributer" || selectedCategory === "retailer"
+        ? DISLOGIN
+        : LOGIN,
       loginFormData,
       requestOptions,
       true,
@@ -369,6 +371,7 @@ export default function Login({ navigation, route }) {
                 f_phone: number,
                 n_phone: number.replace(" ", ""),
                 code: selectedCountry.callingCode,
+                category: selectedCategory,
               });
             }
           }} // Pass function to hide the modal
@@ -382,6 +385,7 @@ export default function Login({ navigation, route }) {
                 f_phone: number,
                 n_phone: number.replace(" ", ""),
                 code: selectedCountry.callingCode,
+                category: selectedCategory,
               });
             }
           }} // Pass function to handle Ok button press

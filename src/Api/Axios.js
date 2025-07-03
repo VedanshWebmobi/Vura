@@ -14,7 +14,8 @@ export const axiosCallAPI = (
   params,
   headerRequest,
   isShowMessage,
-  navigation
+  navigation,
+  needAllResponse = false
 ) => {
   let errors;
   const client = axios.create({
@@ -61,6 +62,7 @@ export const axiosCallAPI = (
           throw error.response.data.errors.join(", ");
         } else {
           console.log("is Object");
+          console.log(error.response.data);
           console.log(Object.values(error.response.data.errors).join(", "));
           throw Object.values(error.response.data.errors).join(", ");
         }
@@ -120,7 +122,11 @@ export const axiosCallAPI = (
                 // );
                 console.log(response.data.message);
             }
-            return response.data.data;
+            if (needAllResponse) {
+              return response.data;
+            } else {
+              return response.data.data;
+            }
           } else {
             errors = response.data.errors;
             // Object.keys(errors).map(function (key, index) {

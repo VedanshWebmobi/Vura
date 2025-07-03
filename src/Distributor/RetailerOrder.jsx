@@ -10,29 +10,28 @@ import {
   Easing,
   Dimensions,
   Alert,
-  ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ExpoSecureKey, colors, font, icon } from "../constants";
+import CommonHeaderNew from "../common/CommonHeader_new";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
 import { RETAILER_ORDER_LIST } from "../Api/Utils";
 import * as Preference from "../StoreData/Preference";
-import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Progress from "react-native-progress";
 import moment from "moment";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-export default function RetailerHistory({ navigation }) {
+export default function RetailerOrder({ navigation }) {
+  const [orderListData, setOrderListData] = useState([]);
   const SCREEN_DIMENSIONS = Dimensions.get("window");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
-  const [orderListData, setOrderListData] = useState([]);
-
   useFocusEffect(
     useCallback(() => {
       console.log("Tab is focused");
-      console.log("navigation => ", navigation);
       GetOrderList();
 
       return () => {
@@ -40,7 +39,6 @@ export default function RetailerHistory({ navigation }) {
       };
     }, [])
   );
-
   const GetOrderList = async () => {
     try {
       const requestOptions = {
@@ -77,9 +75,16 @@ export default function RetailerHistory({ navigation }) {
     }
   };
   const renderItem = ({ item }) => {
-    console.log(JSON.stringify(item));
+    console.log(item);
     return (
       <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={async () => {
+          navigation.navigate("RetailerOrderDetail", {
+            data: item,
+            category: await Preference.getSelectedCategory(),
+          });
+        }}
         style={{
           gap: 5,
           padding: 18,
@@ -90,13 +95,6 @@ export default function RetailerHistory({ navigation }) {
           overflow: "hidden",
           marginBottom: 10,
           flexDirection: "row",
-        }}
-        activeOpacity={0.8}
-        onPress={async () => {
-          navigation.navigate("RetailerOrderDetail", {
-            data: item,
-            category: await Preference.getSelectedCategory(),
-          });
         }}
       >
         <View style={{ flex: 1 }}>
@@ -118,41 +116,41 @@ export default function RetailerHistory({ navigation }) {
             {item?.order_no}
           </Text>
           {/* <Text
-          style={{
-            color: colors.INVOICE_GREY,
-            fontFamily: font.GoldPlay_Medium,
-            fontSize: 12,
-            marginTop: 10,
-          }}
-        >
-          PO No.
-        </Text>
-        <Text
-          style={{
-            fontFamily: font.GoldPlay_SemiBold,
-            fontSize: 20,
-          }}
-        >
-          {item?.po_no}
-        </Text>
-        <Text
-          style={{
-            color: colors.INVOICE_GREY,
-            fontFamily: font.GoldPlay_Medium,
-            fontSize: 12,
-            marginTop: 10,
-          }}
-        >
-          PO Date
-        </Text>
-        <Text
-          style={{
-            fontFamily: font.GoldPlay_SemiBold,
-            fontSize: 20,
-          }}
-        >
-          {moment(item?.po_date, "YYYY-MM-DD").format("MMMM DD, YYYY")}
-        </Text> */}
+              style={{
+                color: colors.INVOICE_GREY,
+                fontFamily: font.GoldPlay_Medium,
+                fontSize: 12,
+                marginTop: 10,
+              }}
+            >
+              PO No.
+            </Text>
+            <Text
+              style={{
+                fontFamily: font.GoldPlay_SemiBold,
+                fontSize: 20,
+              }}
+            >
+              {item?.po_no}
+            </Text>
+            <Text
+              style={{
+                color: colors.INVOICE_GREY,
+                fontFamily: font.GoldPlay_Medium,
+                fontSize: 12,
+                marginTop: 10,
+              }}
+            >
+              PO Date
+            </Text>
+            <Text
+              style={{
+                fontFamily: font.GoldPlay_SemiBold,
+                fontSize: 20,
+              }}
+            >
+              {moment(item?.po_date, "YYYY-MM-DD").format("MMMM DD, YYYY")}
+            </Text> */}
           <Text
             style={{
               color: colors.INVOICE_GREY,
@@ -225,19 +223,27 @@ export default function RetailerHistory({ navigation }) {
       </Text>
     </View>
   );
-
   return (
-    <View style={{ margin: 16 }}>
-      <FlatList
-        data={orderListData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        onEndReached={LoadMoreData}
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={renderFooter("wallet")}
-        ListEmptyComponent={renderEmptyComponent}
-      />
+    <View style={{ flex: 1 }}>
+      <StatusBar backgroundColor={colors.YELLOW} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <CommonHeaderNew
+          header_title={"RETAILER ORDERS"}
+          header_color={colors.YELLOW}
+          navigation={navigation}
+        />
+        <FlatList
+          data={orderListData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          onEndReached={LoadMoreData}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={renderFooter("wallet")}
+          ListEmptyComponent={renderEmptyComponent}
+          style={{ margin: 16 }}
+        />
+      </SafeAreaView>
     </View>
   );
 }
