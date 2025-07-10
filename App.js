@@ -55,6 +55,8 @@ import ClaimedOrder from "./src/Distributor/ClaimedOrder";
 import RetailOrder from "./src/Retailer/RetailrOrder";
 import RetailerOrder from "./src/Distributor/RetailerOrder";
 import RetailerOrderDetail from "./src/common/RetailerOrderDetail";
+import CreateInvoice from "./src/Retailer/CreateInvoice";
+import InvoiceDetails from "./src/Retailer/InvoiceDetails";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: DefaultTheme,
@@ -184,6 +186,8 @@ export default function App() {
               name="RetailerOrderDetail"
               component={RetailerOrderDetail}
             />
+            <Stack.Screen name="CreateInvoice" component={CreateInvoice} />
+            <Stack.Screen name="InvoiceDetails" component={InvoiceDetails} />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

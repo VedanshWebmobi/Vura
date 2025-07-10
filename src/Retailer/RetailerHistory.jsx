@@ -14,13 +14,17 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useState } from "react";
-import { RETAILER_ORDER_LIST } from "../Api/Utils";
+import { RETAILER_ORDER_LIST, RETAILER_COMPLETE_ORDER } from "../Api/Utils";
 import * as Preference from "../StoreData/Preference";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import { axiosCallAPI } from "../Api/Axios";
 import * as Progress from "react-native-progress";
 import moment from "moment";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Modal, Portal, Button } from "react-native-paper";
+import CustomViewRetailer from "../Retailer/CustomViewRetailer";
+import CommonAlert from "../common/CommonAlert";
+import crashlytics from "@react-native-firebase/crashlytics";
 
 export default function RetailerHistory({ navigation }) {
   const SCREEN_DIMENSIONS = Dimensions.get("window");
@@ -28,7 +32,17 @@ export default function RetailerHistory({ navigation }) {
   const [totalPages, setTotalPages] = useState(2);
   const [isLoading, setIsLoading] = useState(false);
   const [orderListData, setOrderListData] = useState([]);
-
+  const [visibleAlert, setVisibleAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [iconColor, setIconColor] = useState("red");
+  const [visible, setVisible] = useState(false);
+  const [reason, setReason] = useState("");
+  const containerStyle = {
+    backgroundColor: "white",
+    padding: 20,
+    margin: 16,
+  };
   useFocusEffect(
     useCallback(() => {
       console.log("Tab is focused");
@@ -40,7 +54,8 @@ export default function RetailerHistory({ navigation }) {
       };
     }, [])
   );
-
+  const hideModal = () => setVisible(false);
+  const showModal = () => setVisible(true);
   const GetOrderList = async () => {
     try {
       const requestOptions = {
@@ -76,6 +91,66 @@ export default function RetailerHistory({ navigation }) {
       setIsLoading(false);
     }
   };
+
+  const CompleteOrder = async () => {
+    setIsLoading(true);
+    try {
+      crashlytics().log(
+        "Distributor Retailer Order Screen => Order Complete Api call...."
+      );
+      var _data = new FormData();
+      _data.append("order_id", data.id);
+      _data.append("remarks", completeRemark);
+
+      const requestOptions = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: await Preference.getValueFor(ExpoSecureKey.TOKEN),
+        },
+      };
+      crashlytics().log(
+        "Distributor Retailer Order Screen => Order Complete Api call => Parameter => " +
+          JSON.stringify(_data)
+      );
+      var response = await axiosCallAPI(
+        "post",
+        RETAILER_COMPLETE_ORDER,
+        _data,
+        requestOptions,
+        navigation
+      );
+      setIsLoading(false);
+      if (response && response.status) {
+        console.log("Api response => ", response);
+        setIconColor("green");
+        setVisibleAlert(true);
+        setAlertTitle("Success");
+        setErrorMessage(response.message);
+
+        // setShowOtp(true);
+      } else {
+        setIconColor("red");
+        setVisibleAlert(true);
+        setAlertTitle("OPPS!");
+        setErrorMessage(response.message);
+        // setAlertMessage(response.error[0]);
+        // setShowOtp(true);
+        console.error("Invalid response data:", response);
+      }
+    } catch (error) {
+      crashlytics().log(
+        "Distributor Retailer Order Screen => Order Complete Api call => Main try catch"
+      );
+      crashlytics().recordError(error);
+      setIconColor("red");
+      setVisibleAlert(true);
+      setAlertTitle("OPPS!");
+      setErrorMessage(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const renderItem = ({ item }) => {
     console.log(JSON.stringify(item));
     return (
@@ -89,7 +164,6 @@ export default function RetailerHistory({ navigation }) {
           borderRadius: 10,
           overflow: "hidden",
           marginBottom: 10,
-          flexDirection: "row",
         }}
         activeOpacity={0.8}
         onPress={async () => {
@@ -99,25 +173,27 @@ export default function RetailerHistory({ navigation }) {
           });
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              color: colors.INVOICE_GREY,
-              fontFamily: font.GoldPlay_Medium,
-              fontSize: 12,
-            }}
-          >
-            Invoice No.
-          </Text>
-          <Text
-            style={{
-              fontFamily: font.GoldPlay_SemiBold,
-              fontSize: 20,
-            }}
-          >
-            {item?.order_no}
-          </Text>
-          {/* <Text
+        <View>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  color: colors.INVOICE_GREY,
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 12,
+                }}
+              >
+                Invoice No.
+              </Text>
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 20,
+                }}
+              >
+                {item?.order_no}
+              </Text>
+              {/* <Text
           style={{
             color: colors.INVOICE_GREY,
             fontFamily: font.GoldPlay_Medium,
@@ -153,34 +229,111 @@ export default function RetailerHistory({ navigation }) {
         >
           {moment(item?.po_date, "YYYY-MM-DD").format("MMMM DD, YYYY")}
         </Text> */}
-          <Text
-            style={{
-              color: colors.INVOICE_GREY,
-              fontFamily: font.GoldPlay_Medium,
-              fontSize: 12,
-              marginTop: 10,
-            }}
-          >
-            Status
-          </Text>
-          <Text
-            style={{
-              fontFamily: font.GoldPlay_SemiBold,
-              fontSize: 20,
-            }}
-          >
-            {item?.status_name}
-          </Text>
-        </View>
-        <View
-          style={{
-            alignItems: "center",
+              <Text
+                style={{
+                  color: colors.INVOICE_GREY,
+                  fontFamily: font.GoldPlay_Medium,
+                  fontSize: 12,
+                  marginTop: 10,
+                }}
+              >
+                Status
+              </Text>
+              <Text
+                style={{
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 20,
+                }}
+              >
+                {item?.status_name}
+              </Text>
+            </View>
+            <View
+              style={{
+                alignItems: "center",
 
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <AntDesign name="right" size={20} color={colors.YELLOW} style={{}} />
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <AntDesign
+                name="right"
+                size={20}
+                color={colors.YELLOW}
+                style={{}}
+              />
+            </View>
+          </View>
+          {item.status_type === "APPROVED_CHANNEL_PARTNER" ||
+            (item.status_type === "INVOICE_UPDATED" && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 20,
+                  alignSelf: "flex-end",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    borderRadius: 30,
+                    marginEnd: "2%",
+                    backgroundColor: "#000",
+                    width: "48%",
+                    height: 45,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  activeOpacity={0.8}
+                  onPress={async () => {
+                    navigation.navigate("CreateInvoice", {
+                      data: item,
+                      category: await Preference.getSelectedCategory(),
+                    });
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontFamily: font.GoldPlay_SemiBold,
+                      fontSize: 14,
+                    }}
+                  >
+                    ADD INVOICE
+                  </Text>
+                </TouchableOpacity>
+
+                {item.status_type === "INVOICE_UPDATED" && (
+                  <TouchableOpacity
+                    style={{
+                      borderRadius: 30,
+                      marginStart: "2%",
+                      borderColor: "#000",
+                      borderWidth: 2,
+                      backgroundColor: "#fff",
+                      width: "48%",
+                      height: 45,
+
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      showModal();
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 14,
+                      }}
+                    >
+                      COMPLETE ORDER
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
         </View>
       </TouchableOpacity>
     );
@@ -228,6 +381,29 @@ export default function RetailerHistory({ navigation }) {
 
   return (
     <View style={{ margin: 16 }}>
+      <CommonAlert
+        visible={visibleAlert} // Pass visibility state to the CommonAlert component
+        hideModal={() => {
+          setVisibleAlert(false);
+          if (alertTitle != "OPPS!") {
+            // navigation.goBack();
+            GetOrderList();
+          }
+        }} // Pass function to hide the modal
+        handleOkPress={() => {
+          setVisibleAlert(false);
+          if (alertTitle != "OPPS!") {
+            // navigation.goBack();
+            GetOrderList();
+          }
+        }} // Pass function to handle Ok button press
+        //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
+        title={alertTitle} // Pass title text
+        iconName="error"
+        iconColor={iconColor}
+        bodyText={errorMessage} // Pass body text
+        // cancelButton={true} // Pass whether Cancel button should be displayed
+      />
       <FlatList
         data={orderListData}
         renderItem={renderItem}
@@ -238,6 +414,63 @@ export default function RetailerHistory({ navigation }) {
         ListFooterComponent={renderFooter("wallet")}
         ListEmptyComponent={renderEmptyComponent}
       />
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+          style={{ flex: 1 }}
+        >
+          <View>
+            <CustomViewRetailer
+              isTextInput
+              isMultiLine
+              titleText={"Reason"}
+              placeHolderText={"Reason"}
+              numberOfLine={5}
+              inputTextBackGround={"#FAFAFA"}
+              value={reason}
+              setValue={setReason}
+            />
+
+            <TouchableOpacity
+              style={{
+                borderRadius: 30,
+
+                backgroundColor: "#000",
+                width: "48%",
+                height: 45,
+                alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+                marginTop: 20,
+              }}
+              activeOpacity={0.8}
+              onPress={() => {
+                if (reason.length > 0) {
+                  OrderAction();
+                  hideModal();
+                } else {
+                  setIconColor("red");
+                  setVisibleAlert(true);
+                  setAlertTitle("OPPS!");
+                  setErrorMessage("Please enter reason.");
+                }
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontFamily: font.GoldPlay_SemiBold,
+                  fontSize: 16,
+                }}
+              >
+                SUBMIT
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 }

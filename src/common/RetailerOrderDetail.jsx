@@ -64,8 +64,9 @@ export default function RetailerOrderDetail({ navigation }) {
   const isApiCall = useRef(false);
   const SCREEN_DIMENSIONS = Dimensions.get("window");
   const { data, category } = route.params;
-  // console.log("Data => ", data);
+  console.log("Data => ", JSON.stringify(data));
   const [products, setProducts] = useState([]);
+  const [invoice, setInvoice] = useState([]);
   const [invoiceNo, setInvoiceNo] = useState("");
   const [invoiceTotal, setInvoiceTotal] = useState("");
   const containerStyle = {
@@ -132,6 +133,7 @@ export default function RetailerOrderDetail({ navigation }) {
       );
       setInvoiceNo(data.invoices[0].invoice_no);
       setInvoiceTotal(data.invoices[0].invoice_total);
+      setInvoice(data.invoices);
     } else {
       setProducts(data.items);
     }
@@ -541,6 +543,51 @@ export default function RetailerOrderDetail({ navigation }) {
       </View>
     );
   };
+  const InvoiceCollection = ({ item, index }) => {
+    return (
+      <TouchableOpacity
+        style={{
+          minHeight: 45,
+          borderRadius: 10,
+          backgroundColor: colors.WHITE,
+          justifyContent: "center",
+          padding: 10,
+          marginTop: 5,
+        }}
+        onPress={async () => {
+          navigation.navigate("InvoiceDetails", {
+            data: item,
+            category: await Preference.getSelectedCategory(),
+          });
+        }}
+      >
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            style={{
+              fontFamily: font.GoldPlay_SemiBold,
+              fontSize: 16,
+              flex: 1,
+            }}
+          >{`${index + 1}) Invoice No - ${item.invoice_no}`}</Text>
+          <View
+            style={{
+              alignItems: "center",
+
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <AntDesign
+              name="right"
+              size={20}
+              color={colors.YELLOW}
+              style={{}}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -781,410 +828,115 @@ export default function RetailerOrderDetail({ navigation }) {
               )}
             {(data.status_type === "APPROVED_CHANNEL_PARTNER" ||
               data.status_type === "INVOICE_UPDATED" ||
-              data.status_type === "COMPLETED") &&
-              category === "retailer" && (
-                <View>
-                  <CustomViewRetailer
-                    isDate
-                    icon={require("../../assets/calendar.png")}
-                    placeHolderText={selectedDate}
-                    titleText={"Invoice Date"}
-                    onClickCalendar={() =>
-                      data.status_type === "APPROVED_CHANNEL_PARTNER"
-                        ? OpenCalendar()
-                        : null
-                    }
-                  />
-                  <CustomViewRetailer
-                    isTextInput
-                    titleText={"Invoice No."}
-                    mainContainerStyle={{ marginTop: 10 }}
-                    placeHolderText={"Invoice No."}
-                    setValue={setInvoiceNo}
-                    value={invoiceNo}
-                    editable={data.status_type === "APPROVED_CHANNEL_PARTNER"}
-                  />
-                  <CustomViewRetailer
-                    isTextInput
-                    titleText={"Invoice Total"}
-                    mainContainerStyle={{ marginTop: 10 }}
-                    placeHolderText={"Invoice Total"}
-                    setValue={setInvoiceTotal}
-                    value={invoiceTotal}
-                    inputType={"decimal-pad"}
-                    editable={data.status_type === "APPROVED_CHANNEL_PARTNER"}
-                  />
-                  <View
-                    style={{
-                      height: 1,
-                      flex: 1,
-                      backgroundColor: colors.GREY_TXT,
-                      marginTop: 10,
-                    }}
-                  />
-                  <FlatList
-                    data={products}
-                    renderItem={ProductCollectionView}
-                  />
-                  {data.status_type === "INVOICE_UPDATED" && (
-                    <CustomViewRetailer
-                      isTextInput
-                      isMultiLine
-                      titleText={"Remarks"}
-                      mainContainerStyle={{ marginTop: 10 }}
-                      placeHolderText={"Enter Remarks here.."}
-                      numberOfLine={4}
-                      value={completeRemark}
-                      setValue={setCompleteRemark}
-                      editable={true}
-                    />
+              data.status_type === "COMPLETED") && (
+              <View>
+                <CustomViewRetailer
+                  isTextInput
+                  value={moment(data?.order_date, "YYYY-MM-DD").format(
+                    "DD-MM-YYYY"
                   )}
-                  <Text
-                    style={{
-                      paddingBottom: 8,
-                      fontSize: 14,
-                      marginTop: 10,
-                      fontFamily: font.GoldPlay_Medium,
-                    }}
-                  >
-                    {"Invoice Image"}
-                  </Text>
-                  <TouchableOpacity
-                    style={{ height: 100, width: 100 }}
-                    onPress={() =>
-                      data.status_type === "APPROVED_CHANNEL_PARTNER"
-                        ? setVisibleModel(true)
-                        : null
-                    }
-                  >
-                    {image.length > 0 ? (
-                      <Image
-                        source={{ uri: image }}
-                        style={{
-                          height: 100,
-                          width: 100,
-                          resizeMode: "cover",
-                          borderRadius: 10,
-                        }}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          borderRadius: 10,
-                          borderWidth: 2,
-                          borderColor: colors.GREY_TXT,
-                          height: 100,
-                          width: 100,
-                          alignContent: "center",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Feather
-                          name="plus"
-                          size={80}
-                          color={colors.GREY_TXT}
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                  {data.status_type != "COMPLETED" && (
-                    <TouchableOpacity
-                      activeOpacity={1}
-                      onPress={() => {
-                        if (!isApiCall.current) {
-                          isApiCall.current = true;
-                          setSHowView(true);
-                          setTimeout(() => {
-                            setSHowView(false);
-                            isApiCall.current = false;
-                            if (
-                              data.status_type === "APPROVED_CHANNEL_PARTNER"
-                            ) {
-                              if (checkValidation()) {
-                                CreateInvoice();
-                              }
-                            } else {
-                              if (completeRemark.trim().length > 0) {
-                                CompleteOrder();
-                              } else {
-                                setAlertTitle("OPPS!");
-                                setErrorMessage("Please enter your remark.");
-                                setVisibleAlert(true);
-                              }
-                            }
-                          }, 450);
-
-                          stretch(stretchValue);
-                          scaleText(scale);
-                        }
-                        // rotateImage(rotation);
-
-                        //handleOnPress("Products")
-                      }}
-                      //underlayColor={colors.YELLOW}
-                      style={{ borderRadius: 30, marginTop: 30 }}
-                    >
-                      <View style={{}}>
-                        {showView && (
-                          <Animated.View
-                            style={{
-                              borderColor: "#ffffff",
-                              transform: [
-                                { scaleX: interpolatedStretchAnimation },
-                              ],
-                              width: SCREEN_DIMENSIONS.width - 40,
-                              height: 50,
-                              borderRadius: 30,
-                              backgroundColor: colors.YELLOW,
-                              position: "absolute",
-                              marginTop: 3,
-                              marginStart: 2,
-                            }}
-                          ></Animated.View>
-                        )}
-
-                        <Animated.View
-                          style={{
-                            transform: [
-                              { scaleX: interpolatedStretchAnimation },
-                            ],
-                            borderRadius: 30,
-                            borderColor: "#ffffff",
-                            width: SCREEN_DIMENSIONS.width - 39,
-                            height: 50,
-                            backgroundColor: colors.BLACK,
-                            flexDirection: "row",
-                          }}
-                        >
-                          <View style={{ width: 0 }}></View>
-                          <Animated.Text
-                            style={[
-                              stylesCommon.preButtonLabelStyle,
-                              {
-                                flex: 1,
-                                textAlign: "center",
-                                color: "#fff",
-                                alignSelf: "center",
-                                alignContent: "center",
-                                transform: [{ scale }],
-                              },
-                            ]}
-                          >
-                            {data.status_type === "APPROVED_CHANNEL_PARTNER"
-                              ? "CONFIRM"
-                              : "COMPLETE ORDER"}
-                          </Animated.Text>
-                        </Animated.View>
-                      </View>
-                    </TouchableOpacity>
+                  titleText={"Date"}
+                  editable={false}
+                />
+                <CustomViewRetailer
+                  isTextInput
+                  titleText={"PO No."}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"PO No."}
+                  value={data?.po_no}
+                  editable={false}
+                />
+                <CustomViewRetailer
+                  isTextInput
+                  mainContainerStyle={{ marginTop: 10 }}
+                  value={moment(data?.po_date, "YYYY-MM-DD").format(
+                    "DD-MM-YYYY"
                   )}
-                  {/* {products.map((product, index) => (
-                  <ProductCollectionView
-                    index={index}
-                    product={product}
-                    key={index}
-                  />
-                ))} */}
-                </View>
-              )}
-            {(data.status_type === "INVOICE_UPDATED" ||
-              data.status_type === "COMPLETED") &&
-              category === "distributer" && (
-                <View>
-                  <CustomViewRetailer
-                    isDate
-                    icon={require("../../assets/calendar.png")}
-                    placeHolderText={selectedDate}
-                    titleText={"Invoice Date"}
-                    onClickCalendar={() =>
-                      data.status_type === "APPROVED_CHANNEL_PARTNER"
-                        ? OpenCalendar()
-                        : null
-                    }
-                  />
+                  titleText={"PO Date"}
+                  editable={false}
+                />
+                <CustomViewRetailer
+                  isTextInput
+                  isMultiLine
+                  titleText={"PO Remarks"}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"Po Remarks."}
+                  numberOfLine={4}
+                  value={data?.remarks}
+                  editable={false}
+                />
+
+                {/* {data.items.map((product, index) => (
+                <ProductCollectionView
+                  index={index}
+                  product={product}
+                  key={index}
+                />
+              ))} */}
+                <CustomViewRetailer
+                  isTextInput
+                  titleText={"Payments Terms"}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"Payments Terms"}
+                  value={data.payment_terms}
+                  editable={false}
+                />
+                <CustomViewRetailer
+                  isTextInput
+                  titleText={"Mode of Transport"}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"Mode of Transport"}
+                  value={data.mode_transport}
+                  editable={false}
+                />
+                <CustomViewRetailer
+                  isTextInput
+                  isMultiLine
+                  titleText={"Note"}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"Note."}
+                  numberOfLine={4}
+                  value={data.note}
+                  editable={false}
+                />
+                {data.status_type === "REJECTED_CHANNEL_PARTNER" && (
                   <CustomViewRetailer
                     isTextInput
-                    titleText={"Invoice No."}
+                    isMultiLine
+                    titleText={"Reject Reason"}
                     mainContainerStyle={{ marginTop: 10 }}
-                    placeHolderText={"Invoice No."}
-                    setValue={setInvoiceNo}
-                    value={invoiceNo}
-                    editable={data.status_type === "APPROVED_CHANNEL_PARTNER"}
-                  />
-                  <CustomViewRetailer
-                    isTextInput
-                    titleText={"Invoice Total"}
-                    mainContainerStyle={{ marginTop: 10 }}
-                    placeHolderText={"Invoice Total"}
-                    setValue={setInvoiceTotal}
-                    value={invoiceTotal}
-                    inputType={"decimal-pad"}
-                    editable={data.status_type === "APPROVED_CHANNEL_PARTNER"}
-                  />
-                  <View
-                    style={{
-                      height: 1,
-                      flex: 1,
-                      backgroundColor: colors.GREY_TXT,
-                      marginTop: 10,
+                    placeHolderText={"Reject Reason."}
+                    numberOfLine={4}
+                    value={data.status_note}
+                    editable={false}
+                    titleTextStyle={{
+                      color: colors.ERROR_RED,
+                      fontFamily: font.GoldPlay_SemiBold,
                     }}
                   />
-                  <FlatList
-                    data={products}
-                    renderItem={ProductCollectionView}
-                  />
+                )}
+                <View
+                  style={{
+                    height: 0,
+                    flex: 1,
+                    backgroundColor: colors.GREY_TXT,
+                    marginTop: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    marginBottom: 8,
+                    marginTop: 5,
+                    fontSize: 14,
+                    fontFamily: font.GoldPlay_Medium,
+                  }}
+                >
+                  {"Invoices"}
+                </Text>
+                <FlatList data={invoice} renderItem={InvoiceCollection} />
+              </View>
+            )}
 
-                  <Text
-                    style={{
-                      paddingBottom: 8,
-                      fontSize: 14,
-                      marginTop: 10,
-                      fontFamily: font.GoldPlay_Medium,
-                    }}
-                  >
-                    {"Invoice Image"}
-                  </Text>
-                  <TouchableOpacity
-                    style={{ height: 100, width: 100 }}
-                    onPress={() =>
-                      data.status_type === "APPROVED_CHANNEL_PARTNER"
-                        ? setVisibleModel(true)
-                        : null
-                    }
-                  >
-                    {image.length > 0 ? (
-                      <Image
-                        source={{ uri: image }}
-                        style={{
-                          height: 100,
-                          width: 100,
-                          resizeMode: "cover",
-                          borderRadius: 10,
-                        }}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          borderRadius: 10,
-                          borderWidth: 2,
-                          borderColor: colors.GREY_TXT,
-                          height: 100,
-                          width: 100,
-                          alignContent: "center",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Feather
-                          name="plus"
-                          size={80}
-                          color={colors.GREY_TXT}
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                  {data.status_type != "COMPLETED" &&
-                    category === "retailer" && (
-                      <TouchableOpacity
-                        activeOpacity={1}
-                        onPress={() => {
-                          if (!isApiCall.current) {
-                            isApiCall.current = true;
-                            setSHowView(true);
-                            setTimeout(() => {
-                              setSHowView(false);
-                              isApiCall.current = false;
-                              if (
-                                data.status_type === "APPROVED_CHANNEL_PARTNER"
-                              ) {
-                                if (checkValidation()) {
-                                  CreateInvoice();
-                                }
-                              } else {
-                                if (completeRemark.trim().length > 0) {
-                                  CompleteOrder();
-                                } else {
-                                  setAlertTitle("OPPS!");
-                                  setErrorMessage("Please enter your remark.");
-                                  setVisibleAlert(true);
-                                }
-                              }
-                            }, 450);
-
-                            stretch(stretchValue);
-                            scaleText(scale);
-                          }
-                          // rotateImage(rotation);
-
-                          //handleOnPress("Products")
-                        }}
-                        //underlayColor={colors.YELLOW}
-                        style={{ borderRadius: 30, marginTop: 30 }}
-                      >
-                        <View style={{}}>
-                          {showView && (
-                            <Animated.View
-                              style={{
-                                borderColor: "#ffffff",
-                                transform: [
-                                  { scaleX: interpolatedStretchAnimation },
-                                ],
-                                width: SCREEN_DIMENSIONS.width - 40,
-                                height: 50,
-                                borderRadius: 30,
-                                backgroundColor: colors.YELLOW,
-                                position: "absolute",
-                                marginTop: 3,
-                                marginStart: 2,
-                              }}
-                            ></Animated.View>
-                          )}
-
-                          <Animated.View
-                            style={{
-                              transform: [
-                                { scaleX: interpolatedStretchAnimation },
-                              ],
-                              borderRadius: 30,
-                              borderColor: "#ffffff",
-                              width: SCREEN_DIMENSIONS.width - 39,
-                              height: 50,
-                              backgroundColor: colors.BLACK,
-                              flexDirection: "row",
-                            }}
-                          >
-                            <View style={{ width: 0 }}></View>
-                            <Animated.Text
-                              style={[
-                                stylesCommon.preButtonLabelStyle,
-                                {
-                                  flex: 1,
-                                  textAlign: "center",
-                                  color: "#fff",
-                                  alignSelf: "center",
-                                  alignContent: "center",
-                                  transform: [{ scale }],
-                                },
-                              ]}
-                            >
-                              {data.status_type === "APPROVED_CHANNEL_PARTNER"
-                                ? "CONFIRM"
-                                : "COMPLETE ORDER"}
-                            </Animated.Text>
-                          </Animated.View>
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                  {/* {products.map((product, index) => (
-                  <ProductCollectionView
-                    index={index}
-                    product={product}
-                    key={index}
-                  />
-                ))} */}
-                </View>
-              )}
             {data.status_type === "DISTRIBUTION_NETWORK" &&
               category != "retailer" && (
                 <View
