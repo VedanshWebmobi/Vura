@@ -450,6 +450,7 @@ export default function RetailerOrderDetail({ navigation }) {
     }
   };
   const ProductCollectionView = ({ item, index }) => {
+    console.log("Product Collection =>", item);
     return (
       <View key={index}>
         <View
@@ -493,7 +494,7 @@ export default function RetailerOrderDetail({ navigation }) {
           isTextInput
           titleText={
             data.status_type === "APPROVED_CHANNEL_PARTNER"
-              ? "Add Quantity"
+              ? "Quantity"
               : "Quantity"
           }
           mainContainerStyle={{ marginTop: 10 }}
@@ -502,13 +503,10 @@ export default function RetailerOrderDetail({ navigation }) {
           setValue={(text) => {
             handleInputChange(index, "qty", text);
           }}
-          editable={
-            data.status_type === "APPROVED_CHANNEL_PARTNER" &&
-            category === "retailer"
-          }
+          editable={false}
           inputType={"numeric"}
         />
-        {data.status_type === "APPROVED_CHANNEL_PARTNER" &&
+        {/* {data.status_type === "APPROVED_CHANNEL_PARTNER" &&
           category === "retailer" && (
             <CustomViewRetailer
               isTextInput
@@ -522,7 +520,7 @@ export default function RetailerOrderDetail({ navigation }) {
               editable={true}
               inputType={"decimal-pad"}
             />
-          )}
+          )} */}
         <View
           style={{
             flexDirection: "row",
@@ -622,7 +620,6 @@ export default function RetailerOrderDetail({ navigation }) {
         <ScrollView keyboardShouldPersistTaps={"handled"}>
           <View style={{ flex: 1, padding: 16 }}>
             {(data.status_type === "DISTRIBUTION_NETWORK" ||
-              data.status_type === "APPROVED_CHANNEL_PARTNER" ||
               data.status_type === "REJECTED_CHANNEL_PARTNER") &&
               category === "distributer" && (
                 <View>
@@ -661,18 +658,7 @@ export default function RetailerOrderDetail({ navigation }) {
                     value={data?.remarks}
                     editable={false}
                   />
-                  <View
-                    style={{
-                      height: 1,
-                      flex: 1,
-                      backgroundColor: colors.GREY_TXT,
-                      marginTop: 10,
-                    }}
-                  />
-                  <FlatList
-                    data={products}
-                    renderItem={ProductCollectionView}
-                  />
+
                   {/* {data.items.map((product, index) => (
                   <ProductCollectionView
                     index={index}
@@ -722,6 +708,19 @@ export default function RetailerOrderDetail({ navigation }) {
                       }}
                     />
                   )}
+                  <View
+                    style={{
+                      height: 1,
+                      flex: 1,
+                      backgroundColor: colors.GREY_TXT,
+                      marginTop: 10,
+                    }}
+                  />
+
+                  <FlatList
+                    data={products}
+                    renderItem={ProductCollectionView}
+                  />
                 </View>
               )}
             {(data.status_type === "DISTRIBUTION_NETWORK" ||
@@ -763,18 +762,7 @@ export default function RetailerOrderDetail({ navigation }) {
                     value={data?.remarks}
                     editable={false}
                   />
-                  <View
-                    style={{
-                      height: 1,
-                      flex: 1,
-                      backgroundColor: colors.GREY_TXT,
-                      marginTop: 10,
-                    }}
-                  />
-                  <FlatList
-                    data={products}
-                    renderItem={ProductCollectionView}
-                  />
+
                   {/* {data.items.map((product, index) => (
                   <ProductCollectionView
                     index={index}
@@ -824,6 +812,18 @@ export default function RetailerOrderDetail({ navigation }) {
                       }}
                     />
                   )}
+                  <View
+                    style={{
+                      height: 1,
+                      flex: 1,
+                      backgroundColor: colors.GREY_TXT,
+                      marginTop: 10,
+                    }}
+                  />
+                  <FlatList
+                    data={products}
+                    renderItem={ProductCollectionView}
+                  />
                 </View>
               )}
             {(data.status_type === "APPROVED_CHANNEL_PARTNER" ||
@@ -867,12 +867,12 @@ export default function RetailerOrderDetail({ navigation }) {
                 />
 
                 {/* {data.items.map((product, index) => (
-                <ProductCollectionView
-                  index={index}
-                  product={product}
-                  key={index}
-                />
-              ))} */}
+                  <ProductCollectionView
+                    index={index}
+                    product={product}
+                    key={index}
+                  />
+                ))} */}
                 <CustomViewRetailer
                   isTextInput
                   titleText={"Payments Terms"}
@@ -899,22 +899,42 @@ export default function RetailerOrderDetail({ navigation }) {
                   value={data.note}
                   editable={false}
                 />
-                {data.status_type === "REJECTED_CHANNEL_PARTNER" && (
+
+                <CustomViewRetailer
+                  isTextInput
+                  isMultiLine
+                  titleText={"Channel Partner Remark"}
+                  mainContainerStyle={{ marginTop: 10 }}
+                  placeHolderText={"Channel Partner Remark"}
+                  numberOfLine={4}
+                  value={data.status_note}
+                  editable={false}
+                />
+                {data.status_type === "COMPLETED" && (
                   <CustomViewRetailer
                     isTextInput
                     isMultiLine
-                    titleText={"Reject Reason"}
+                    titleText={"Retailer Remark"}
                     mainContainerStyle={{ marginTop: 10 }}
-                    placeHolderText={"Reject Reason."}
+                    placeHolderText={"Retailer Remark"}
                     numberOfLine={4}
-                    value={data.status_note}
+                    value={data.completed_note}
                     editable={false}
-                    titleTextStyle={{
-                      color: colors.ERROR_RED,
-                      fontFamily: font.GoldPlay_SemiBold,
-                    }}
                   />
                 )}
+
+                <View
+                  style={{
+                    height: 1,
+                    flex: 1,
+                    backgroundColor: colors.GREY_TXT,
+                    marginTop: 10,
+                  }}
+                />
+                <FlatList
+                  data={data.items}
+                  renderItem={ProductCollectionView}
+                />
                 <View
                   style={{
                     height: 0,
@@ -923,16 +943,18 @@ export default function RetailerOrderDetail({ navigation }) {
                     marginTop: 10,
                   }}
                 />
-                <Text
-                  style={{
-                    marginBottom: 8,
-                    marginTop: 5,
-                    fontSize: 14,
-                    fontFamily: font.GoldPlay_Medium,
-                  }}
-                >
-                  {"Invoices"}
-                </Text>
+                {invoice.length > 0 && (
+                  <Text
+                    style={{
+                      marginBottom: 8,
+                      marginTop: 5,
+                      fontSize: 14,
+                      fontFamily: font.GoldPlay_Medium,
+                    }}
+                  >
+                    {"Invoices"}
+                  </Text>
+                )}
                 <FlatList data={invoice} renderItem={InvoiceCollection} />
               </View>
             )}

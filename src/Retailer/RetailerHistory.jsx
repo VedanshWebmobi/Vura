@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { RETAILER_ORDER_LIST, RETAILER_COMPLETE_ORDER } from "../Api/Utils";
 import * as Preference from "../StoreData/Preference";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
@@ -25,6 +25,7 @@ import { Modal, Portal, Button } from "react-native-paper";
 import CustomViewRetailer from "../Retailer/CustomViewRetailer";
 import CommonAlert from "../common/CommonAlert";
 import crashlytics from "@react-native-firebase/crashlytics";
+import { Loader } from "../common/Loader";
 
 export default function RetailerHistory({ navigation }) {
   const SCREEN_DIMENSIONS = Dimensions.get("window");
@@ -38,6 +39,8 @@ export default function RetailerHistory({ navigation }) {
   const [iconColor, setIconColor] = useState("red");
   const [visible, setVisible] = useState(false);
   const [reason, setReason] = useState("");
+  const selectedOrderId = useRef("");
+  const [isFirstTime, setIsFirstTime] = useState(true);
   const containerStyle = {
     backgroundColor: "white",
     padding: 20,
@@ -57,6 +60,9 @@ export default function RetailerHistory({ navigation }) {
   const hideModal = () => setVisible(false);
   const showModal = () => setVisible(true);
   const GetOrderList = async () => {
+    if (isFirstTime) {
+      setIsLoading(true);
+    }
     try {
       const requestOptions = {
         headers: {
@@ -77,7 +83,7 @@ export default function RetailerHistory({ navigation }) {
         navigation,
         true
       );
-      console.log("OrderList => ", response);
+      // console.log("OrderList => ", response);
       const newData = response.data;
       if (currentPage != 1) {
         setOrderListData([...orderListData, ...newData]);
@@ -89,6 +95,7 @@ export default function RetailerHistory({ navigation }) {
       console.error("Error fetching retailer order data:", error);
     } finally {
       setIsLoading(false);
+      setIsFirstTime(false);
     }
   };
 
@@ -99,9 +106,9 @@ export default function RetailerHistory({ navigation }) {
         "Distributor Retailer Order Screen => Order Complete Api call...."
       );
       var _data = new FormData();
-      _data.append("order_id", data.id);
-      _data.append("remarks", completeRemark);
-
+      _data.append("order_id", selectedOrderId?.current);
+      _data.append("remarks", reason);
+      console.log("Complete Order =>", JSON.stringify(_data));
       const requestOptions = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -152,7 +159,7 @@ export default function RetailerHistory({ navigation }) {
   };
 
   const renderItem = ({ item }) => {
-    console.log(JSON.stringify(item));
+    console.log(JSON.stringify(item.status_type));
     return (
       <TouchableOpacity
         style={{
@@ -264,76 +271,77 @@ export default function RetailerHistory({ navigation }) {
               />
             </View>
           </View>
-          {item.status_type === "APPROVED_CHANNEL_PARTNER" ||
-            (item.status_type === "INVOICE_UPDATED" && (
-              <View
+          {(item.status_type === "APPROVED_CHANNEL_PARTNER" ||
+            item.status_type === "INVOICE_UPDATED") && (
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 20,
+                alignSelf: "flex-end",
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  flexDirection: "row",
-                  marginTop: 20,
-                  alignSelf: "flex-end",
+                  borderRadius: 30,
+                  marginEnd: "2%",
+                  backgroundColor: "#000",
+                  width: "48%",
+                  height: 45,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                activeOpacity={0.8}
+                onPress={async () => {
+                  navigation.navigate("CreateInvoice", {
+                    data: item,
+                    category: await Preference.getSelectedCategory(),
+                  });
                 }}
               >
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: font.GoldPlay_SemiBold,
+                    fontSize: 12,
+                  }}
+                >
+                  ADD INVOICE
+                </Text>
+              </TouchableOpacity>
+
+              {item.status_type === "INVOICE_UPDATED" && (
                 <TouchableOpacity
                   style={{
                     borderRadius: 30,
-                    marginEnd: "2%",
-                    backgroundColor: "#000",
+                    marginStart: "2%",
+                    borderColor: "#000",
+                    borderWidth: 2,
+                    backgroundColor: "#fff",
                     width: "48%",
                     height: 45,
+
                     alignItems: "center",
                     justifyContent: "center",
                   }}
                   activeOpacity={0.8}
-                  onPress={async () => {
-                    navigation.navigate("CreateInvoice", {
-                      data: item,
-                      category: await Preference.getSelectedCategory(),
-                    });
+                  onPress={() => {
+                    selectedOrderId.current = item.id;
+                    showModal();
                   }}
                 >
                   <Text
                     style={{
-                      color: "#fff",
+                      color: "#000",
                       fontFamily: font.GoldPlay_SemiBold,
-                      fontSize: 14,
+                      fontSize: 12,
                     }}
                   >
-                    ADD INVOICE
+                    COMPLETE ORDER
                   </Text>
                 </TouchableOpacity>
-
-                {item.status_type === "INVOICE_UPDATED" && (
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 30,
-                      marginStart: "2%",
-                      borderColor: "#000",
-                      borderWidth: 2,
-                      backgroundColor: "#fff",
-                      width: "48%",
-                      height: 45,
-
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                      showModal();
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "#000",
-                        fontFamily: font.GoldPlay_SemiBold,
-                        fontSize: 14,
-                      }}
-                    >
-                      COMPLETE ORDER
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
+              )}
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -374,13 +382,13 @@ export default function RetailerHistory({ navigation }) {
           color: "black",
         }}
       >
-        Order data not Found
+        {isFirstTime ? "" : "Order data not Found"}
       </Text>
     </View>
   );
 
   return (
-    <View style={{ margin: 16 }}>
+    <View style={{ margin: 16, flex: 1 }}>
       <CommonAlert
         visible={visibleAlert} // Pass visibility state to the CommonAlert component
         hideModal={() => {
@@ -425,8 +433,8 @@ export default function RetailerHistory({ navigation }) {
             <CustomViewRetailer
               isTextInput
               isMultiLine
-              titleText={"Reason"}
-              placeHolderText={"Reason"}
+              titleText={"Remark"}
+              placeHolderText={"Remark"}
               numberOfLine={5}
               inputTextBackGround={"#FAFAFA"}
               value={reason}
@@ -448,13 +456,13 @@ export default function RetailerHistory({ navigation }) {
               activeOpacity={0.8}
               onPress={() => {
                 if (reason.length > 0) {
-                  OrderAction();
+                  CompleteOrder();
                   hideModal();
                 } else {
                   setIconColor("red");
                   setVisibleAlert(true);
                   setAlertTitle("OPPS!");
-                  setErrorMessage("Please enter reason.");
+                  setErrorMessage("Please enter your remark.");
                 }
               }}
             >
@@ -471,6 +479,7 @@ export default function RetailerHistory({ navigation }) {
           </View>
         </Modal>
       </Portal>
+      <Loader loading={isLoading} />
     </View>
   );
 }

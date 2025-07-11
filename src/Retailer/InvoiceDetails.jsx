@@ -170,6 +170,17 @@ export default function InvoiceDetails({ navigation }) {
               inputType={"decimal-pad"}
               editable={false}
             />
+            {data.channel_partner && (
+              <CustomViewRetailer
+                isTextInput
+                titleText={"Channel Partner Name"}
+                mainContainerStyle={{ marginTop: 10 }}
+                placeHolderText={"Channel Partner Name"}
+                value={data.channel_partner}
+                inputType={"decimal-pad"}
+                editable={false}
+              />
+            )}
             <View
               style={{
                 height: 1,

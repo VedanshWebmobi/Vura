@@ -75,7 +75,7 @@ export default function RetailerOrder({ navigation }) {
     }
   };
   const renderItem = ({ item }) => {
-    console.log(item);
+    // console.log(item);
     return (
       <TouchableOpacity
         activeOpacity={0.8}

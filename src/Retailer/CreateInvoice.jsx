@@ -66,6 +66,7 @@ export default function CreateInvoice({ navigation }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [iconColor, setIconColor] = useState("red");
   const [isLoading, setIsLoading] = useState(false);
+  const [dealerName, setDealerName] = useState("");
   const SCREEN_DIMENSIONS = Dimensions.get("window");
   const isModelOpen = useRef(false);
   const isApiCall = useRef(false);
@@ -230,6 +231,9 @@ export default function CreateInvoice({ navigation }) {
     } else if (invoiceTotal.trim().length <= 0) {
       isValid = false;
       msg = "Please enter Invoice total.";
+    } else if (dealerName.trim().length <= 0) {
+      isValid = false;
+      msg = "Please enter Channel partner name.";
     } else {
       var tempProduct = [...products];
       var filterField = tempProduct.filter(
@@ -276,6 +280,7 @@ export default function CreateInvoice({ navigation }) {
     );
     invoiceData.append("invoice_no", invoiceNo);
     invoiceData.append("invoice_total", invoiceTotal);
+    invoiceData.append("channel_partner", dealerName);
     invoiceData.append("items", await ConvertApiData());
     let requestOptions = {
       headers: {
@@ -483,6 +488,14 @@ export default function CreateInvoice({ navigation }) {
               setValue={setInvoiceTotal}
               value={invoiceTotal}
               inputType={"decimal-pad"}
+            />
+            <CustomViewRetailer
+              isTextInput
+              titleText={"Channel Partner Name"}
+              mainContainerStyle={{ marginTop: 10 }}
+              placeHolderText={"Channel Partner Name"}
+              setValue={setDealerName}
+              value={dealerName}
             />
             <View
               style={{
