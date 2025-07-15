@@ -325,6 +325,7 @@ export default function RetailerOrderDetail({ navigation }) {
     return JSON.stringify(trimmedData);
   };
   const OrderAction = async () => {
+    setIsLoading(true);
     crashlytics().log(
       "Distributor Retailer Order Screen => Order Action Api call...."
     );
