@@ -297,28 +297,27 @@ export default function HomeTabScreen({ navigation }) {
             },
           }}
         />
-        {selectedCategory != "retailer" && (
-          <Tabs.Screen
-            name="SCAN"
-            component={Scanner}
-            options={{
-              tabBarIcon: ({ focused, color, size }) => {
-                console.log(focused);
-                return (
-                  <Image
-                    source={
-                      focused
-                        ? require("../../assets/scan_barcode_select.png")
-                        : require("../../assets/scan_barcode.png")
-                    }
-                    style={{ height: 20, width: 20, resizeMode: "contain" }}
-                  />
-                );
-                //  require('../../assets/scan_barcode.png')
-              },
-            }}
-          />
-        )}
+
+        <Tabs.Screen
+          name="SCAN"
+          component={Scanner}
+          options={{
+            tabBarIcon: ({ focused, color, size }) => {
+              console.log(focused);
+              return (
+                <Image
+                  source={
+                    focused
+                      ? require("../../assets/scan_barcode_select.png")
+                      : require("../../assets/scan_barcode.png")
+                  }
+                  style={{ height: 20, width: 20, resizeMode: "contain" }}
+                />
+              );
+              //  require('../../assets/scan_barcode.png')
+            },
+          }}
+        />
       </Tabs.Navigator>
     </View>
   );

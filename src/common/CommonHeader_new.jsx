@@ -139,25 +139,24 @@ export default function CommonHeaderNew({
               style={{ height: 30, width: 30, resizeMode: "contain" }}
             />
           </TouchableOpacity>
-          {selectedCategory != "retailer" && (
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => {
-                onWalletPress();
-              }}
-              style={{
-                height: 60,
-                padding: 10,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={require("../../assets/wallet_new.png")}
-                style={{ height: 24, width: 24, resizeMode: "contain" }}
-              />
-            </TouchableOpacity>
-          )}
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              onWalletPress();
+            }}
+            style={{
+              height: 60,
+              padding: 10,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              source={require("../../assets/wallet_new.png")}
+              style={{ height: 24, width: 24, resizeMode: "contain" }}
+            />
+          </TouchableOpacity>
         </View>
       )}
     </View>

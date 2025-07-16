@@ -781,55 +781,55 @@ export default function CustomDrawer({ navigation }) {
                   marginBottom: 10,
                 }}
               />
-              {selectedCategory != "retailer" && (
-                <View>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                      if (!profileDetailsComplete) {
-                        // setShowAlert(true);
-                        // setErrorMessage("Please Complete Your Profile!");
-                        navigation.navigate("CompleteProfile");
-                      } else {
-                        navigation.navigate("Wallet");
-                      }
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        height: 50,
-                        width: "100%",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        style={{ height: 20, width: 20, resizeMode: "contain" }}
-                        source={require("../../assets/wallet_minus.png")}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontFamily: font.GoldPlay_SemiBold,
-                          color: "#fff",
-                          flex: 1,
-                          marginStart: 20,
-                        }}
-                      >
-                        WALLET HISTORY
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+
+              <View>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    if (!profileDetailsComplete) {
+                      // setShowAlert(true);
+                      // setErrorMessage("Please Complete Your Profile!");
+                      navigation.navigate("CompleteProfile");
+                    } else {
+                      navigation.navigate("Wallet");
+                    }
+                  }}
+                >
                   <View
                     style={{
-                      height: 1,
-                      backgroundColor: "#FFFFFF50",
-                      marginTop: 10,
-                      marginBottom: 10,
+                      flexDirection: "row",
+                      height: 50,
+                      width: "100%",
+                      alignItems: "center",
                     }}
-                  />
-                </View>
-              )}
+                  >
+                    <Image
+                      style={{ height: 20, width: 20, resizeMode: "contain" }}
+                      source={require("../../assets/wallet_minus.png")}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontFamily: font.GoldPlay_SemiBold,
+                        color: "#fff",
+                        flex: 1,
+                        marginStart: 20,
+                      }}
+                    >
+                      WALLET HISTORY
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    height: 1,
+                    backgroundColor: "#FFFFFF50",
+                    marginTop: 10,
+                    marginBottom: 10,
+                  }}
+                />
+              </View>
+
               {/* {selectedCategory === "distributer" ? (
             <>
               <TouchableOpacity
