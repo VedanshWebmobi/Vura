@@ -1,8 +1,7 @@
 //http://tms.vura.ae/
 // export const BASE_URL = "http://65.1.27.14/Vura_API_Server/src/api/";
 //export const BASE_URL = "https://tms.vura.ae/hr/Vura_API_Server/src/api/";
-export const BASE_URL =
-  "https://tms.vura.ae/retailerapp/Vura_API_Server/src/api/";
+export const BASE_URL = "https://tms.vura.ae/dev2/Vura_API_Server/src/api/";
 //https://tms.vura.ae/retailerapp/Vura_API_Server/src/api
 //export const BASE_URL = "https://tms.vura.ae/dev/Vura_API_Server/src/api/";
 //export const BASE_URL = "https://we.vura.ae/Vura_API_Server/src/api/";

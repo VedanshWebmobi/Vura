@@ -482,9 +482,9 @@ export default function CreateInvoice({ navigation }) {
             />
             <CustomViewRetailer
               isTextInput
-              titleText={"Invoice Total"}
+              titleText={"Invoice Total Amount"}
               mainContainerStyle={{ marginTop: 10 }}
-              placeHolderText={"Invoice Total"}
+              placeHolderText={"Invoice Total Amount"}
               setValue={setInvoiceTotal}
               value={invoiceTotal}
               inputType={"decimal-pad"}
@@ -654,6 +654,7 @@ export default function CreateInvoice({ navigation }) {
               mode="date"
               open={openDate}
               date={date}
+              minimumDate={moment().startOf("month").toDate()}
               maximumDate={new Date()}
               onConfirm={(date) => {
                 setSelectedDate(moment(date).format("DD-MM-YYYY"));

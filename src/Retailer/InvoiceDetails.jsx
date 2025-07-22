@@ -163,9 +163,9 @@ export default function InvoiceDetails({ navigation }) {
             />
             <CustomViewRetailer
               isTextInput
-              titleText={"Invoice Total"}
+              titleText={"Invoice Total Amount"}
               mainContainerStyle={{ marginTop: 10 }}
-              placeHolderText={"Invoice Total"}
+              placeHolderText={"Invoice Total Amount"}
               value={data.invoice_total}
               inputType={"decimal-pad"}
               editable={false}

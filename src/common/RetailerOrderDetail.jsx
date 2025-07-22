@@ -1037,8 +1037,8 @@ export default function RetailerOrderDetail({ navigation }) {
                   <CustomViewRetailer
                     isTextInput
                     isMultiLine
-                    titleText={"Reason"}
-                    placeHolderText={"Reason"}
+                    titleText={action === "approve" ? "Remark" : "Reason"}
+                    placeHolderText={action === "approve" ? "Remark" : "Reason"}
                     numberOfLine={5}
                     inputTextBackGround={"#FAFAFA"}
                     value={reason}

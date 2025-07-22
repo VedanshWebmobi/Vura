@@ -48,7 +48,9 @@ export default function CreateOrder({ navigation }) {
   const [po_openDate, setPO_OpenDate] = useState(false);
   const [date, setDate] = useState(new Date());
   const [po_date, setPO_Date] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState("Select Date");
+  const [selectedDate, setSelectedDate] = useState(
+    moment(date).format("DD-MM-YYYY")
+  );
   const [selectedPODate, setSelectedPODate] = useState("Select Date");
   const [categories, setCategories] = useState();
   const [productData, setProductData] = useState(AllProduct);
@@ -543,15 +545,15 @@ export default function CreateOrder({ navigation }) {
             icon={require("../../assets/calendar.png")}
             placeHolderText={selectedDate}
             titleText={"Date"}
-            onClickCalendar={OpenCalendar}
+            onClickCalendar={() => null}
           />
-          <CustomViewRetailer
+          {/* <CustomViewRetailer
             isTextInput
             titleText={"Unique ID"}
             mainContainerStyle={{ marginTop: 10 }}
             placeHolderText={"Unique ID"}
             editable={false}
-          />
+          /> */}
           <CustomViewRetailer
             isTextInput
             titleText={"PO No."}
@@ -750,6 +752,7 @@ export default function CreateOrder({ navigation }) {
             mode="date"
             open={openDate}
             date={date}
+            minimumDate={moment().startOf("month")}
             maximumDate={new Date()}
             onConfirm={(date) => {
               setSelectedDate(moment(date).format("DD-MM-YYYY"));
@@ -768,6 +771,7 @@ export default function CreateOrder({ navigation }) {
             mode="date"
             open={po_openDate}
             date={po_date}
+            minimumDate={moment().startOf("month")}
             maximumDate={new Date()}
             onConfirm={(date) => {
               setPO_OpenDate(false);
