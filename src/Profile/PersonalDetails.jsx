@@ -43,6 +43,7 @@ import {
   GET_PROFILE,
   BANK_VERIFICATION,
   DELETE_ACCOUNT,
+  RETAILER_PROFILE_UPDATE,
 } from "../Api/Utils";
 import DatePicker from "react-native-date-picker";
 import moment from "moment";
@@ -136,6 +137,7 @@ export default function PersonalDetails({ navigation }) {
   const [visible, setVisible] = React.useState(false);
   const [visibleModel, setVisibleModel] = useState(false);
   const [showCameraModel, setShowCameraModel] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const showModal = () => setVisible(false);
   const hideModal = () => setVisible(false);
   const hideCameraModal = () => setShowCameraModel(false);
@@ -300,31 +302,33 @@ export default function PersonalDetails({ navigation }) {
     crashlytics().log(
       "PersonalDetails Screen =>  Submit Profile => Check Validation"
     );
-    if (validation()) {
-      crashlytics().log(
-        "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
-      );
-      console.log(profilePhoto);
+    if (selectedCategory === "artisan") {
+      if (validation()) {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
+        );
+        console.log(profilePhoto);
 
-      submitProfile();
-
-      // All validations passed, navigate to BankDetails screen
-
-      // navigation.navigate("BankDetails", {
-      //   profilePhoto,
-      //   name,
-      //   phoneNo,
-      //   aadharNo: aadharNumber,
-      //   address,
-      //   panNo,
-      //   sameAddress,
-      //   city,
-      //   state,
-      // });
+        submitProfile();
+      } else {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
+        );
+      }
+      isApiCall.current = false;
     } else {
-      crashlytics().log(
-        "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
-      );
+      if (validation_Retailer()) {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
+        );
+        console.log(profilePhoto);
+
+        submitProfile();
+      } else {
+        crashlytics().log(
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
+        );
+      }
       isApiCall.current = false;
     }
   };
@@ -427,6 +431,7 @@ export default function PersonalDetails({ navigation }) {
     console.log("yeh ja raha hia ander.....", profilePhoto);
     setIsLoading(true);
     crashlytics().log("PersonalDetails Screen =>  Call Submit Profile API");
+    const selectedCategory = await Preference.getSelectedCategory();
     try {
       let profileFormData = new FormData();
       console.log("====================================");
@@ -483,7 +488,10 @@ export default function PersonalDetails({ navigation }) {
       profileFormData.append("current_state", sameAddress ? state_new : state);
       profileFormData.append("current_pincode", sameAddress ? pincode : "");
       profileFormData.append("current_country", sameAddress ? country : "");
-      profileFormData.append("gender", gender);
+      profileFormData.append(
+        "gender",
+        selectedCategory === "artisan" ? gender : ""
+      );
 
       profileFormData.append(
         "dateOfBirth",
@@ -509,7 +517,9 @@ export default function PersonalDetails({ navigation }) {
 
       const response = await axiosCallAPI(
         "post",
-        ADD_PROFILE,
+        selectedCategory === "distributer" || selectedCategory === "retailer"
+          ? RETAILER_PROFILE_UPDATE
+          : ADD_PROFILE,
         profileFormData,
         requestOptions,
         true,
@@ -882,6 +892,97 @@ export default function PersonalDetails({ navigation }) {
     // }
     return true;
   };
+  const validation_Retailer = () => {
+    var isValid = true;
+    var msg = "";
+
+    if (aadharNumber.trim().length < 12) {
+      isValid = false;
+      msg = "ENTER A VALID AADHAR NUMBER";
+    } else if (panNo.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID PAN CARD NUMBER";
+    } else if (name.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID NAME";
+    } else if (flat_house.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Flat/House)";
+    } else if (pincode.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (Pincode)";
+    } else if (city_town.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (City/Town)";
+    } else if (state_new.trim() === "") {
+      isValid = false;
+      msg = "ENTER A VALID ADDRESS (State)";
+    }
+    // else if (bankverify === "0") {
+    //   isValid = false;
+    //   msg = "PLEASE VERIFY BANK DETAILS.";
+    // }
+
+    if (!isValid) {
+      setAlertTitle("OPPS!");
+      setIconColor("red");
+      setErrorMessage(msg);
+      setVisible(true);
+    }
+    return isValid;
+
+    // Mobile number validation
+    // if (phoneNo.length !== 10) {
+    //   //showModal();
+    //   setErrorMessage(`ENTER A VALID PHONE NUMBER`);
+    //   setVisible(true);
+    //   return;
+    // }
+
+    // if (aadharNumber.length !== 12) {
+    //   Dialog.show({
+    //     type: ALERT_TYPE.DANGER,
+    //     title: "ERROR",
+    //     textBody: "ENTER A VALID AADHAR NO",
+    //     button: "close",
+    //   });
+    //   return false;
+    // }
+
+    // Address validation
+    // if (address.trim() === "") {
+    //   Dialog.show({
+    //     type: ALERT_TYPE.DANGER,
+    //     title: "ERROR",
+    //     textBody: "ENTER A VALID ADDRESS",
+    //     button: "close",
+    //   });
+    //   return false;
+    // }
+
+    // // PAN card number validation
+    // if (panNo.length !== 10) {
+    //   Dialog.show({
+    //     type: ALERT_TYPE.DANGER,
+    //     title: "ERROR",
+    //     textBody: "ENTER A VALID PAN NO",
+    //     button: "close",
+    //   });
+    //   return false;
+    // }
+
+    // // Current address validation if checkbox is unchecked
+    // if (!sameAddress && currAddress.trim() === "") {
+    //   Dialog.show({
+    //     type: ALERT_TYPE.DANGER,
+    //     title: "ERROR",
+    //     textBody: "ENTER A VALID CURRENT ADDRESS",
+    //     button: "close",
+    //   });
+    //   return false;
+    // }
+    return true;
+  };
   const uploadImage = async (mode) => {
     let result = {};
     try {
@@ -975,6 +1076,7 @@ export default function PersonalDetails({ navigation }) {
           );
 
           setGender(gender);
+
           if (dateOfBirth == null || dateOfBirth.length <= 0) {
             setDate(new Date());
             setDOB("");
@@ -1021,6 +1123,14 @@ export default function PersonalDetails({ navigation }) {
     };
 
     retrievePersonalDetails();
+    Preference.getSelectedCategory().then((category) => {
+      setSelectedCategory(category);
+      if (category != "artisan") {
+        setSameAddress(true);
+        setstate("");
+        setcity("");
+      }
+    });
   }, []);
 
   const handleName = (text) => {
@@ -1169,61 +1279,64 @@ export default function PersonalDetails({ navigation }) {
                   justifyContent: "center",
                 }}
               >
-                <View
-                  style={{
-                    height: 100,
-                    width: 130,
-                    margin: 20,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {onImageError ? (
-                    <Image
-                      source={icon.PROFILE_PIC}
-                      style={{
-                        height: 100,
-                        width: 100,
-                        borderRadius: 50,
-                        borderWidth: 2,
-                        borderColor: colors.YELLOW,
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      source={
-                        image.length > 0
-                          ? { uri: image }
-                          : profilePhoto && profilePhoto.length > 0
-                          ? { uri: profilePhoto }
-                          : icon.PROFILE_PIC
-                      }
-                      style={{
-                        height: 100,
-                        width: 100,
-                        borderRadius: 50,
-                        borderWidth: 2,
-                        borderColor: colors.YELLOW,
-                      }}
-                      onError={() => setIsImageError(true)}
-                    />
-                  )}
-
-                  <TouchableOpacity
-                    style={{ position: "absolute", bottom: 0, right: 5 }}
-                    onPress={() => setShowCameraModel(true)}
+                {selectedCategory === "artisan" && (
+                  <View
+                    style={{
+                      height: 100,
+                      width: 130,
+                      margin: 20,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
                   >
-                    <Image
-                      source={require("../../assets/button_.png")}
-                      style={{ height: 35, width: 35, resizeMode: "contain" }}
-                    />
-                  </TouchableOpacity>
-                </View>
+                    {onImageError ? (
+                      <Image
+                        source={icon.PROFILE_PIC}
+                        style={{
+                          height: 100,
+                          width: 100,
+                          borderRadius: 50,
+                          borderWidth: 2,
+                          borderColor: colors.YELLOW,
+                        }}
+                      />
+                    ) : (
+                      <Image
+                        source={
+                          image.length > 0
+                            ? { uri: image }
+                            : profilePhoto && profilePhoto.length > 0
+                            ? { uri: profilePhoto }
+                            : icon.PROFILE_PIC
+                        }
+                        style={{
+                          height: 100,
+                          width: 100,
+                          borderRadius: 50,
+                          borderWidth: 2,
+                          borderColor: colors.YELLOW,
+                        }}
+                        onError={() => setIsImageError(true)}
+                      />
+                    )}
+
+                    <TouchableOpacity
+                      style={{ position: "absolute", bottom: 0, right: 5 }}
+                      onPress={() => setShowCameraModel(true)}
+                    >
+                      <Image
+                        source={require("../../assets/button_.png")}
+                        style={{ height: 35, width: 35, resizeMode: "contain" }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <Card
                   style={{
                     width: "90%",
                     padding: 16,
                     backgroundColor: "#fff",
+                    marginTop: selectedCategory === "artisan" ? 0 : 20,
                   }}
                 >
                   <View style={{}}>
@@ -1339,25 +1452,30 @@ export default function PersonalDetails({ navigation }) {
                           item_place_holder={"Enter your Full Name"}
                           item_return_key_type={"next"}
                         />
-                        <ProfileCustomView
-                          item_value={gender}
-                          item_setValue={setGender}
-                          item_Ref={GenderRef}
-                          item_label={"Gender:"}
-                          item_place_holder={"Select your gender"}
-                          item_return_key_type={"next"}
-                          item_is_gender
-                        />
-                        <ProfileCustomView
-                          item_value={dob}
-                          item_setValue={setDOB}
-                          item_Ref={DOBRef}
-                          item_label={"DOB:"}
-                          item_place_holder={"Enter your Date of Birth"}
-                          item_return_key_type={"next"}
-                          item_is_dob
-                          item_dob_press={handleDatePicker}
-                        />
+                        {selectedCategory === "artisan" && (
+                          <View>
+                            <ProfileCustomView
+                              item_value={gender}
+                              item_setValue={setGender}
+                              item_Ref={GenderRef}
+                              item_label={"Gender:"}
+                              item_place_holder={"Select your gender"}
+                              item_return_key_type={"next"}
+                              item_is_gender
+                            />
+
+                            <ProfileCustomView
+                              item_value={dob}
+                              item_setValue={setDOB}
+                              item_Ref={DOBRef}
+                              item_label={"DOB:"}
+                              item_place_holder={"Enter your Date of Birth"}
+                              item_return_key_type={"next"}
+                              item_is_dob
+                              item_dob_press={handleDatePicker}
+                            />
+                          </View>
+                        )}
                       </View>
                     )}
                   </View>
@@ -1428,15 +1546,17 @@ export default function PersonalDetails({ navigation }) {
                           item_place_holder={"Enter your Flat/House"}
                           item_return_key_type={"next"}
                         />
-                        <ProfileCustomView
-                          item_value={area_street}
-                          item_setValue={setAreaStreet}
-                          item_Ref={AreaRef}
-                          item_Ref_next={PinRef}
-                          item_label={"Area/Street:"}
-                          item_place_holder={"Enter your Area/Street"}
-                          item_return_key_type={"next"}
-                        />
+                        {selectedCategory === "artisan" && (
+                          <ProfileCustomView
+                            item_value={area_street}
+                            item_setValue={setAreaStreet}
+                            item_Ref={AreaRef}
+                            item_Ref_next={PinRef}
+                            item_label={"Area/Street:"}
+                            item_place_holder={"Enter your Area/Street"}
+                            item_return_key_type={"next"}
+                          />
+                        )}
                         <ProfileCustomView
                           item_value={pincode}
                           item_setValue={setPincode}
@@ -1470,107 +1590,114 @@ export default function PersonalDetails({ navigation }) {
                           item_return_key_type={"next"}
                           item_editable={false}
                         />
-
-                        <ProfileCustomView
-                          item_value={country}
-                          item_setValue={setCountry}
-                          item_Ref={CountryRef}
-                          item_label={"Country:"}
-                          item_place_holder={"Enter your Country"}
-                          item_return_key_type={"next"}
-                          item_editable={false}
-                        />
-                        <Text
-                          style={[
-                            stylesCommon.welcomeText,
-                            { fontSize: 14, flex: 1, marginTop: 20 },
-                          ]}
-                        >
-                          {"CURRENT ADDRESS"}
-                        </Text>
-                        <TouchableOpacity
-                          activeOpacity={0.6}
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            marginTop: 20,
-                          }}
-                          onPress={() => {
-                            setSameAddress(!sameAddress);
-                          }}
-                        >
-                          <Image
-                            source={
-                              sameAddress
-                                ? require("../../assets/checkbox_selected.png")
-                                : require("../../assets/checkbox_unselected.png")
-                            }
-                            style={{
-                              height: 15,
-                              width: 15,
-                              marginTop: 0,
-                              resizeMode: "contain",
-                            }}
+                        {selectedCategory === "artisan" && (
+                          <ProfileCustomView
+                            item_value={country}
+                            item_setValue={setCountry}
+                            item_Ref={CountryRef}
+                            item_label={"Country:"}
+                            item_place_holder={"Enter your Country"}
+                            item_return_key_type={"next"}
+                            item_editable={false}
                           />
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              marginStart: 10,
-                              fontFamily: sameAddress
-                                ? font.GoldPlay_SemiBold
-                                : font.GoldPlay_Regular,
-                            }}
-                          >
-                            SAME AS ABOVE ADDRESS
-                          </Text>
-                        </TouchableOpacity>
-                        {!sameAddress && (
+                        )}
+                        {selectedCategory === "artisan" && (
                           <View>
                             <Text
-                              style={{
-                                fontSize: 14,
-                                marginTop: 20,
-                                fontFamily: font.GoldPlay_Regular,
-                                alignSelf: "center",
-                              }}
+                              style={[
+                                stylesCommon.welcomeText,
+                                { fontSize: 14, flex: 1, marginTop: 20 },
+                              ]}
                             >
-                              OR
+                              {"CURRENT ADDRESS"}
                             </Text>
                             <TouchableOpacity
                               activeOpacity={0.6}
-                              style={{ alignSelf: "center", marginTop: 30 }}
-                              onPress={() => {}}
+                              style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                marginTop: 20,
+                              }}
+                              onPress={() => {
+                                setSameAddress(!sameAddress);
+                              }}
                             >
+                              <Image
+                                source={
+                                  sameAddress
+                                    ? require("../../assets/checkbox_selected.png")
+                                    : require("../../assets/checkbox_unselected.png")
+                                }
+                                style={{
+                                  height: 15,
+                                  width: 15,
+                                  marginTop: 0,
+                                  resizeMode: "contain",
+                                }}
+                              />
                               <Text
                                 style={{
-                                  fontSize: 12,
-                                  fontFamily: font.GoldPlay_SemiBold,
-                                  alignSelf: "center",
-                                  textDecorationLine: "underline",
+                                  fontSize: 14,
+                                  marginStart: 10,
+                                  fontFamily: sameAddress
+                                    ? font.GoldPlay_SemiBold
+                                    : font.GoldPlay_Regular,
                                 }}
                               >
-                                ADD CURRENT ADDRESS
+                                SAME AS ABOVE ADDRESS
                               </Text>
                             </TouchableOpacity>
-                            <View style={{ marginTop: 20, marginBottom: 10 }}>
-                              <ProfileCustomView
-                                item_value={city}
-                                item_setValue={setcity}
-                                item_Ref={CurrentCity}
-                                item_Ref_next={CurrentState}
-                                item_label={"City/Town:"}
-                                item_place_holder={"Enter your City/Town"}
-                                item_return_key_type={"next"}
-                              />
-                              <ProfileCustomView
-                                item_value={state}
-                                item_setValue={setstate}
-                                item_Ref={CurrentState}
-                                item_label={"State:"}
-                                item_place_holder={"Enter your State"}
-                                item_return_key_type={"done"}
-                              />
-                            </View>
+                            {!sameAddress && (
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: 14,
+                                    marginTop: 20,
+                                    fontFamily: font.GoldPlay_Regular,
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  OR
+                                </Text>
+                                <TouchableOpacity
+                                  activeOpacity={0.6}
+                                  style={{ alignSelf: "center", marginTop: 30 }}
+                                  onPress={() => {}}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 12,
+                                      fontFamily: font.GoldPlay_SemiBold,
+                                      alignSelf: "center",
+                                      textDecorationLine: "underline",
+                                    }}
+                                  >
+                                    ADD CURRENT ADDRESS
+                                  </Text>
+                                </TouchableOpacity>
+                                <View
+                                  style={{ marginTop: 20, marginBottom: 10 }}
+                                >
+                                  <ProfileCustomView
+                                    item_value={city}
+                                    item_setValue={setcity}
+                                    item_Ref={CurrentCity}
+                                    item_Ref_next={CurrentState}
+                                    item_label={"City/Town:"}
+                                    item_place_holder={"Enter your City/Town"}
+                                    item_return_key_type={"next"}
+                                  />
+                                  <ProfileCustomView
+                                    item_value={state}
+                                    item_setValue={setstate}
+                                    item_Ref={CurrentState}
+                                    item_label={"State:"}
+                                    item_place_holder={"Enter your State"}
+                                    item_return_key_type={"done"}
+                                  />
+                                </View>
+                              </View>
+                            )}
                           </View>
                         )}
                       </View>

@@ -295,16 +295,48 @@ export default function CustomDrawer({ navigation }) {
                     marginTop: 30,
                   }}
                 >
-                  <Text
+                  <View
                     style={{
-                      color: "#fff",
-                      fontFamily: font.GoldPlay_SemiBold,
-                      fontSize: 20,
+                      flexDirection: "row",
+                      gap: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    Distributor
-                  </Text>
-
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 20,
+                      }}
+                    >
+                      Distributor
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log("Profile Details", profileDetails);
+                        if (profileDetails.length == 0) {
+                          navigation.navigate("AddAdhar");
+                        } else if (
+                          profileDetails.aadharCardNo == "" ||
+                          profileDetails.aadharCardNo == null
+                        ) {
+                          navigation.navigate("AddAdhar");
+                        } else {
+                          navigation.navigate("PersonalDetails", {
+                            profilePhoto: profileDetails.image,
+                            aadharNo: profileDetails.aadharCardNo,
+                          });
+                        }
+                        //
+                      }}
+                    >
+                      <Image
+                        style={{ height: 35, width: 35 }}
+                        source={require("../../assets/edit_yellow.png")}
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <View style={{ flexDirection: "row", gap: 2 }}>
                     <Text
                       style={{

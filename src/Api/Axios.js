@@ -59,6 +59,7 @@ export const axiosCallAPI = (
           throw error.response.data.errors;
         } else if (Array.isArray(error.response.data.errors)) {
           console.log("is Array");
+          console.log(error.response.data.errors);
           throw error.response.data.errors.join(", ");
         } else {
           console.log("is Object");

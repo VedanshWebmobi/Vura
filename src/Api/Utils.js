@@ -36,3 +36,4 @@ export const RETAILER_ORDER_LIST = `${BASE_URL}retailer/sales-order/list`;
 export const RETAILER_ORDER_ACTION = `${BASE_URL}retailer/sales-order/cp-action`;
 export const RETAILER_CREATE_INVOICE = `${BASE_URL}retailer/sales-order/add-invoice`;
 export const RETAILER_COMPLETE_ORDER = `${BASE_URL}retailer/sales-order/complete`;
+export const RETAILER_PROFILE_UPDATE = `${BASE_URL}distributer-network/profile-save`;
