@@ -36,12 +36,12 @@ export default function WalletWithdrawList({ navigation, refresh }) {
 
     fetchWalletData();
     //}
-  }, [currentPage]);
+  }, [currentPage, refresh]);
 
   useFocusEffect(
     React.useCallback(() => {
       setCurrentPage(1);
-    }, [])
+    }, [refresh])
   );
   const LoadMoreData = () => {
     if (walletData.length > 0) {
@@ -76,7 +76,10 @@ export default function WalletWithdrawList({ navigation, refresh }) {
         true,
         navigation
       );
-      console.log("WithDrawal History", response.transaction_log.result);
+      console.log(
+        "WithDrawal History List =>",
+        response.transaction_log.result
+      );
       const newData = response.transaction_log.result;
       if (currentPage != 1) {
         setWalletData([...walletData, ...newData]);

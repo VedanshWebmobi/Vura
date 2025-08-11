@@ -124,9 +124,21 @@ export default function Login({ navigation, route }) {
     if (selectedCategory && selectedCategory !== "") {
       Preference.saveSelectedCategory(selectedCategory);
     }
-
+    // Dealer
+    // Distributor
+    // Key Accounts
+    // Retailer
     let loginFormData = new FormData();
     loginFormData.append("mobileNo", number.replace(" ", ""));
+
+    if (selectedCategory === "distributer") {
+      loginFormData.append("user_type", "Distributor");
+    } else if (selectedCategory === "retailer") {
+      loginFormData.append("user_type", "Retailer");
+    } else if (selectedCategory === "dealer") {
+      loginFormData.append("user_type", "Dealer");
+    }
+
     let requestOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -138,7 +150,9 @@ export default function Login({ navigation, route }) {
     );
     axiosCallAPI(
       "post",
-      selectedCategory === "distributer" || selectedCategory === "retailer"
+      selectedCategory === "distributer" ||
+        selectedCategory === "retailer" ||
+        selectedCategory === "dealer"
         ? DISLOGIN
         : LOGIN,
       loginFormData,

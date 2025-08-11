@@ -622,7 +622,7 @@ export default function RetailerOrderDetail({ navigation }) {
           <View style={{ flex: 1, padding: 16 }}>
             {(data.status_type === "DISTRIBUTION_NETWORK" ||
               data.status_type === "REJECTED_CHANNEL_PARTNER") &&
-              category === "distributer" && (
+              (category === "distributer" || category === "dealer") && (
                 <View>
                   <CustomViewRetailer
                     isTextInput

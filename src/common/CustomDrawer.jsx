@@ -285,7 +285,8 @@ export default function CustomDrawer({ navigation }) {
         <View>
           <View style={{ justifyContent: "flex-start", gap: 20, padding: 10 }}>
             <View style={{ flexDirection: "row" }}>
-              {selectedCategory === "distributer" ? (
+              {selectedCategory === "distributer" ||
+              selectedCategory === "dealer" ? (
                 <View
                   style={{
                     flexDirection: "row",
@@ -310,7 +311,9 @@ export default function CustomDrawer({ navigation }) {
                         fontSize: 20,
                       }}
                     >
-                      Distributor
+                      {selectedCategory === "distributer"
+                        ? "Distributor"
+                        : "Dealer"}
                     </Text>
                     <TouchableOpacity
                       onPress={() => {
@@ -368,16 +371,48 @@ export default function CustomDrawer({ navigation }) {
                     marginTop: 30,
                   }}
                 >
-                  <Text
+                  <View
                     style={{
-                      color: "#fff",
-                      fontFamily: font.GoldPlay_SemiBold,
-                      fontSize: 20,
+                      flexDirection: "row",
+                      gap: 10,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
-                    Retailer
-                  </Text>
-
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontFamily: font.GoldPlay_SemiBold,
+                        fontSize: 20,
+                      }}
+                    >
+                      Retailer
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log("Profile Details", profileDetails);
+                        if (profileDetails.length == 0) {
+                          navigation.navigate("AddAdhar");
+                        } else if (
+                          profileDetails.aadharCardNo == "" ||
+                          profileDetails.aadharCardNo == null
+                        ) {
+                          navigation.navigate("AddAdhar");
+                        } else {
+                          navigation.navigate("PersonalDetails", {
+                            profilePhoto: profileDetails.image,
+                            aadharNo: profileDetails.aadharCardNo,
+                          });
+                        }
+                        //
+                      }}
+                    >
+                      <Image
+                        style={{ height: 35, width: 35 }}
+                        source={require("../../assets/edit_yellow.png")}
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <View style={{ flexDirection: "row", gap: 2 }}>
                     <Text
                       style={{
@@ -560,7 +595,8 @@ export default function CustomDrawer({ navigation }) {
                   marginBottom: 10,
                 }}
               />
-              {selectedCategory === "distributer" ? (
+              {selectedCategory === "distributer" ||
+              selectedCategory === "dealer" ? (
                 <>
                   <TouchableOpacity
                     activeOpacity={0.8}

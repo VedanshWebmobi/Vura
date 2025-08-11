@@ -83,11 +83,12 @@ export default function WithdrawAmount({ navigation }) {
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
             name,
-            mobileNo
+            mobileNo,
+            aadharCardNo
           );
 
           setBankVerify(bank_verify);
-          setAadharNumber(aadharNo || "");
+          setAadharNumber(aadharCardNo || "");
         }
       } catch (error) {
         console.error("Error retrieving personal details:", error);
@@ -392,7 +393,7 @@ export default function WithdrawAmount({ navigation }) {
                       amount.toString().replace(",", "")
                     );
 
-                    if (amountInt >= 0 && amountInt <= 1000) {
+                    if (amountInt >= 300 && amountInt <= 1000) {
                       if (bankverify === "1") {
                         WithDrawalAmount();
                       } else {

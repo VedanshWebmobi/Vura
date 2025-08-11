@@ -52,6 +52,8 @@ export default function Wallet({ navigation, route }) {
   const [loader, setloader] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState(0);
+  const [refreshCount, setRefreshCount] = useState(0);
+
   const rotation = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(1)).current;
   const stretchValue = useRef(new Animated.Value(1)).current;
@@ -116,6 +118,7 @@ export default function Wallet({ navigation, route }) {
       if (params && params.refresh) {
         // Perform your refresh logic here
         console.log("ScreenA refreshed");
+        setRefreshCount((pre) => pre++);
       }
       fetchWalletData();
     }, [params])
@@ -288,7 +291,7 @@ export default function Wallet({ navigation, route }) {
         true,
         navigation
       );
-      console.log("Coupon History", response);
+      // console.log("Coupon History", response);
       const newData = response.result;
 
       setCouponData([...couponData, ...newData]);
@@ -328,7 +331,7 @@ export default function Wallet({ navigation, route }) {
         true,
         navigation
       );
-      console.log("WithDrawal History", JSON.stringify(response));
+      //  console.log("WithDrawal History", JSON.stringify(response));
       const newData = response.transaction_log.result;
 
       //   setWalletData([...walletData, ...newData]);
@@ -336,6 +339,7 @@ export default function Wallet({ navigation, route }) {
         setwalletAmount(response.client_data.available_balance);
         setTotalAmount(response.client_data.received_amount);
         setWithdrawalAmount(response.client_data.withdrawal_amount);
+        setRefreshCount((pre) => pre + 1);
       }
       //  setTotalPages(response.transaction_log.pages);
       // setCurrentPage(currentPage + 1);
@@ -533,7 +537,7 @@ export default function Wallet({ navigation, route }) {
                   Points
                 </Text>
               </View>
-              {parseFloat(walletAmount) >= 30 ? (
+              {parseFloat(walletAmount) >= 300 ? (
                 <TouchableOpacity
                   activeOpacity={1}
                   onPress={() => {
@@ -742,9 +746,7 @@ export default function Wallet({ navigation, route }) {
               >
                 <Tab.Screen
                   name="REDEEM"
-                  children={() => (
-                    <WalletWithdrawList refresh={params && params.refresh} />
-                  )}
+                  children={() => <WalletWithdrawList refresh={refreshCount} />}
                 />
                 <Tab.Screen name="COUPON" component={CouponList} />
               </Tab.Navigator>

@@ -517,7 +517,9 @@ export default function PersonalDetails({ navigation }) {
 
       const response = await axiosCallAPI(
         "post",
-        selectedCategory === "distributer" || selectedCategory === "retailer"
+        selectedCategory === "distributer" ||
+          selectedCategory === "retailer" ||
+          selectedCategory === "dealer"
           ? RETAILER_PROFILE_UPDATE
           : ADD_PROFILE,
         profileFormData,

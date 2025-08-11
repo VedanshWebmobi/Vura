@@ -33,7 +33,7 @@ export default function Category({ navigation }) {
     // { key: "employee", value: "I Am An Employee" },
     //{ key: "market_operator", value: "I Am A Market Operator" },
     { key: "distributer", value: "I Am A Distributer" },
-    //{ key: "dealer", value: "I Am A Dealer" },
+    { key: "dealer", value: "I Am A Dealer" },
     { key: "retailer", value: "I Am A Retailer" },
     //{ key: "contractor", value: "I Am A Contractor" },
     //{ key: "architect", value: "I Am An Architect" },
