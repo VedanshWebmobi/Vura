@@ -10,6 +10,7 @@ import {
   Easing,
   Dimensions,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import stylesCommon, {
@@ -18,7 +19,7 @@ import stylesCommon, {
 } from "../Themes/stylesCommon";
 import CommonHeader from "../common/CommonHeader";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
-import { SafeAreaView } from "react-native-safe-area-context";
+//import { SafeAreaView } from "react-native-safe-area-context";
 
 import DropDownPicker from "react-native-dropdown-picker";
 import { Picker } from "@react-native-picker/picker";
@@ -167,39 +168,41 @@ export default function Orders({
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
-
-      <SafeAreaView style={{ flex: 1 }}>
-        <CommonHeaderNew
-          header_title={"ORDERS"}
-          header_color={colors.YELLOW}
-          navigation={navigation}
-          showSearch
-          onSearchPress={handleSearch}
-        />
-
-        <Tab.Navigator
-          tabBar={(props) => <MyTabBar {...props} />}
-          swipeEnabled={false}
-        >
-          <Tab.Screen
-            name="NEW INVOICE"
-            children={() => (
-              <InvoiceList searchText={searchText} setSearch={setSearch} />
-            )}
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+        <View style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
+          <CommonHeaderNew
+            header_title={"ORDERS"}
+            header_color={colors.YELLOW}
+            navigation={navigation}
+            showSearch
+            onSearchPress={handleSearch}
           />
-          <Tab.Screen
-            name="ORDERS HISTORY"
-            children={() => (
-              <OrderHistory searchText={searchText} setSearch={setSearch} />
-            )}
+
+          <Tab.Navigator
+            tabBar={(props) => <MyTabBar {...props} />}
+            swipeEnabled={false}
+          >
+            <Tab.Screen
+              name="NEW INVOICE"
+              children={() => (
+                <InvoiceList searchText={searchText} setSearch={setSearch} />
+              )}
+            />
+            <Tab.Screen
+              name="ORDERS HISTORY"
+              children={() => (
+                <OrderHistory searchText={searchText} setSearch={setSearch} />
+              )}
+            />
+          </Tab.Navigator>
+          <DistributerSearch
+            isVisible={isSearchVisible}
+            onClose={onSearchClose}
+            handleSearch={SearchedPressed}
+            searchText={searchText}
           />
-        </Tab.Navigator>
-        <DistributerSearch
-          isVisible={isSearchVisible}
-          onClose={onSearchClose}
-          handleSearch={SearchedPressed}
-          searchText={searchText}
-        />
+        </View>
       </SafeAreaView>
     </View>
   );

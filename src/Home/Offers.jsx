@@ -9,29 +9,43 @@ import stylesCommon, {
 import { colors, icon } from "../constants";
 import CommonHeaderNew from "../common/CommonHeader_new";
 
-export default function Offers({ navigation }) {
+export default function Offers({ navigation, route }) {
+  const { login_category } = route.params;
   return (
     <>
-    <SafeAreaView  style={{flex:0, backgroundColor:colors.YELLOW, zIndex:1}}  />
-    <SafeAreaView style={stylesCommon.blackbg}>
-      <StatusBar backgroundColor={colors.YELLOW} />
-      {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
-      <CommonHeaderNew navigation={navigation} showBack={true} header_title="OFFERS" header_color={colors.YELLOW}/>
-      <ImageZoom
-        source={icon.OFFER_CHART}
-        style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}
-        minScale={0.5}
-        maxScale={2}
-        onInteractionStart={() => console.log("Interaction started")}
-        onInteractionEnd={() => console.log("Interaction ended")}
-        onPinchStart={() => console.log("Pinch gesture started")}
-        onPinchEnd={() => console.log("Pinch gesture ended")}
-        onPanStart={() => console.log("Pan gesture started")}
-        onPanEnd={() => console.log("Pan gesture ended")}
-        onResetAnimationEnd={() => console.log("Reset animation ended")}
-        resizeMode="contain"
+      <SafeAreaView
+        style={{ flex: 0, backgroundColor: colors.YELLOW, zIndex: 1 }}
       />
-    </SafeAreaView>
+      <SafeAreaView style={stylesCommon.blackbg}>
+        <StatusBar backgroundColor={colors.YELLOW} />
+        {/* <CommonHeader screen={"Product"} navigation={navigation} showBack /> */}
+        <CommonHeaderNew
+          navigation={navigation}
+          showBack={true}
+          header_title="OFFERS"
+          header_color={colors.YELLOW}
+        />
+        <ImageZoom
+          source={
+            login_category === "artisan"
+              ? icon.OFFER_CHART
+              : login_category === "retailer"
+              ? icon.RETAILER_OFFER
+              : icon.IMAGE1
+          }
+          style={{ height: SCREEN_HEIGHT, width: SCREEN_WIDTH }}
+          minScale={0.5}
+          maxScale={2}
+          onInteractionStart={() => console.log("Interaction started")}
+          onInteractionEnd={() => console.log("Interaction ended")}
+          onPinchStart={() => console.log("Pinch gesture started")}
+          onPinchEnd={() => console.log("Pinch gesture ended")}
+          onPanStart={() => console.log("Pan gesture started")}
+          onPanEnd={() => console.log("Pan gesture ended")}
+          onResetAnimationEnd={() => console.log("Reset animation ended")}
+          resizeMode="contain"
+        />
+      </SafeAreaView>
     </>
   );
 }

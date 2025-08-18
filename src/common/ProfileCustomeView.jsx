@@ -118,7 +118,7 @@ export default function ProfileCustomView({
             cursorColor="white"
             maxLength={32}
             onSubmitEditing={() => {
-              item_Ref_next ? item_Ref_next.current.focus() : null;
+              item_Ref_next ? item_Ref_next?.current?.focus() : null;
             }}
           />
         </View>
@@ -238,7 +238,7 @@ export default function ProfileCustomView({
               cursorColor="white"
               maxLength={32}
               onSubmitEditing={() => {
-                item_Ref_next ? item_Ref_next.current.focus() : null;
+                item_Ref_next ? item_Ref_next?.current?.focus() : null;
               }}
             />
           </TouchableOpacity>
@@ -290,7 +290,7 @@ export default function ProfileCustomView({
             editable={item_editable}
             maxLength={item_label === "Pin Code:" ? 6 : 32}
             onSubmitEditing={() => {
-              item_Ref_next ? item_Ref_next.current.focus() : null;
+              item_Ref_next ? item_Ref_next?.current?.focus() : null;
             }}
           />
         </View>

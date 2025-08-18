@@ -176,7 +176,7 @@ export default function CustomDrawer({ navigation }) {
         navigation.navigate("CashBack");
       } else if (item === "Offers") {
         console.log("Offers Pressed");
-        navigation.navigate("Offers");
+        navigation.navigate("Offers", { login_category: selectedCategory });
       } else if (item === "Wallet History") {
         if (!profileDetailsComplete) {
           setShowAlert(true);
@@ -813,7 +813,9 @@ export default function CustomDrawer({ navigation }) {
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  navigation.navigate("Offers");
+                  navigation.navigate("Offers", {
+                    login_category: selectedCategory,
+                  });
                 }}
               >
                 <View

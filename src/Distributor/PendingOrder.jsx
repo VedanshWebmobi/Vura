@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Linking,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import InvoiceCard from "../common/InvoiceCard";
@@ -13,7 +14,7 @@ import CommonHeaderNew from "../common/CommonHeader_new";
 import { StatusBar } from "expo-status-bar";
 import MyTabBar from "../common/MyCustomTab";
 import { colors, ExpoSecureKey, font } from "../constants";
-import { SafeAreaView } from "react-native-safe-area-context";
+//import { SafeAreaView } from "react-native-safe-area-context";
 import RejectionModal from "../common/RejectionModal";
 import { CLAIM_COMPLETED, DOWNLOAD_INVOICE, ORDER_CLAIM } from "../Api/Utils";
 import { axiosCallAPI } from "../Api/Axios";
@@ -217,7 +218,8 @@ const PendingOrder = ({ route, navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
         <CommonAlert
           visible={visible} // Pass visibility state to the CommonAlert component
           hideModal={hideModal} // Pass function to hide the modal

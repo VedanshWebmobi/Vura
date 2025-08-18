@@ -85,7 +85,7 @@ export default function PreLogin({ navigation }) {
       }, 200);
     }
     if (buttonName === "Offers") {
-      navigation.navigate("Offers");
+      navigation.navigate("Offers", { login_category: "artisan" });
     }
 
     if (buttonName === "CashBack") {

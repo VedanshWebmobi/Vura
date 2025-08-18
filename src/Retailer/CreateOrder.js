@@ -752,7 +752,7 @@ export default function CreateOrder({ navigation }) {
             mode="date"
             open={openDate}
             date={date}
-            minimumDate={moment().startOf("month")}
+            minimumDate={moment().startOf("month").toDate()}
             maximumDate={new Date()}
             onConfirm={(date) => {
               setSelectedDate(moment(date).format("DD-MM-YYYY"));
@@ -771,7 +771,7 @@ export default function CreateOrder({ navigation }) {
             mode="date"
             open={po_openDate}
             date={po_date}
-            minimumDate={moment().startOf("month")}
+            minimumDate={moment().startOf("month").toDate()}
             maximumDate={new Date()}
             onConfirm={(date) => {
               setPO_OpenDate(false);

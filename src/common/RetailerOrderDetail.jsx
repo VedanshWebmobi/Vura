@@ -11,9 +11,10 @@ import {
   Dimensions,
   Alert,
   ScrollView,
+  SafeAreaView,
   TextInput,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+//import { SafeAreaView } from "react-native-safe-area-context";
 import { ExpoSecureKey, colors, font, icon } from "../constants";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import { useFocusEffect } from "@react-navigation/native";
@@ -591,7 +592,8 @@ export default function RetailerOrderDetail({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
         <CommonAlert
           visible={visibleAlert} // Pass visibility state to the CommonAlert component
           hideModal={() => {

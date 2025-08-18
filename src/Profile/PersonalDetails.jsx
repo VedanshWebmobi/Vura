@@ -1546,7 +1546,9 @@ export default function PersonalDetails({ navigation }) {
                           item_Ref_next={AreaRef}
                           item_label={"Flat/House:"}
                           item_place_holder={"Enter your Flat/House"}
-                          item_return_key_type={"next"}
+                          item_return_key_type={
+                            selectedCategory === "artisan" ? "next" : "done"
+                          }
                         />
                         {selectedCategory === "artisan" && (
                           <ProfileCustomView
@@ -1977,74 +1979,76 @@ export default function PersonalDetails({ navigation }) {
                     </Animated.View>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  activeOpacity={1}
-                  onPress={() => {
-                    setSHowViewDelete(true);
-                    setTimeout(() => {
-                      setSHowViewDelete(false);
-                      HandleDeleteAccount();
-                      //  handleNext()
-                    }, 450);
-                    // rotateImage(rotation);
-                    stretch(stretchValue_delete);
-                    scaleText(scale_delete);
-                    //handleOnPress("Products")
-                  }}
-                  //underlayColor={colors.YELLOW}
-                  style={{ borderRadius: 30, marginTop: 20 }}
-                >
-                  <View style={{}}>
-                    {showView_delete && (
+                {selectedCategory === "artisan" && (
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => {
+                      setSHowViewDelete(true);
+                      setTimeout(() => {
+                        setSHowViewDelete(false);
+                        HandleDeleteAccount();
+                        //  handleNext()
+                      }, 450);
+                      // rotateImage(rotation);
+                      stretch(stretchValue_delete);
+                      scaleText(scale_delete);
+                      //handleOnPress("Products")
+                    }}
+                    //underlayColor={colors.YELLOW}
+                    style={{ borderRadius: 30, marginTop: 20 }}
+                  >
+                    <View style={{}}>
+                      {showView_delete && (
+                        <Animated.View
+                          style={{
+                            borderColor: "#ffffff",
+                            transform: [
+                              { scaleX: interpolatedStretchAnimation_delete },
+                            ],
+                            width: SCREEN_DIMENSIONS.width - 40,
+                            height: 50,
+                            borderRadius: 30,
+                            backgroundColor: colors.YELLOW,
+                            position: "absolute",
+                            marginTop: 3,
+                            marginStart: 2,
+                          }}
+                        ></Animated.View>
+                      )}
+
                       <Animated.View
                         style={{
-                          borderColor: "#ffffff",
                           transform: [
                             { scaleX: interpolatedStretchAnimation_delete },
                           ],
-                          width: SCREEN_DIMENSIONS.width - 40,
-                          height: 50,
                           borderRadius: 30,
-                          backgroundColor: colors.YELLOW,
-                          position: "absolute",
-                          marginTop: 3,
-                          marginStart: 2,
+                          borderColor: "#ffffff",
+                          width: SCREEN_DIMENSIONS.width - 39,
+                          height: 50,
+                          backgroundColor: colors.ERROR_RED,
+                          flexDirection: "row",
                         }}
-                      ></Animated.View>
-                    )}
-
-                    <Animated.View
-                      style={{
-                        transform: [
-                          { scaleX: interpolatedStretchAnimation_delete },
-                        ],
-                        borderRadius: 30,
-                        borderColor: "#ffffff",
-                        width: SCREEN_DIMENSIONS.width - 39,
-                        height: 50,
-                        backgroundColor: colors.ERROR_RED,
-                        flexDirection: "row",
-                      }}
-                    >
-                      <View style={{ width: 0 }}></View>
-                      <Animated.Text
-                        style={[
-                          stylesCommon.preButtonLabelStyle,
-                          {
-                            flex: 1,
-                            textAlign: "center",
-                            color: "#fff",
-                            alignSelf: "center",
-                            alignContent: "center",
-                            transform: [{ scale: scale_delete }],
-                          },
-                        ]}
                       >
-                        DELETE ACCOUNT
-                      </Animated.Text>
-                    </Animated.View>
-                  </View>
-                </TouchableOpacity>
+                        <View style={{ width: 0 }}></View>
+                        <Animated.Text
+                          style={[
+                            stylesCommon.preButtonLabelStyle,
+                            {
+                              flex: 1,
+                              textAlign: "center",
+                              color: "#fff",
+                              alignSelf: "center",
+                              alignContent: "center",
+                              transform: [{ scale: scale_delete }],
+                            },
+                          ]}
+                        >
+                          DELETE ACCOUNT
+                        </Animated.Text>
+                      </Animated.View>
+                    </View>
+                  </TouchableOpacity>
+                )}
                 <View style={{ height: 20 }}></View>
 
                 {/* <View

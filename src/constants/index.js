@@ -47,6 +47,7 @@ export const icon = {
   ORDER_ICON: require("../../assets/order_icon.png"),
   ACCOUNT_ICON: require("../../assets/account_icon.png"),
   CHART_ICON: require("../../assets/chart.png"),
+  RETAILER_OFFER: require("../../assets/retailer_offer.jpg"),
 };
 
 export const font = {

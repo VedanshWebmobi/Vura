@@ -1,4 +1,11 @@
-import { FlatList, StyleSheet, Text, View, Linking } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Linking,
+  SafeAreaView,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import InvoiceCard from "../common/InvoiceCard";
 import CommonAlert from "../common/CommonAlert";
@@ -7,7 +14,7 @@ import * as Preference from "../StoreData/Preference";
 import { StatusBar } from "expo-status-bar";
 import MyTabBar from "../common/MyCustomTab";
 import { colors, ExpoSecureKey } from "../constants";
-import { SafeAreaView } from "react-native-safe-area-context";
+//import { SafeAreaView } from "react-native-safe-area-context";
 import { DOWNLOAD_INVOICE } from "../Api/Utils";
 import axios from "axios";
 import * as Progress from "react-native-progress";
@@ -99,7 +106,8 @@ const CompleteOrder = ({ route, navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
         <CommonHeaderNew
           header_title={"COMPLETED ORDER"}
           header_color={colors.YELLOW}

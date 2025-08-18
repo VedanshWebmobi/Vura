@@ -10,11 +10,12 @@ import {
   Easing,
   Dimensions,
   Alert,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import CommonHeaderNew from "../common/CommonHeader_new";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { SafeAreaView } from "react-native-safe-area-context";
+//import { SafeAreaView } from "react-native-safe-area-context";
 import CreateOrder from "./CreateOrder";
 import RetailerHistory from "./RetailerHistory";
 import { colors, font } from "../constants";
@@ -104,7 +105,8 @@ export default function RetailOrder({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.YELLOW} />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 0, backgroundColor: colors.YELLOW }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#f2f2f2" }}>
         <CommonHeaderNew
           header_title={"ORDERS"}
           header_color={colors.YELLOW}

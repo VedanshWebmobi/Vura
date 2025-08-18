@@ -32,7 +32,7 @@ export default function Category({ navigation }) {
   const data = [
     // { key: "employee", value: "I Am An Employee" },
     //{ key: "market_operator", value: "I Am A Market Operator" },
-    { key: "distributer", value: "I Am A Distributer" },
+    { key: "distributer", value: "I Am A Distributor" },
     { key: "dealer", value: "I Am A Dealer" },
     { key: "retailer", value: "I Am A Retailer" },
     //{ key: "contractor", value: "I Am A Contractor" },
