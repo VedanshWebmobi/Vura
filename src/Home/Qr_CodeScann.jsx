@@ -88,12 +88,14 @@ export default function QRCodeScanner_new({ navigation }) {
 
   const handleNextScreen = () => {
     setShowAlert(false);
-    if (title === "OPPS!") {
-      navigation.goBack();
-    } else {
-      //navigation.navigate("Wallet");
-      navigation.dispatch(StackActions.replace("Wallet"));
-    }
+    setTimeout(() => {
+      if (title === "OPPS!") {
+        navigation.goBack();
+      } else {
+        // navigation.navigate("Wallet");
+        navigation.dispatch(StackActions.replace("Wallet"));
+      }
+    }, 200);
   };
   useEffect(() => {
     // You can do something with the scanned data here, like sending it to an API
@@ -211,7 +213,7 @@ export default function QRCodeScanner_new({ navigation }) {
       <View style={styles.container}>
         <CommonAlert
           visible={showAlert} // Pass visibility state to the CommonAlert component
-          hideModal={() => handleNextScreen()} // Pass function to hide the modal
+          hideModal={() => {}} // Pass function to hide the modal
           handleOkPress={() => handleNextScreen()} // Pass function to handle Ok button press
           //handleCancelPress={handleCancelPress} // Pass function to handle Cancel button press
           title={title} // Pass title text

@@ -742,7 +742,8 @@ export default function Wallet({ navigation, route }) {
               />
               <Tab.Navigator
                 tabBar={(props) => <MyTabBar {...props} />}
-                swipeEnabled={false}
+                screenOptions={{ swipeEnabled: false }}
+                // swipeEnabled={false}
               >
                 <Tab.Screen
                   name="REDEEM"

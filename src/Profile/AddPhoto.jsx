@@ -129,7 +129,10 @@ export default function AddPhoto({ navigation }) {
 
   const handleClose = () => {
     setShowAlert(false);
-    navigation.dispatch(StackActions.replace("Category")); // Navigate to login screen
+    setTimeout(() => {
+      navigation.dispatch(StackActions.replace("Category")); // Navigate to login screen
+    }, 200);
+
     // Close the alert box
   };
 
