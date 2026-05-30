@@ -75,7 +75,7 @@ export default function QRCodeScanner_new({ navigation }) {
           console.log("failed to load the sound", error);
           return;
         }
-      }
+      },
     );
     mySound(BeepSound);
     const volumlistener = VolumeManager.addRingerListener((result) => {
@@ -139,7 +139,7 @@ export default function QRCodeScanner_new({ navigation }) {
       };
       crashlytics().log(
         "QR_CodeScann Screen => Scan coupon code Api call => Parameter" +
-          JSON.stringify(couponFormData)
+          JSON.stringify(couponFormData),
       );
       axiosCallAPI(
         "post",
@@ -147,11 +147,11 @@ export default function QRCodeScanner_new({ navigation }) {
         couponFormData,
         requestOptions,
         true,
-        navigation
+        navigation,
       ).then((response) => {
         crashlytics().log(
           "QR_CodeScann Screen => Scan coupon code Api call => Response" +
-            JSON.stringify(response)
+            JSON.stringify(response),
         );
         setIsLoading(false);
         if (response && response.status) {
@@ -174,7 +174,7 @@ export default function QRCodeScanner_new({ navigation }) {
           // });
         } else {
           //{"data": null, "errors": ["Coupon code not found"], "message": "", "status": false}
-          if (response.message.length > 0) {
+          if (response.message && response.message.length > 0) {
             setErrorMessage(response.message);
           } else {
             if (response.errors.length > 0) {
@@ -197,7 +197,7 @@ export default function QRCodeScanner_new({ navigation }) {
       });
     } catch (error) {
       crashlytics().log(
-        "QR_CodeScann Screen => Scan coupon code Api call => Main try catch"
+        "QR_CodeScann Screen => Scan coupon code Api call => Main try catch",
       );
       crashlytics().recordError(error);
       setIsLoading(false);

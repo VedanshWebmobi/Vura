@@ -48,8 +48,76 @@ export default function ProfileCustomView({
   const handleTextChange = (inputText) => {
     item_setValue(inputText.toUpperCase());
   };
-
   const GetDetailsFromPincode = async (pincode) => {
+    try {
+      if (pincode.length !== 6) {
+        return;
+      }
+
+      console.log("Pincode API Call =>", pincode);
+
+      const response = await axios.get(
+        "https://maps.googleapis.com/maps/api/geocode/json",
+        {
+          params: {
+            address: pincode,
+            key: "AIzaSyBuxQ3vuRAbVgxWzfIM44OLRBNA5XN3tUk",
+            components: "country:IN",
+          },
+          headers: {
+            Accept: "application/json",
+          },
+        },
+      );
+
+      console.log("Google Response =>", response.data);
+
+      if (response.data.status === "OK" && response.data.results.length > 0) {
+        const components = response.data.results[0].address_components;
+        const postcodeLength =
+          response.data.results[0]?.postcode_localities?.length || 0;
+
+        let city = "";
+        let state = "";
+        let country = "";
+
+        components.forEach((component) => {
+          // City
+          if (
+            component.types.includes("locality") ||
+            component.types.includes("postal_town") ||
+            component.types.includes("administrative_area_level_2")
+          ) {
+            city = component.long_name;
+          }
+
+          // State
+          if (component.types.includes("administrative_area_level_1")) {
+            state = component.long_name;
+          }
+
+          // Country
+          if (component.types.includes("country")) {
+            country = component.long_name;
+          }
+        });
+        item_handle_pincode_result(city, state, country, postcodeLength);
+        //setCityTown(city);
+        //setStateNew(state);
+        //setCountry(country);
+
+        //setIsManualAddress(false);
+      } else {
+        //enableManualAddress();
+        item_handle_pincode_result("", "", "", 0);
+      }
+    } catch (error) {
+      console.log("Pincode Error =>", error?.response?.data || error.message);
+      item_handle_pincode_result("", "", "", 0);
+      // enableManualAddress();
+    }
+  };
+  const _GetDetailsFromPincode = async (pincode) => {
     const requestOptions = {
       headers: {
         Accept: "application/json",
@@ -64,7 +132,7 @@ export default function ProfileCustomView({
           item_handle_pincode_result(
             response.data[0].PostOffice[0].Block,
             response.data[0].PostOffice[0].State,
-            response.data[0].PostOffice[0].Country
+            response.data[0].PostOffice[0].Country,
           );
         } else if (response.data[0].Status === "Error") {
           item_handle_pincode_result("", "", "");

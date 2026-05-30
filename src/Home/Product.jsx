@@ -62,7 +62,7 @@ export default function Product({
         ", Current Page =>" +
         currentPage +
         ", Total Page =>" +
-        totalPages
+        totalPages,
     );
     if (currentPage > 1) {
       console.log(
@@ -72,7 +72,7 @@ export default function Product({
           ", Current Page =>" +
           currentPage +
           ", Total Page =>" +
-          totalPages
+          totalPages,
       );
       fetchProductData(selectedValue);
     }
@@ -127,7 +127,7 @@ export default function Product({
         "",
         requestOptions,
         true,
-        navigation
+        navigation,
       );
       // console.log(JSON.stringify(response.result));
       setIsFirstTime(false);
@@ -179,7 +179,7 @@ export default function Product({
           ", Current Page =>" +
           currentPage +
           ", Total Page =>" +
-          totalPages
+          totalPages,
       );
       setCurrentPage((value) => value + 1);
     }
@@ -335,7 +335,11 @@ export default function Product({
                       }}
                       numberOfLines={2}
                     >
-                      {item.product_name + " - " + item.size + item.unit}
+                      {`${item.product_name}${
+                        item?.size && item?.unit
+                          ? ` - ${item.size}${item.unit}`
+                          : ""
+                      }`}
                     </Text>
                   </TouchableOpacity>
                 </View>

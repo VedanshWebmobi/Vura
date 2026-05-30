@@ -142,7 +142,11 @@ export default function PersonalDetails({ navigation }) {
   const hideModal = () => setVisible(false);
   const hideCameraModal = () => setShowCameraModel(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [inputDisable, setInputDisable] = useState({
+    city: false,
+    state: false,
+    country: false,
+  });
   const containerStyle = {
     backgroundColor: colors.YELLOW,
     padding: 20,
@@ -190,10 +194,16 @@ export default function PersonalDetails({ navigation }) {
   const handleDatePicker = () => {
     setOpenDate(true);
   };
-  const handlePincodeResult = (city, state, country) => {
-    setCityTown(city);
-    setStateNew(state);
-    setCountry(country);
+  const handlePincodeResult = (city, state, country, resultLength) => {
+    setCityTown(city || "");
+    setStateNew(state || "");
+    setCountry(country || "");
+
+    setInputDisable({
+      city: city?.trim()?.length <= 0 && resultLength != 0,
+      state: state?.trim()?.length <= 0 && resultLength != 0,
+      country: country?.trim()?.length <= 0 && resultLength != 0,
+    });
   };
   const rotation_per = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -245,7 +255,7 @@ export default function PersonalDetails({ navigation }) {
             delete_Account();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -300,33 +310,33 @@ export default function PersonalDetails({ navigation }) {
   const handleNext = () => {
     // Aadhar card number validation
     crashlytics().log(
-      "PersonalDetails Screen =>  Submit Profile => Check Validation"
+      "PersonalDetails Screen =>  Submit Profile => Check Validation",
     );
     if (selectedCategory === "artisan") {
       if (validation()) {
         crashlytics().log(
-          "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => true",
         );
         console.log(profilePhoto);
 
         submitProfile();
       } else {
         crashlytics().log(
-          "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => false",
         );
       }
       isApiCall.current = false;
     } else {
       if (validation_Retailer()) {
         crashlytics().log(
-          "PersonalDetails Screen =>  Submit Profile => Check Validation => true"
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => true",
         );
         console.log(profilePhoto);
 
         submitProfile();
       } else {
         crashlytics().log(
-          "PersonalDetails Screen =>  Submit Profile => Check Validation => false"
+          "PersonalDetails Screen =>  Submit Profile => Check Validation => false",
         );
       }
       isApiCall.current = false;
@@ -377,17 +387,17 @@ export default function PersonalDetails({ navigation }) {
         "",
         requestOptions,
         true,
-        navigation
+        navigation,
       );
       setIsLoading(false);
       //{"data": {}, "errors": {}, "message": "Artisan deleted successfully.", "status": true}
       crashlytics().log(
         "PersonalDetails Screen =>  Delete Account API call => Response => " +
-          JSON.stringify(response)
+          JSON.stringify(response),
       );
       if (response.status) {
         crashlytics().log(
-          "PersonalDetails Screen =>  Delete Account API call => Success"
+          "PersonalDetails Screen =>  Delete Account API call => Success",
         );
         Preference.deleteItem(ExpoSecureKey.IS_LOGIN);
         Preference.deleteItem(ExpoSecureKey.IS_REGISTER);
@@ -400,7 +410,7 @@ export default function PersonalDetails({ navigation }) {
         setVisible(true);
       } else {
         crashlytics().log(
-          "PersonalDetails Screen =>  Delete Account API call => Fail"
+          "PersonalDetails Screen =>  Delete Account API call => Fail",
         );
         setDeleteAccountRequest(false);
         setIconColor("red");
@@ -411,7 +421,7 @@ export default function PersonalDetails({ navigation }) {
       console.log(response);
     } catch (error) {
       crashlytics().log(
-        "PersonalDetails Screen =>  Delete Account API call => Main try catch "
+        "PersonalDetails Screen =>  Delete Account API call => Main try catch ",
       );
       crashlytics().recordError(error);
       setIsLoading(false);
@@ -490,12 +500,12 @@ export default function PersonalDetails({ navigation }) {
       profileFormData.append("current_country", sameAddress ? country : "");
       profileFormData.append(
         "gender",
-        selectedCategory === "artisan" ? gender : ""
+        selectedCategory === "artisan" ? gender : "",
       );
 
       profileFormData.append(
         "dateOfBirth",
-        selectedDate != null ? moment(selectedDate).format("YYYY-MM-DD") : ""
+        selectedDate != null ? moment(selectedDate).format("YYYY-MM-DD") : "",
       );
 
       profileFormData.append("bank_verify", bankverify === "0" ? 0 : 1);
@@ -506,7 +516,7 @@ export default function PersonalDetails({ navigation }) {
       console.log("====================================");
       crashlytics().log(
         "PersonalDetails Screen =>  Submit Profile => Parameter => " +
-          JSON.stringify(profileFormData)
+          JSON.stringify(profileFormData),
       );
       let requestOptions = {
         headers: {
@@ -525,13 +535,13 @@ export default function PersonalDetails({ navigation }) {
         profileFormData,
         requestOptions,
         true,
-        navigation
+        navigation,
       );
 
       // console.log("LE Bhai", response);
       crashlytics().log(
         "PersonalDetails Screen =>  Submit Profile => Response => " +
-          JSON.stringify(response)
+          JSON.stringify(response),
       );
       setIsLoading(false);
       if (response && response.status) {
@@ -555,7 +565,7 @@ export default function PersonalDetails({ navigation }) {
         } catch (error) {
           crashlytics().log(
             "PersonalDetails Screen =>  Response status false try catch => " +
-              error.toString()
+              error.toString(),
           );
           crashlytics().recordError(error);
           setAlertTitle("OPPS!");
@@ -570,7 +580,7 @@ export default function PersonalDetails({ navigation }) {
     } catch (error) {
       crashlytics().log(
         "PersonalDetails Screen => Submit Profile => Main try catch => " +
-          error.toString()
+          error.toString(),
       );
       crashlytics().recordError(error);
       isApiCall.current = false;
@@ -603,7 +613,7 @@ export default function PersonalDetails({ navigation }) {
       console.log("Params", requestOptions);
       crashlytics().log(
         "PersonalDetails Screen =>  Verify Bank API call => Parameter =>" +
-          JSON.stringify(requestOptions)
+          JSON.stringify(requestOptions),
       );
 
       // {"data": {"bank_verify": true}, "errors": {}, "message": "Bank Account details verified successfully.", "status": true}
@@ -613,15 +623,15 @@ export default function PersonalDetails({ navigation }) {
         "",
         requestOptions,
         true,
-        navigation
+        navigation,
       );
       crashlytics().log(
         "PersonalDetails Screen =>  Verify Bank API call => Response => " +
-          JSON.stringify(response)
+          JSON.stringify(response),
       );
       if (response.data.bank_verify) {
         crashlytics().log(
-          "PersonalDetails Screen =>  Verify Bank API call => Response => true"
+          "PersonalDetails Screen =>  Verify Bank API call => Response => true",
         );
         setIconColor("green");
         setAlertTitle("SUCCESS!");
@@ -630,7 +640,7 @@ export default function PersonalDetails({ navigation }) {
         setBankVerify("1");
       } else {
         crashlytics().log(
-          "PersonalDetails Screen =>  Verify Bank API call => Response => false"
+          "PersonalDetails Screen =>  Verify Bank API call => Response => false",
         );
         setIconColor("red");
         setAlertTitle("OPPS!");
@@ -642,7 +652,7 @@ export default function PersonalDetails({ navigation }) {
       console.log("Bank Verification", response);
     } catch (error) {
       crashlytics().log(
-        "PersonalDetails Screen =>  Verify Bank API call => Main try catch"
+        "PersonalDetails Screen =>  Verify Bank API call => Main try catch",
       );
       crashlytics().recordError(error);
       setIconColor("red");
@@ -676,11 +686,11 @@ export default function PersonalDetails({ navigation }) {
         "",
         requestOptions,
         true,
-        navigation
+        navigation,
       );
       crashlytics().log(
         "PersonalDetails Screen =>  Get Profile Api call => Response => " +
-          JSON.stringify(response)
+          JSON.stringify(response),
       );
       console.log("Bhai yeh method mai yeh mil raha", response);
       //  Extract relevant data from the API response
@@ -774,7 +784,7 @@ export default function PersonalDetails({ navigation }) {
     } catch (error) {
       console.error("Error fetching or storing profile data:", error);
       crashlytics().log(
-        "PersonalDetails Screen =>  Get Profile Api call => Main try catch"
+        "PersonalDetails Screen =>  Get Profile Api call => Main try catch",
       );
       crashlytics().recordError(error);
     } finally {
@@ -1065,7 +1075,7 @@ export default function PersonalDetails({ navigation }) {
           console.log(
             "Bhai personal details mai yeh mil raha hai ",
             name,
-            mobileNo
+            mobileNo,
           );
 
           console.log(
@@ -1074,7 +1084,7 @@ export default function PersonalDetails({ navigation }) {
             mobileNo,
             address,
             panCardNo,
-            dateOfBirth
+            dateOfBirth,
           );
 
           setGender(gender);
@@ -1308,8 +1318,8 @@ export default function PersonalDetails({ navigation }) {
                           image.length > 0
                             ? { uri: image }
                             : profilePhoto && profilePhoto.length > 0
-                            ? { uri: profilePhoto }
-                            : icon.PROFILE_PIC
+                              ? { uri: profilePhoto }
+                              : icon.PROFILE_PIC
                         }
                         style={{
                           height: 100,
@@ -1582,7 +1592,7 @@ export default function PersonalDetails({ navigation }) {
                           item_label={"City/Town:"}
                           item_place_holder={"Enter your City/Town"}
                           item_return_key_type={"next"}
-                          item_editable={false}
+                          item_editable={inputDisable.city}
                         />
                         <ProfileCustomView
                           item_value={state_new}
@@ -1592,7 +1602,7 @@ export default function PersonalDetails({ navigation }) {
                           item_label={"State:"}
                           item_place_holder={"Enter your State"}
                           item_return_key_type={"next"}
-                          item_editable={false}
+                          item_editable={inputDisable.state}
                         />
                         {selectedCategory === "artisan" && (
                           <ProfileCustomView
@@ -1602,7 +1612,7 @@ export default function PersonalDetails({ navigation }) {
                             item_label={"Country:"}
                             item_place_holder={"Enter your Country"}
                             item_return_key_type={"next"}
-                            item_editable={false}
+                            item_editable={inputDisable.country}
                           />
                         )}
                         {selectedCategory === "artisan" && (
@@ -1850,7 +1860,7 @@ export default function PersonalDetails({ navigation }) {
                                     setAlertTitle("OPPS!");
                                     setIconColor("red");
                                     setErrorMessage(
-                                      "ENTER A VALID ACCOUNT HOLDER NAME."
+                                      "ENTER A VALID ACCOUNT HOLDER NAME.",
                                     );
                                     setVisible(true);
                                     setTimeout(() => {
@@ -1860,7 +1870,7 @@ export default function PersonalDetails({ navigation }) {
                                     setAlertTitle("OPPS!");
                                     setIconColor("red");
                                     setErrorMessage(
-                                      "ENTER A VALID BANK ACCOUNT NUMBER."
+                                      "ENTER A VALID BANK ACCOUNT NUMBER.",
                                     );
                                     setVisible(true);
                                     setTimeout(() => {
@@ -1878,7 +1888,7 @@ export default function PersonalDetails({ navigation }) {
                                     setAlertTitle("OPPS!");
                                     setIconColor("red");
                                     setErrorMessage(
-                                      "ENTER A VALID BANK IFSC CODE."
+                                      "ENTER A VALID BANK IFSC CODE.",
                                     );
                                     setVisible(true);
                                     setTimeout(() => {

@@ -47,7 +47,7 @@ export default function CashBack({ navigation }) {
       setStatusColor(colors.YELLOW);
       GetProductData();
       return () => {};
-    }, [navigation])
+    }, [navigation]),
   );
   const GetProductData = async () => {
     setIsLoading(true);
@@ -66,14 +66,14 @@ export default function CashBack({ navigation }) {
         "",
         requestOptions,
         true,
-        navigation
+        navigation,
       );
       const newData = response.result;
       const filterArray = newData.filter(
-        (item) => parseFloat(item.couponValue) > 0
+        (item) => parseFloat(item.couponValue) > 0,
       );
       const CouponPrice = filterArray.sort(
-        (a, b) => parseFloat(a.couponValue) - parseFloat(b.couponValue)
+        (a, b) => parseFloat(a.couponValue) - parseFloat(b.couponValue),
       );
       setCouponData(CouponPrice);
       console.log("Product Data => ", JSON.stringify(CouponPrice));
@@ -272,7 +272,7 @@ export default function CashBack({ navigation }) {
                   />
                 );
               })}
-              {couponData.length != 0 && !isLoading && (
+              {/* {couponData.length != 0 && !isLoading && (
                 <Text
                   style={{
                     fontFamily: font.GoldPlay_SemiBold,
@@ -286,7 +286,7 @@ export default function CashBack({ navigation }) {
                 >
                   Cashback Available in 20Kg. Bag Packings Only
                 </Text>
-              )}
+              )} */}
             </View>
           </View>
         </ScrollView>

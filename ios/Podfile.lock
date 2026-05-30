@@ -1028,13 +1028,13 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
-  - react-native-date-picker (5.0.4):
+  - react-native-date-picker (5.0.13):
     - React-Core
   - react-native-document-picker (9.3.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-pager-view (6.3.1):
+  - react-native-pager-view (6.9.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1580,9 +1580,9 @@ SPEC CHECKSUMS:
   React-logger: 3eb80a977f0d9669468ef641a5e1fabbc50a09ec
   React-Mapbuffer: 84ea43c6c6232049135b1550b8c60b2faac19fab
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
-  react-native-date-picker: 6891317e850deae5b53d51355226e07a495aba61
+  react-native-date-picker: b64721d6278b52708457292c218196b383b553b1
   react-native-document-picker: 23b6a82e09199f4f109376e73d88892a8931eeea
-  react-native-pager-view: f1e72cb827406f1b49f007ab07400197d421b6e7
+  react-native-pager-view: ffc268422bff14c50921542692f483375c1534ce
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-volume-manager: 3c7d8047841b6831730dea7bf25250522388b4f4
   React-nativeconfig: b4d4e9901d4cabb57be63053fd2aa6086eb3c85f
